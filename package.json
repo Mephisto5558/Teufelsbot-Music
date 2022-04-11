@@ -1,0 +1,31 @@
+{
+  "name": "teufelswerk-musik-bot",
+  "version": "1.0.0",
+  "description": "music bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "while [ true ]; do node index.js; done"
+  },
+  "keywords": [],
+  "author": "Mephisto",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/voice": "^0.7.5",
+    "@distube/soundcloud": "^1.0.0",
+    "@distube/spotify": "^1.0.0",
+    "@distube/yt-dlp": "^1.0.2",
+    "discord-slash-commands-client": "^1.2.2",
+    "discord.js": "^13.3.0",
+    "distube": "^3.3.3",
+    "express": "^4.17.3",
+    "ffmpeg-static": "^4.4.0",
+    "libsodium-wrappers": "^0.7.9",
+    "mongoose": "^6.0.12",
+    "node-fetch": "^2.6.7",
+    "reconlx": "^2.5.1"
+  },
+  "devDependencies": {
+    "node": "^17.1.0"
+  }
+}
