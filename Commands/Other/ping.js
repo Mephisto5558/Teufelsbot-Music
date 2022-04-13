@@ -13,9 +13,9 @@ module.exports = new Command({
     if(!interaction) return console.log('Error in ping.js');
     cmdCreatedTimestamp = Math.abs(Date.now() - interaction.createdTimestamp)
 
-    const filter = message => message.author.id === client.botID
-    const collector = interaction.channel.createMessageCollector(filter, {max: 10, time: 5000})
-    collector.once('collect', async () => {
+    const filter = message => message.author.id === client.userID
+    const collector = interaction.channel.createMessageCollector(filter, {max: 10, time: 10000})
+    collector.once('collect', () => {
       let embed = new MessageEmbed()
         .setColor(embedConfig.embed_color)
         .setTitle('Music Module')

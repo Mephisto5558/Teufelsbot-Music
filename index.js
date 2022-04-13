@@ -48,6 +48,5 @@ process.on('exit', async () => {
   await client.interaction.reply('.')
     .then(client.interaction.deleteReply());
   client.destroy();
-  app.sendStatus(502);
 });
 

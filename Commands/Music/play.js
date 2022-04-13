@@ -14,9 +14,9 @@ module.exports = new Command({
   }],
 
   run: async (client, interaction) => {
-    
     let member = interaction.guild.members.cache.get(interaction.member.id)
     let song = interaction.options.getString('song')
+    
     player.play(member.voice.channel, song, {
       member: member,
       textChannel: interaction.channel,

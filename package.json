@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "music bot",
   "main": "index.js",
-  "scripts": {
-    "start": "while [ true ]; do node index.js; done"
-  },
   "keywords": [],
   "author": "Mephisto",
   "license": "ISC",
@@ -27,5 +24,13 @@
   },
   "devDependencies": {
     "node": "^17.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mephisto5558/Teufelswerk-Bot-Music.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mephisto5558/Teufelswerk-Bot-Music/issues"
+  },
+  "homepage": "https://github.com/Mephisto5558/Teufelswerk-Bot-Music#readme"
 }

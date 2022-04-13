@@ -8,7 +8,7 @@ module.exports = new Command({
   category: "Music",
   options : [{
     name : "vol",
-    description : `Give me Number between 1 - 200`,
+    description : `Give me Number between 0 and 200`,
     required : true,
     type : "NUMBER"
   }],
