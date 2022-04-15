@@ -8,8 +8,9 @@ const app = express();
 
 const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
-  intents: 32767,
+  intents: 32767
 });
+
 module.exports = client;
 
 client.prefix = '.';
@@ -25,7 +26,8 @@ fs.readdirSync("./Handlers").filter((file) => file.endsWith("_handler.js")).forE
   require(`./Handlers/${handler}`)(client);
 });
 
-client.login(process.env.token);
+client.login(process.env.token)
+  .then(console.log("Logged in"));
 
 app.listen(1000, () => { console.log("Website is online") })
 app.get("/", (req, res) => { res.send('Hello world!') })
@@ -49,4 +51,3 @@ process.on('exit', async () => {
     .then(client.interaction.deleteReply());
   client.destroy();
 });
-

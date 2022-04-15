@@ -10,6 +10,7 @@ module.exports = new Command({
 
   run: async (client, interaction) => {
     let queue = player.getQueue(interaction.guild.id);
+    if(!queue) return interaction.followUp("You need to play music first!");
     if (queue.repeatMode === 1) {
       queue.setRepeatMode(0)
       return interaction.followUp(`Song loop disabled`)

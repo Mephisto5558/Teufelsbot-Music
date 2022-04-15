@@ -12,6 +12,7 @@
     "@distube/soundcloud": "^1.0.0",
     "@distube/spotify": "^1.0.0",
     "@distube/yt-dlp": "^1.0.2",
+    "@distube/ytdl-core": "^4.11.3",
     "discord-slash-commands-client": "^1.2.2",
     "discord.js": "^13.3.0",
     "distube": "^3.3.3",
