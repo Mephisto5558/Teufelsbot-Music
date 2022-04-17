@@ -18,7 +18,8 @@ client.on('interactionCreate', async interaction => {
     }
     
     interaction.member = interaction.guild.members.cache.get(interaction.user.id);
-
+//if(interaction.member != client.owner) return interaction.followUp('im to lazy for this, go away')
+  
     if (!interaction.member.permissions.has(command.userPermissions && ['SEND_MESSAGES'])) {
       return interaction.followUp(`You don't have ${command.userPermissions} or SEND_MESSAGES permission to run this command..`);
     }
