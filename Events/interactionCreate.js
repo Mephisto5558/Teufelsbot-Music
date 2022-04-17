@@ -18,14 +18,14 @@ client.on('interactionCreate', async interaction => {
     }
     
     interaction.member = interaction.guild.members.cache.get(interaction.user.id);
-//if(interaction.member != client.owner) return interaction.followUp('im to lazy for this, go away')
   
     if (!interaction.member.permissions.has(command.userPermissions && ['SEND_MESSAGES'])) {
       return interaction.followUp(`You don't have ${command.userPermissions} or SEND_MESSAGES permission to run this command..`);
     }
     
     let member = interaction.guild.members.cache.get(interaction.member.id);
-    if (!member.voice.channel && interaction.commandName != 'ping') return interaction.followUp(`You need to join a voice channel first!`);
+    let filter = !member.voice.channel && interaction.commandName != 'ping' && interaction.commandName != 'leave'
+    if (filter) return interaction.followUp(`You need to join a voice channel first!`);
     client.interaction = interaction;
     command.run(client, client.interaction, args);
   }
