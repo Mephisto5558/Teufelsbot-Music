@@ -5,7 +5,7 @@ client.on('interactionCreate', async interaction => {
   if (interaction.isCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
-    await interaction.deferReply();
+    if(command.name != 'ping') await interaction.deferReply();
 
     for (let option of interaction.options.data) {
       if (option.type === "SUB_COMMAND") {
