@@ -29,6 +29,16 @@ module.exports = new Command({
     let query = interaction.options.getString('query');
     if(!query) query = interaction.options.getString('song');
     //remove song later
+
+    if(query.includes("youtube.com") || query.includes("youtu.be")) {
+      player.play(member.voice.channel, query, {
+        member: member,
+        textChannel: interaction.channel,
+        skip: interaction.options.getBoolean('skip') || false
+      });
+      interaction0.delete();
+      return;
+    };
     
     const search = await player.search(query, { type: "video", limit: 5 });
     search.forEach((result) => {

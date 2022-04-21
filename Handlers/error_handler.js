@@ -2,7 +2,6 @@ module.exports = (client) => {
   
   process
     .on('unhandledRejection', (err, origin) => {
-      return console.log(err.name);
       console.log(' [Error Handling] :: Unhandled Rejection/Catch');
       console.log(err, origin);
       console.log(`\n`)
