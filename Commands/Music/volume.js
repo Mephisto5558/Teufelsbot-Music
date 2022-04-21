@@ -3,7 +3,7 @@ const player = require('../../Handlers/music_player')
 
 module.exports = new Command({
   name: 'volume',
-  description: `Set the volume of a song`,
+  description: `Set the player volume`,
   userPermissions: [],
   category: "Music",
   options : [{

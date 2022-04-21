@@ -6,6 +6,7 @@ module.exports = (client) => {
     fs.readdirSync(`./Commands/${cmd}/`).filter((file) => file.endsWith(".js")).forEach((command) => {
       let pull = require(`../Commands/${cmd}/${command}`);
       if (pull.name) {
+        if(pull.disabled) return;
         client.commands.set(pull.name, pull);
         client.slashCommandList.push(pull)
         console.log(`Loaded Slash Command ${pull.name}`)

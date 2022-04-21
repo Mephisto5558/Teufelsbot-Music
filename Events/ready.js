@@ -28,5 +28,5 @@ client.on('ready', () => {
     })
   });
   console.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.guilds.cache.map((g) => g.memberCount).reduce((a, c) => a + c)} users.\n`)
-  client.user.setActivity({ name: "Music module online | Main module offline | /help", type: "PLAYING" });
+  client.user.setActivity({ name: "music | /help", type: "PLAYING" });
 })

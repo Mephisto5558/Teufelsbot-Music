@@ -8,6 +8,7 @@ module.exports = new Command({
   userPermissions: [],
   category: "Information",
   showInHelp: false,
+  disabled: true,
   run: (client, interaction) => {
 
     if (!interaction) return;
@@ -19,6 +20,6 @@ module.exports = new Command({
         `Latency: \`${Math.abs(Date.now() - interaction.createdTimestamp)}ms\`\n` +
         `API Latency: \`${Math.round(client.ws.ping)}ms\``
       )
-    client.channels.cache.get(interaction.channelId).send({ embeds: [embed] });
+    client.channels.cache.get(interaction.channelId).reply({ embeds: [embed] });
   }
 })

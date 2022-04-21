@@ -2,13 +2,14 @@ module.exports = (client) => {
   
   process
     .on('unhandledRejection', (err, origin) => {
+      return console.log(err.name);
       console.log(' [Error Handling] :: Unhandled Rejection/Catch');
       console.log(err, origin);
       console.log(`\n`)
       
       if(!err.errorCode) err.errorCode = 'unknown'
-      if(err.errorCode === 'DiscordAPIError') client.interaction.channel.send("A Discord API Error occured, please try again and ping the dev if this keeps happening.")
-      else client.interaction?.followUp(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
+      if(err.name == 'DiscordAPIError') client.interaction?.channel.send("A Discord API Error occured, please try again and ping the dev if this keeps happening.");
+      else client.interaction?.channel.send(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
     })
   
     .on('uncaughtException', (err, origin) => {
@@ -17,7 +18,7 @@ module.exports = (client) => {
       console.log(`\n`);
       
       if(!err.errorCode) err.errorCode = 'unknown'
-      client.interaction?.followUp(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
+      client.interaction?.channel.send(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
     })
   
     .on('uncaughtExceptionMonitor', (err, origin) => {
@@ -26,7 +27,7 @@ module.exports = (client) => {
       console.log(`\n`);
       
       if(!err.errorCode) err.errorCode = 'unknown'
-      client.interaction?.followUp(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
+      client.interaction?.channel.send(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
     });
   
   client

@@ -13,7 +13,7 @@ module.exports = async (client) => {
     })
 
     .on("addSong", (queue, song) => {
-      client.interaction.followUp({
+      queue.textChannel.send({
         embeds: [ new MessageEmbed()
           .setDescription(`Added [${song.name}](${song.url}) - \`${song.formattedDuration}\`\nRequested by: ${song.user}`)
         ]
@@ -45,7 +45,7 @@ module.exports = async (client) => {
       client.interaction.followUp('No result found!');
     })
     
-    .on('searchResult', (message, result) => {
+    .on('searchResult', (_, result) => {
       let i = 0
       client.interaction.followUp(
         `**Choose an option from below**\n${result
@@ -66,10 +66,10 @@ module.exports = async (client) => {
     .on('searchDone', () => {})
 
     .on("error", (channel, err) => {
-      if (err.errorCode == 'VOICE_FULL') return client.interaction.followUp("The voice channel is full.");
+      if (err.errorCode == 'VOICE_FULL') return client.interaction.followUp("This voice channel is full.");
       if (err.errorCode == 'VOICE_MISSING_PERMS') return client.interaction.followUp("I don't have permission to join this voice channel");
 
-      client.interaction.followUp(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode || 'unknown'}\``)
+      client.interaction.followUp(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode || 'unknown'}\``);
       console.log(' [Error Handling] :: DisTubeError');
       console.log(err, channel);
       console.log(`\n`)

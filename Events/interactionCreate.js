@@ -5,7 +5,7 @@ client.on('interactionCreate', async interaction => {
   if (interaction.isCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
-    if(command.name != 'ping') await interaction.deferReply();
+    if (command.category != 'Information') await interaction.deferReply();
 
     for (let option of interaction.options.data) {
       if (option.type === "SUB_COMMAND") {
@@ -24,7 +24,7 @@ client.on('interactionCreate', async interaction => {
     }
     
     let member = interaction.guild.members.cache.get(interaction.member.id);
-    let filter = !member.voice.channel && interaction.commandName != 'ping' && interaction.commandName != 'leave'
+    let filter = !member.voice.channel && command.category != 'Information' && interaction.commandName != 'leave'
     if (filter) return interaction.followUp(`You need to join a voice channel first!`);
     client.interaction = interaction;
     command.run(client, client.interaction, args);
