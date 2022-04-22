@@ -72,8 +72,10 @@ module.exports = new Command({
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
       });
-      interaction0.delete().catch(_);
+      try{ interaction0.delete() } catch{};
 	  })
-    collector.on('end', _ => { interaction0.delete().catch(_); })
+    collector.on('end', _ => {
+      try{ interaction0.delete() } catch{};
+    })
   }
 })
