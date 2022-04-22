@@ -20,6 +20,6 @@ module.exports = new Command({
         `Latency: \`${Math.abs(Date.now() - interaction.createdTimestamp)}ms\`\n` +
         `API Latency: \`${Math.round(client.ws.ping)}ms\``
       )
-    client.channels.cache.get(interaction.channelId).reply({ embeds: [embed] });
+    interaction.channel.send({ embeds: [embed] });
   }
 })
