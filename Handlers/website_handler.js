@@ -3,7 +3,7 @@ const app = express();
 
 module.exports = (client) => {
 
-  websiteMessages = ['Hello World!', 'Lena is kuhl', 'Flo is kuhl', 'huhu', 'What are you doing here?', 'https://www.youtube.com/watch?v=xvFZjo5PgG0']
+  websiteMessages = ['Hello World!', 'Lena is kuhl', 'Flo is kuhl', 'Vinni is auch kuhl', 'huhu', 'What are you doing here?', 'https://www.youtube.com/watch?v=xvFZjo5PgG0']
   websiteMessage = websiteMessages[Math.floor(Math.random() * websiteMessages.length)]
   
   app.listen(1000, () => { console.log(`Website is online\n`) });

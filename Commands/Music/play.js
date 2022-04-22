@@ -27,8 +27,6 @@ module.exports = new Command({
     let results = [];
     let interaction0;
     let query = interaction.options.getString('query');
-    if(!query) query = interaction.options.getString('song');
-    //remove song later
 
     if(query.includes("youtube.com") || query.includes("youtu.be")) {
       player.play(member.voice.channel, query, {
@@ -43,7 +41,7 @@ module.exports = new Command({
     const search = await player.search(query, { type: "video", limit: 5 });
     search.forEach((result) => {
       if(result.name.length > 150) result.name = `${result.name.substring(0,147)}...`;
-      results.push(`[${result.name}](${result.url}) by ${result.uploader.name} (${result.formattedDuration})`);
+      results.push(`[${result.name}](${result.url}) by ${result.uploader.name}`);
     });
 
     do {
@@ -54,8 +52,8 @@ module.exports = new Command({
       .setTitle('Please select a song. You have 30 seconds.')
       .setDescription(results.join('\r\n'));
     
-    let row = new MessageActionRow()
-    for(i=1; i < results.length; i++) {
+    let row = new MessageActionRow();
+    for(i=1; i <= results.length; i++) {
 			row.addComponents(new MessageButton()
 				.setCustomId(i.toString())
 				.setLabel(i.toString())
@@ -68,14 +66,14 @@ module.exports = new Command({
     const filter = i => i.member.id === interaction.member.id;
     const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
 
-    collector.on('collect', interaction2 => {
-      player.play(member.voice.channel, results[interaction2.customId], {
+    collector.on('collect', async interaction2 => {
+      await player.play(member.voice.channel, results[interaction2.customId - 1], {
         member: member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
       });
-      interaction0.delete();
+      interaction0.delete().catch(_);
 	  })
-    collector.on('end', _ => { interaction0.delete(); })
+    collector.on('end', _ => { interaction0.delete().catch(_); })
   }
 })

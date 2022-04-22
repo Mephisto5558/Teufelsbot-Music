@@ -8,7 +8,7 @@ module.exports = new Command({
   userPermissions: [],
   category: "Information",
   showInHelp: false,
-  disabled: true,
+  disabled: false,
   run: (client, interaction) => {
 
     if (!interaction) return;

@@ -29,9 +29,10 @@ client.on('ready', async _ => {
       })
       .then( console.log(`Registered Slash Command ${command.name}`) )
       .catch( console.error);
-    await client.sleep(5000);
+    await client.sleep(10000);
   };
   
   console.log(`\nReady to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.guilds.cache.map((g) => g.memberCount).reduce((a, c) => a + c)} users.\n`)
+  console.error('The bot is ready');
   client.user.setActivity({ name: "music | /help", type: "PLAYING" });
 })
