@@ -37,11 +37,12 @@ module.exports = new Command({
       interaction0.delete();
       return;
     };
-    
+    i=1;
     const search = await player.search(query, { type: "video", limit: 5 });
     search.forEach((result) => {
       if(result.name.length > 150) result.name = `${result.name.substring(0,147)}...`;
-      results.push(`[${result.name}](${result.url}) by ${result.uploader.name}`);
+
+      results.push(`${i++}. [${result.name}](${result.url}) by ${result.uploader.name}`);
     });
 
     do {
