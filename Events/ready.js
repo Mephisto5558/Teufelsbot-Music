@@ -16,17 +16,22 @@ function work(option) {
     .replace('ATTACHMENT', 11)
 }
 
-client.on('ready', () => {
-  client.slashCommandList.forEach((command) => {
-    if(!command.slashCommand) return;
+client.on('ready', async _ => {
+  for await (command of client.slashCommandList) {
     if(Array.isArray(command.options)) command.options.forEach((option) => { work(option) });
-    else if(command.options) work(command.options)
-    commandClient.createCommand({
-      name: command.name,
-      description: command.description,
-      options: command.options
-    })
-  });
-  console.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.guilds.cache.map((g) => g.memberCount).reduce((a, c) => a + c)} users.\n`)
+    else if(command.options) work(command.options);
+
+    await commandClient
+      .createCommand({
+        name: command.name,
+        description: command.description,
+        options: command.options
+      })
+      .then( console.log(`Registered Slash Command ${command.name}`) )
+      .catch( console.error);
+    await client.sleep(5000);
+  };
+  
+  console.log(`\nReady to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.guilds.cache.map((g) => g.memberCount).reduce((a, c) => a + c)} users.\n`)
   client.user.setActivity({ name: "music | /help", type: "PLAYING" });
 })

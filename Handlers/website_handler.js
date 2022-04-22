@@ -6,7 +6,7 @@ module.exports = (client) => {
   websiteMessages = ['Hello World!', 'Lena is kuhl', 'Flo is kuhl', 'huhu', 'What are you doing here?', 'https://www.youtube.com/watch?v=xvFZjo5PgG0']
   websiteMessage = websiteMessages[Math.floor(Math.random() * websiteMessages.length)]
   
-  app.listen(1000, () => { console.log("Website is online") });
+  app.listen(1000, () => { console.log(`Website is online\n`) });
   app.get("*", (_, res) => { res.send(websiteMessage) });
 
   app.use(express.urlencoded({ extended: true }));

@@ -1,14 +1,14 @@
 console.log("Starting...") 
 
 const { Client, Collection } = require("discord.js");
-const fs = require("fs"); 
 
-const client = new Client({
-  partials: ["MESSAGE", "CHANNEL", "REACTION"],
-  intents: 32767
-}); 
+const fs = require("fs");
+fs.rmSync('./Logs/debug.log', {force: true});
 
-module.exports = client; 
+const client = new Client({ intents: 32767 });
+client.on('debug', debug => fs.appendFileSync('./Logs/debug.log', debug));
+
+module.exports = client;
 
 client.prefix = '.';
 client.userID = '948978571802710047';
@@ -22,16 +22,15 @@ client.sleep = function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }; 
 
-const client2 = client;
-client2.prefix = '.2';
-client2.userID = '964315306015211560'; 
+//const client2 = client;
+//client2.prefix = '.2';
+//client2.userID = '964315306015211560'; 
 
 fs.readdirSync("./Handlers").filter((file) => file.endsWith("_handler.js")).forEach((handler) => {
   require(`./Handlers/${handler}`)(client);
   //require(`./Handlers/${handler}`)(client2);
 }); 
 
-//client.on('debug', console.log);
 
 client.login(process.env.token)
   .then(console.log("Logged in (1)")); 
@@ -41,5 +40,5 @@ client.login(process.env.token)
 
 process.on('exit', async () => {
   client.destroy();
-  client2.destroy();
+  //client2.destroy();
 });
