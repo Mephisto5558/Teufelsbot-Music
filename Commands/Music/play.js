@@ -72,11 +72,11 @@ module.exports = new Command({
         member: member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
-      });
-      try{ interaction0.delete() } catch{};
-	  })
+      })
+	  });
+    
     collector.on('end', _ => {
-      try{ interaction0.delete() } catch{};
+      interaction0.delete();
     })
   }
 })
