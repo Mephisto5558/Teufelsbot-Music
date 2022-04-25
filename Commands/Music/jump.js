@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'jump',
   description: `Jump to a song`,
   userPermissions: [],
+  cooldown: {global: 1000, user: 2000},
   category: "Music",
   options: [{
     name: "position",

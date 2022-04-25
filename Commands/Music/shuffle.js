@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'shuffle',
   description: `Shuffles the queue`,
   userPermissions: [],
+  cooldown: {global:0, user: 'default'},
   category: "Music",
 
   run: async (_, interaction) => {

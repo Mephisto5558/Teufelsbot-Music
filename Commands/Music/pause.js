@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'pause',
   description: `Pause the player`,
   userPermissions: [],
+  cooldown: {global: 0, user: 2000},
   category: "Music",
 
   run: async (client, interaction) => {

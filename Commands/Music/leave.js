@@ -4,6 +4,7 @@ module.exports = new Command({
   name: 'leave',
   description: `Leave the current voice channel`,
   userPermissions: [],
+  cooldown: {global: 0, user: 3000},
   category: "Music",
 
   run: async (client, interaction) => {

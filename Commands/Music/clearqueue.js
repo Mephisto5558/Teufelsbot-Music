@@ -5,12 +5,13 @@ module.exports = new Command({
   name: 'clearqueue',
   description: `Clear all songs from a queue`,
   userPermissions: [],
+  cooldown: {global: 0, user: 5000},
   category: "Music",
   
-  run: async (client, interaction) => {
+  run: async (_, interaction) => {
     let queue = player.getQueue(interaction.guild.id)
     if (!queue.songs) return interaction.followUp(`There are no songs in the queue!`)
-    await queue.delete()
+    await queue.delete();
     interaction.followUp(`Queue cleared`)
   }
 })

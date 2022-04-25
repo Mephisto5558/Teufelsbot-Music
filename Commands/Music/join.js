@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'join',
   description: `Joins the voice channel you are in`,
   userPermissions: [],
+  cooldown: {global: 0, user: 3000},
   category: "Music",
 
   run: async (client, interaction) => {

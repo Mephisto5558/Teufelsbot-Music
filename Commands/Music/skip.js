@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'skip',
   description: `Skip a song`,
   userPermissions: [],
+  cooldown: {global: 0, user: 500},
   category: "Music",
 
   run: async (client, interaction) => {

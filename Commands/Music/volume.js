@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'volume',
   description: `Set the player volume`,
   userPermissions: [],
+  cooldown: {global: 0, user: 500},
   category: "Music",
   options : [{
     name : "vol",

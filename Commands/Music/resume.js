@@ -5,6 +5,7 @@ module.exports = new Command({
   name: 'resume',
   description: `Resume a Song`,
   userPermissions: [],
+  cooldown: {global: 0, user: 2000},
   category: "Music",
 
   run: async (client, interaction) => {

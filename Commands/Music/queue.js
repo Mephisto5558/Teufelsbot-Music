@@ -6,6 +6,7 @@ module.exports = new Command({
   name: 'queue',
   description: `Show the queue`,
   userPermissions: [],
+  cooldown: {global: 0, user: 2000},
   category: "Music",
 
   run: async (client, interaction) => {

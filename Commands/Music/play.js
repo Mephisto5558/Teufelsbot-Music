@@ -6,6 +6,7 @@ module.exports = new Command({
   name: 'play',
   description: `Play a song`,
   userPermissions: [],
+  cooldown: {global: 0, user: 1000},
   category: "Music",
   options: [
     {
