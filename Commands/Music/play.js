@@ -37,7 +37,7 @@ module.exports = new Command({
       });
       interaction0.delete();
       return;
-    };
+    }
     i=1;
     const search = await player.search(query, { type: "video", limit: 5 });
     search.forEach((result) => {
@@ -61,9 +61,13 @@ module.exports = new Command({
 				.setLabel(i.toString())
 				.setStyle('PRIMARY')
       )
-    };
+    }
 
-		await interaction.followUp({ embeds: [embed], components: [row] }).then(msg => {interaction0 = msg});
+		await interaction.followUp({ embeds: [embed], components: [row] })
+      .then(msg => {
+        interaction0 = msg;
+        msg.edit('Song selected!');
+      });
 
     const filter = i => i.member.id === interaction.member.id;
     const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
@@ -73,7 +77,8 @@ module.exports = new Command({
         member: member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
-      })
+      });
+      interaction2.delete();
 	  });
     
     collector.on('end', _ => {

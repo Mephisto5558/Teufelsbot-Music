@@ -15,7 +15,7 @@ client.on('interactionCreate', async interaction => {
   };
 
   if(client.cooldown.get(interaction.member.id)) {
-    client.cooldown.set(interaction.member.id, [ ...client.cooldowns.get(interaction.member.id), command.name ]);
+    client.cooldown.set(interaction.member.id, [ ...client.cooldown.get(interaction.member.id), command.name ]);
   }
   else client.cooldown.set(interaction.member.id, [ command.name ]);
 

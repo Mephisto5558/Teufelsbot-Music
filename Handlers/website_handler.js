@@ -3,7 +3,7 @@ const app = express();
 
 module.exports = (client) => {
 
-  websiteMessages = ['Hello World!', 'Lena is kuhl', 'Flo is kuhl', 'Vinni is auch kuhl', 'huhu', 'What are you doing here?', 'https://www.youtube.com/watch?v=xvFZjo5PgG0']
+  websiteMessages = ['Hilfe der Dominik will mich entführen ahhh\nLG Meph','Hello World!', 'Lena is kuhl', 'Flo is kuhl', 'Vinni is auch kuhl', 'huhu', 'What are you doing here?', 'https://www.youtube.com/watch?v=xvFZjo5PgG0']
   websiteMessage = websiteMessages[Math.floor(Math.random() * websiteMessages.length)]
 
   app.use(express.urlencoded({ extended: true }));
