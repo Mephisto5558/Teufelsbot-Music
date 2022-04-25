@@ -6,7 +6,7 @@ const fs = require("fs");
 fs.rmSync('./Logs/debug.log', {force: true});
 
 const client = new Client({ intents: 32767 });
-client.on('debug', debug => fs.appendFileSync('./Logs/debug.log', debug));
+client.on('debug', debug => fs.appendFileSync('./Logs/debug.log', debug + `\n`));
 
 module.exports = client;
 
