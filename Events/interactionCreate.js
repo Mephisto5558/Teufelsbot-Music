@@ -12,7 +12,7 @@ client.on('interactionCreate', async interaction => {
     if(client.cooldown.get(interaction.member.id).indexOf(command.name) > -1) isOnCooldown = true;
     else if(client.cooldown.get('global').indexOf(command.name) > -1) isOnCooldown = true;
     if(isOnCooldown) {
-      return interaction.reply({ content: 'This command is on cooldown!', ephemeral: true });
+      //return interaction.reply({ content: 'This command is on cooldown!', ephemeral: true });
     };
   };
 
