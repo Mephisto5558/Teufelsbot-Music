@@ -77,8 +77,7 @@ module.exports = new Command({
         member: member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
-      });
-      interaction2.delete();
+      })
 	  });
     
     collector.on('end', _ => {

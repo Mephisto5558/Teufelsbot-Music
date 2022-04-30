@@ -8,12 +8,10 @@ client.on('interactionCreate', async interaction => {
   const command = client.commands.get(interaction.commandName);
   if(!command) return;
 
-  if(client.cooldown.get('global') || client.cooldown.get(interaction.member.id)) {
-    if(client.cooldown.get(interaction.member.id).indexOf(command.name) > -1) isOnCooldown = true;
-    else if(client.cooldown.get('global').indexOf(command.name) > -1) isOnCooldown = true;
-    if(isOnCooldown) {
+  if(client.cooldown.get(interaction.member.id)?.indexOf(command.name) > -1) isOnCooldown = true;
+  else if(client.cooldown.get('global')?.indexOf(command.name) > -1) isOnCooldown = true;
+  if(isOnCooldown) {
       //return interaction.reply({ content: 'This command is on cooldown!', ephemeral: true });
-    };
   };
 
   if(client.cooldown.get(interaction.member.id)) {
