@@ -2,8 +2,8 @@ console.time('Starting time');
 console.log("Starting...");
 
 const { Client, Collection } = require("discord.js");
-
 const fs = require("fs");
+
 fs.rmSync('./Logs/debug.log', { force: true });
 
 const client = new Client({ intents: 32767 });
@@ -18,7 +18,6 @@ client.events = new Collection();
 client.cooldown = new Map();
 client.commands = new Collection();
 client.categories = fs.readdirSync('./Commands/');
-client.slashCommandList = [];
 client.sleep = function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
@@ -37,7 +36,8 @@ fs.readdirSync("./Handlers").filter((file) => file.endsWith('_handler.js')).forE
 });
 
 
-client.login(process.env.token).then(console.log('Logged in'));
+client.login(process.env.token)
+  .then(client.log('Logged in'));
 
 process.on('exit', async () => {
   client.destroy();

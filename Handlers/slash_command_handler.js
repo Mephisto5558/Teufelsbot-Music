@@ -51,6 +51,7 @@ module.exports = async client => {
         options: command.options
       })
       .then(_ => {
+        client.commands.set(command.name, command);
         client.log(`Registered Slash Command ${command.name}`);
         commandCount++
       })
@@ -65,7 +66,7 @@ module.exports = async client => {
 
   client.log(`Loaded ${commandCount} Slash commands\n`);
   
-  client.events.set('interactionCreate', event);
+  client.on('interactionCreate', event.bind(null, client))
   client.log(`Loaded Event interactionCreate`);
   client.log(`Ready to receive slash commands\n`);
 

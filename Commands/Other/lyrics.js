@@ -18,7 +18,8 @@ module.exports = new Command({
   }],
 
   run: async (_, interaction) => {
-
+    await interaction.deferReply();
+    
     let embed = new MessageEmbed()
       .setColor('RANDOM')
       .setFooter({
