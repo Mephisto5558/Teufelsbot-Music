@@ -1,4 +1,5 @@
-console.log("Starting...")
+console.time('Starting time');
+console.log("Starting...");
 
 const { Client, Collection } = require("discord.js");
 
@@ -18,24 +19,17 @@ client.cooldown = new Map();
 client.commands = new Collection();
 client.categories = fs.readdirSync("./Commands/");
 client.slashCommandList = [];
-client.sleep = function sleep(milliseconds) { 
+client.sleep = function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
 
-//const client2 = client;
-//client2.prefix = '.2';
-//client2.userID = '964315306015211560'; 
-
-fs.readdirSync("./Handlers").filter((file) => file.endsWith("_handler.js")).forEach((handler) => { 
-  require(`./Handlers/${handler}`)(client);  //require(`./Handlers/${handler}`)(client2);
+fs.readdirSync("./Handlers").filter((file) => file.endsWith("_handler.js")).forEach((handler) => {
+  require(`./Handlers/${handler}`)(client);
 });
 
 
-client.login(process.env.token) .then(console.log("Logged in (1)"));
+client.login(process.env.token).then(console.log("Logged in"));
 
-//client2.login(process.env.token2)
-//  .then(console.log("Logged in (2)")); 
-
-process.on('exit', async() => {
-  client.destroy();   //client2.destroy();
+process.on('exit', async () => {
+  client.destroy();
 });
