@@ -9,7 +9,7 @@ module.exports = new Command({
   description: `searches song lyrics on google`,
   userPermissions: [],
   cooldown: { global: 0, user: 0 },
-  category: "Other",
+  category: "Information",
   options: [{
     name: 'song',
     description: 'The title of the song',
@@ -28,7 +28,7 @@ module.exports = new Command({
       });
 
     let query = interaction.options.getString('SONG');
-    let lyrics = lyricFinder(lyrics);
+    let lyrics = lyricFinder(query);
 
     if (!lyrics) {
       embed.setTitle('Lyric Search')
