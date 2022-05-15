@@ -1,23 +1,3 @@
-module.exports = (client) => {
-  const fs = require('fs');
-  let commandCount = 0;
-  
-  fs.readdirSync("./Commands").forEach(cmd => {
-    fs.readdirSync(`./Commands/${cmd}/`).filter((file) => file.endsWith(".js")).forEach((command) => {
-      let pull = require(`../Commands/${cmd}/${command}`);
-      if (pull.name) {
-        if(pull.disabled) return;
-        client.commands.set(pull.name, pull);
-        client.slashCommandList.push(pull)
-        console.log(`Loaded Slash Command ${pull.name}`)
-        commandCount++
-      }
-      if (pull.aliases && Array.isArray(pull.aliases)) pull.aliases.forEach(alias => client.aliases.set(alias, pull.name));
-    });
-  });
-  
-  console.log(`${commandCount} Slash Commands loaded\n`);
-}
 const
   fs = require('fs'),
   { Client } = require('discord-slash-commands-client'),
@@ -32,7 +12,7 @@ function work(option) {
   if(!option.type) return option.type = 1
   
   if(/[A-Z]/.test(option.name)) {
-    console.log(errorColor(`${option.name} IS UPPERCASE! UPPERCASE IS INVALID! Fixing.`))
+    client.log(errorColor(`${option.name} IS UPPERCASE! UPPERCASE IS INVALID! Fixing.`))
     option.name = option.name.toLowerCase();
   };
 
@@ -55,13 +35,12 @@ module.exports = async client => {
   fs.readdirSync('./Commands').forEach(subFolder => {
     fs.readdirSync(`./Commands/${subFolder}/`).filter(file => file.endsWith('.js')).forEach(file => {
       let command = require(`../Commands/${subFolder}/${file}`);
-      if(!command.slashCommand || command.disabled || (client.botType == 'dev' && !command.beta)) return;
+      if(command.disabled) return;
 
       if(Array.isArray(command.options))
         command.options.forEach(option => { work(option) });
       else if(command.options) work(commandOption.options);
       commands.push(command)
-      client.slashCommands.set(command.name, command)
     })
   });
 
@@ -81,7 +60,7 @@ module.exports = async client => {
         if(err.response.data.errors)
           console.error(errorColor(JSON.stringify(err.response.data, null, 2)));
       });
-    if(commands[commandCount + 1]) await client.functions.sleep(10000);
+    if(commands[commandCount + 1]) await client.sleep(10000);
   };
 
   client.log(`Loaded ${commandCount} Slash commands\n`);

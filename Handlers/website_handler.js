@@ -11,7 +11,7 @@ module.exports = (client) => {
   app.use(express.json());
   app.set('json spaces', 2);
   
-  app.listen(1000, () => { console.log(`Website is online\n`) });
+  app.listen(1000, () => { client.log(`Website is online\n`) });
   app.all('*', manage);
 
   app.get('*', (_, res) => {
@@ -27,7 +27,7 @@ module.exports = (client) => {
 
   app.post('/ping', (req, res) => {
     if (req.body.token != process.env.WebCommandKey) return res.sendStatus(403);
-    console.log("Ping initiated from web server");
+    client.log("Ping initiated from web server");
     data = client.functions.ping;
     res.send(data);
   });
