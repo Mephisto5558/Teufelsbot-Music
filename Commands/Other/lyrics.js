@@ -32,7 +32,7 @@ module.exports = new Command({
 
     if (!lyrics) {
       embed.setTitle('Lyric Search')
-      embed.setDescription(`No Lyrics found for ${query}`);
+      embed.setDescription(`No Lyrics found for \`${query}\``);
       return interaction.editReply({ embeds: [embed] });
     }
     
