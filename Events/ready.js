@@ -1,2 +1,4 @@
-console.log('Ready to receive prefix commands');
-client.user.setActivity({ name: "music | /help", type: "PLAYING" });
+module.exports = client => {
+  client.log('Ready to receive prefix commands');
+  client.user.setActivity({ name: "music | /help", type: "PLAYING" });
+}

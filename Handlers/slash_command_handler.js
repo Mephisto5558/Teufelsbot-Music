@@ -48,7 +48,7 @@ function work(option) {
 
 module.exports = async client => {
   const commandClient = new Client(
-    client.keys.token,
+    process.env.token,
     client.userID
   );
 
@@ -85,13 +85,13 @@ module.exports = async client => {
   };
 
   client.log(`Loaded ${commandCount} Slash commands\n`);
-
-  client.on('interactionCreate', event.bind(null, client))
+  
+  client.events.set('interactionCreate', event);
   client.log(`Loaded Event interactionCreate`);
   client.log(`Ready to receive slash commands\n`);
 
   do {
-    await client.functions.sleep(100);
+    await client.sleep(100);
   } while(!client.readyAt)
   
   client.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.guilds.cache.map(g => g.memberCount).reduce((a, c) => a + c)} users.\n`);

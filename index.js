@@ -17,18 +17,27 @@ client.owner = '691550551825055775';
 client.events = new Collection();
 client.cooldown = new Map();
 client.commands = new Collection();
-client.categories = fs.readdirSync("./Commands/");
+client.categories = fs.readdirSync('./Commands/');
 client.slashCommandList = [];
 client.sleep = function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
+client.log = function log(...data) {
+  let date = new Date().toLocaleString('en-GB', {
+    hour12: false,
+    hour:   '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  console.log(`[${date}] ${data}`)
+};
 
-fs.readdirSync("./Handlers").filter((file) => file.endsWith("_handler.js")).forEach((handler) => {
+fs.readdirSync("./Handlers").filter((file) => file.endsWith('_handler.js')).forEach((handler) => {
   require(`./Handlers/${handler}`)(client);
 });
 
 
-client.login(process.env.token).then(console.log("Logged in"));
+client.login(process.env.token).then(console.log('Logged in'));
 
 process.on('exit', async () => {
   client.destroy();
