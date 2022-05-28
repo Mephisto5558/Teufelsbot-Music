@@ -49,7 +49,7 @@ module.exports = (client) => {
       
       res.send({total: client.uptime, formatted: `${days}:${hours}:${minutes}:${seconds}`});
     }
-    else { next() };
-  };
+    else { next() }
+  }
 
 }
