@@ -15,7 +15,7 @@
     "@distube/ytdl-core": "^4.11.3",
     "chalk": "^4.1.2",
     "discord-api-types": "^0.32.1",
-    "discord-slash-commands-client": "^1.2.2",
+    "discord-slash-commands-client-fork": "^1.2.2",
     "discord.js": "^13.3.0",
     "distube": "^3.3.3",
     "express": "^4.17.3",
