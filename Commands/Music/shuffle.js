@@ -1,16 +1,15 @@
-const { Command } = require("reconlx");
-const player = require('../../Handlers/music_player');
+const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'shuffle',
-  description: `Shuffles the queue`,
-  userPermissions: [],
-  cooldown: {global:0, user: 'default'},
-  category: "Music",
+  description: 'Shuffles the queue',
+  permissions: { client: [], user: [] },
+  cooldown: { client: 0, user: 0 },
+  category: 'Music',
 
-  run: async (_, interaction) => {
-    let queue = player.getQueue(interaction.guild.id)
-    queue.shuffle
-    interaction.followUp('Shuffled the queue!')
+  run: async (client, interaction) => {
+    const queue = client.musicPlayer.getQueue(interaction.guild.id);
+    await queue.shuffle();
+    interaction.editReply('Shuffled the queue!');
   }
 })

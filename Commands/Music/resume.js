@@ -1,18 +1,19 @@
-const { Command } = require("reconlx");
-const player = require('../../Handlers/music_player')
+const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'resume',
-  description: `Resume a Song`,
-  userPermissions: [],
-  cooldown: {global: 0, user: 2000},
-  category: "Music",
+  description: 'Resumes the player',
+  permissions: { client: [], user: [] },
+  cooldown: { client: 0, user: 2000 },
+  category: 'Music',
 
   run: async (client, interaction) => {
-    let queue = player.getQueue(interaction.guild.id)
-    if (!queue?.songs) return interaction.followUp(`There are no Songs in the queue`)
-    if (!queue.paused) return interaction.followUp(`The Player is not paused!`)
-    await queue.resume()
-    interaction.followUp(`Player resumed`)
+    const queue = client.musicPlayer.getQueue(interaction.guild.id);
+
+    if (!queue?.songs) return interaction.editReply('There are no Songs in the queue!');
+    if (!queue.paused) return interaction.editReply('The Player is not paused!');
+
+    await queue.resume();
+    interaction.editReply('Player resumed');
   }
 })

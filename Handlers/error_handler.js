@@ -1,43 +1,48 @@
-module.exports = (client) => {
-  
+const errorColor = require('chalk').bold.red;
+
+function sendErrorMsg(errorName, client, msg) {
+  if (!msg) msg =
+    'A unexpected error occurred, please message the dev.\n' +
+    `Error Type: \`${errorName || 'unknown'}\``;
+
+  if (client.message) client.message.channel.send(msg);
+  else if (client.interaction) client.interaction.channel.send(msg);
+}
+
+module.exports = client => {
+
   process
     .on('unhandledRejection', (err, origin) => {
-      if(err.response?.status === 429) {
-        console.error(`[Error Handling] :: Hit a Rate Limit`);
-        console.error(origin);
-        return console.error(`\n`);
-      };
-      console.error(' [Error Handling] :: Unhandled Rejection/Catch')
-      console.error(err, origin);
-      console.error(`\n`)
-      
-      if(!err.errorCode) err.errorCode = 'unknown'
-      if(err.name == 'DiscordAPIError') client.interaction?.channel.send("A Discord API Error occured, please try again and ping the dev if this keeps happening.");
-      else client.interaction?.channel.send(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
+      console.error(errorColor(' [Error Handling] :: Unhandled Rejection/Catch'));
+      console.error(err, origin + '\n');
+
+      if (err.name === 'DiscordAPIError')
+        sendErrorMsg(null, client, 'An Discord API Error occurred, please try again and message the dev if this keeps happening.');
+      else sendErrorMsg(err.name, client);
     })
-  
+
     .on('uncaughtException', (err, origin) => {
-      console.error(' [Error Handling] :: Uncaught Exception/Catch');
-      console.error(err, origin);
-      console.error(`\n`);
-      
-      if(!err.errorCode) err.errorCode = 'unknown'
-      client.interaction?.channel.send(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
+      client.log(errorColor(' [Error Handling] :: Uncaught Exception/Catch'));
+      console.error(err, origin + '\n');
+
+      sendErrorMsg(err.name, client);
     })
-  
+
     .on('uncaughtExceptionMonitor', (err, origin) => {
-      console.error(' [Error Handling] :: Uncaught Exception/Catch (MONITOR)');
-      console.error(err, origin);
-      console.error(`\n`);
-      
-      if(!err.errorCode) err.errorCode = 'unknown'
-      client.interaction?.channel.send(`A unknown error occurred, please ping the dev.\nError Code: \`${err.errorCode}\``);
+      console.error(errorColor(' [Error Handling] :: Uncaught Exception/Catch (MONITOR)'))
+      console.error(err, origin + '\n');
+
+      sendErrorMsg(err.name, client);
     });
-  
+
   client
-    .on('rateLimit', (info) => {
-      console.error(`Rate limit hit ${info.timeDifference ? info.timeDifference : info.timeout ? info.timeout: 'Unknown timeout '}`)
-      client.interaction?.followUp(`Rate limit hit ${info.timeDifference ? info.timeDifference : info.timeout ? info.timeout: 'Unknown timeout '}`)
+    .on('rateLimit', info => {
+      const msg = `Rate limit hit, please wait ${Math.floor(info.timeout / 1000)}s before retrying.`
+      console.error(errorColor(msg));
+      console.error(info);
+      console.error('\n');
+
+      sendErrorMsg(info.name, client, msg);
     });
 
 }

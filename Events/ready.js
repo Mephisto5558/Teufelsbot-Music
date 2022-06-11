@@ -1,4 +1,3 @@
-module.exports = client => {
-  client.log('Ready to receive prefix commands');
-  client.user.setActivity({ name: "music | /help", type: "PLAYING" });
+module.exports = async client => {
+  client.user.setActivity({ name: 'music | /help', type: 'PLAYING' });
 }

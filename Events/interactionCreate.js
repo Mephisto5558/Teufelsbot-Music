@@ -1,72 +1,41 @@
+const { MessageEmbed } = require('discord.js');
+const { colors } = require('../Settings/embed.json');
+
 module.exports = async (client, interaction) => {
-  const args = [];
-  let userSleepTime;
-  let globalSleepTime;
-  //let isOnCooldown = false;
-  const command = client.commands.get(interaction.commandName);
-  if(!command) return;
-/*
-  if(client.cooldown.get(interaction.member.id)?.indexOf(command.name) > -1) isOnCooldown = true;
-  else if(client.cooldown.get('global')?.indexOf(command.name) > -1) isOnCooldown = true;
-  if(isOnCooldown) {
-    return interaction.reply({ content: 'This command is on cooldown!', ephemeral: true });
-  };
 
-  if(client.cooldown.get(interaction.member.id)) {
-    client.cooldown.set(interaction.member.id, [...client.cooldown.get(interaction.member.id), command.name]);
-  } else client.cooldown.set(interaction.member.id, [command.name]);
-*/
+  let command = client.slashCommands.get(interaction.commandName);
+  if (!command) return;
 
-  if(interaction.isCommand()) {
-    if(command.category != 'Information') await interaction.deferReply();
+  const filter = !interaction.member.voice.channel && command.category != 'Information' && interaction.commandName != 'leave';
+    if(filter) return interaction.reply({ content: `You need to join a voice channel first!`, ephemeral: true });
 
-    if(!interaction.member.permissions.has(command.userPermissions && ['SEND_MESSAGES'])) {
-      return interaction.followUp(`You don't have ${command.userPermissions} or SEND_MESSAGES permission to run this command..`);
-    }
+  if (interaction.isCommand()) {
+    command.permissions.user.push('SEND_MESSAGES');
+    command.permissions.client.push('SEND_MESSAGES');
 
-    let filter = !interaction.member.voice.channel && command.category != 'Information' && interaction.commandName != 'leave'
-    if(filter) return interaction.followUp(`You need to join a voice channel first!`);
+    let embed = new MessageEmbed()
+      .setTitle('Insufficient Permissions')
+      .setColor(colors.discord.RED);
 
-    command.run(client, interaction, args);
-  }
+      if (!interaction.member.permissions.has(command.permissions.user)) {
+        embed.setDescription(
+          `Your are missing the following permissions to run this command:\n\`` +
+          interaction.member.permissions.missing(command.permissions.user).join('`, `') + '`'
+        )
+      }
+    
+      if (!interaction.guild.me.permissions.has(command.permissions.client)) {
+        embed.setDescription(
+          `I am missing the following permissions to run this command:\n\`` +
+          interaction.guild.me.permissions.missing(command.permissions.client).join('`, `') + '`'
+        )
+      }
 
-  if(interaction.isContextMenu()) {
+    if (embed.description) return interaction.reply({ embeds: [embed], ephemeral: true });
+    if (!command.noDefer) await interaction.deferReply({ ephemeral: command.ephemeralDefer || false });
+
     client.interaction = interaction;
-    command.run(client, interaction, args);
+    await command.run(client, interaction);
+    return client.interaction = null;
   }
-
-  if(!command.cooldown.user || command.cooldown.user === 'default') {
-    command.cooldown.user = 200
-  };
-
-  if(command.cooldown.global > command.cooldown.user) {
-    userSleepTime = false
-  };
-
-  if(!command.cooldown.global || command.cooldown.global === 'default') {
-    globalSleepTime = false
-  } else globalSleepTime = command.cooldown.global;
-
-  if(userSleepTime) {
-    setTimeout(_ => {
-      const array = client.cooldown.get(interaction.member.id);
-      const index = array.indexOf(command.name);
-      if(index > -1) {
-        array.splice(index, 1);
-        client.cooldown.set(interaction.member.id, array);
-      }
-    }, userSleepTime)
-  };
-
-  if(globalSleepTime) {
-    setTimeout(_ => {
-      const array = client.cooldown.get('global');
-      const index = array.indexOf(command.name);
-      if(index > -1) {
-        array.splice(index, 1);
-        client.cooldown.set('global', array);
-      }
-    }, globalSleepTime)
-  }
-
 }

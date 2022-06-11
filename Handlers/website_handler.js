@@ -1,55 +1,85 @@
-const express = require("express");
-const app = express();
+const
+  express = require('express'),
+  favicon = require('serve-favicon'),
+  rateLimit = require('express-rate-limit'),
+  errorColor = require('chalk').bold.red,
+  path = require('path'),
+  app = express(),
+  router = express.Router(),
+  websiteMessages = [
+    'Hello World!', 'Lena is kuhl',
+    'Flo is kuhl', 'Vinni is auch kuhl',
+    'huhu', 'What are you doing here?',
+    'https://www.youtube.com/watch?v=xvFZjo5PgG0'
+  ];
 
-module.exports = (client) => {
+module.exports = async client => {
+  if (client.botType == 'dev') return client.log('Disabled website loading due to dev version.');
 
-  websiteMessages = ['Hilfe der Dominik will mich entführen ahhh\nLG Meph','Hello World!', 'Lena is kuhl', 'Flo is kuhl', 'Vinni is auch kuhl', 'huhu', 'What are you doing here?', 'https://www.youtube.com/watch?v=xvFZjo5PgG0']
-  websiteMessage = websiteMessages[Math.floor(Math.random() * websiteMessages.length)]
+  const websiteMessage = websiteMessages[Math.floor(Math.random() * websiteMessages.length)];
 
-  app.use(express.urlencoded({ extended: true }));
-  app.use('/website.ico', express.static('./website.ico'));
-  app.use(express.json());
-  app.set('json spaces', 2);
-  
-  app.listen(1000, () => { client.log(`Website is online\n`) });
-  app.all('*', manage);
+  app
+    .use(favicon('Website/favicon.ico'))
+    .use(express.json())
+    .use(rateLimit({
+      windowMs: 1 * 60 * 1000, // 1 minute
+      max: 20 // 20 requests per minute
+    }))
+    .use(router)
+    .use(function (err, _, res, _) {
+      console.error(errorColor(' [Error Handling] :: Unhandled Website Error/Catch'));
+      console.error(err.stack);
+      res.status(500).send('Something broke!');
+    })
+    .set('json spaces', 2)
 
-  app.get('*', (_, res) => {
-    res.send(websiteMessage);
-  });
-  
-  app.post('/restart', (req, res) => {
-    if (req.body.token != process.env.WebCommandKey) return res.sendStatus(403);
-    res.send(true);
-    console.error("Restart initiated from web server");
-    process.exit(0)
-  });
+    .listen(8000, _ => {
+      client.log(`Website is online\n`)
+    });
 
-  app.post('/ping', (req, res) => {
-    if (req.body.token != process.env.WebCommandKey) return res.sendStatus(403);
-    client.log("Ping initiated from web server");
-    data = client.functions.ping;
-    res.send(data);
-  });
+  router.all('*', async (req, res) => {
+    if (req.method.toLowerCase() == 'get') {
+      switch (req.path) {
+        case '/uptime':
+          let totalSeconds = client.uptime / 1000;
+          let days = Math.floor(totalSeconds / 86400).toString().padStart(2, 0);
+          totalSeconds %= 86400;
+          let hours = Math.floor(totalSeconds / 3600).toString().padStart(2, 0);
+          totalSeconds %= 3600;
+          let minutes = Math.floor(totalSeconds / 60).toString().padStart(2, 0);
+          let seconds = Math.floor(totalSeconds % 60).toString().padStart(2, 0);
 
-  
-  function manage(req, res, next) {
-    if(req.path === '/uptime' && req.method.toLowerCase() == 'get') {
-      let totalSeconds = (client.uptime / 1000);
-      let days = Math.floor(totalSeconds / 86400);
-      totalSeconds %= 86400;
-      let hours = Math.floor(totalSeconds / 3600);
-      totalSeconds %= 3600;
-      let minutes = Math.floor(totalSeconds / 60);
-      let seconds = Math.floor(totalSeconds % 60);
-      if(days.toString().length === 1) days = `0${days}`;
-      if(hours.toString().length === 1) hours = `0${hours}`;
-      if(minutes.toString().length === 1) minutes = `0${minutes}`;
-      if(seconds.toString().length === 1) seconds = `0${seconds}`;
-      
-      res.send({total: client.uptime, formatted: `${days}:${hours}:${minutes}:${seconds}`});
+          res.send({
+            total: client.uptime,
+            formatted: `${days}:${hours}:${minutes}:${seconds}`
+          });
+          break;
+
+        case '/privacy':
+          res.sendFile(path.join(__dirname + '/../Website/privacy_policy.html'));
+          break;
+
+        default: res.send(websiteMessage);
+      }
     }
-    else { next() }
-  }
+    else if (req.method.toLowerCase() == 'post') {
+      if (req.body.token != client.keys.WebCommandKey) return res.sendStatus(403);
+
+      switch (req.path) {
+        case '/restart':
+          res.send(true);
+          console.error('Restart initiated from web server');
+          process.exit(0);
+
+        /*case '/ping': //Coming soon
+          client.log('Ping initiated from web server');
+          let data = await client.functions.ping;
+          res.send(data);
+          break;
+        */
+        default: res.status(404);
+      }
+    }
+  });
 
 }

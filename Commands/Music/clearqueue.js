@@ -1,17 +1,16 @@
-const { Command } = require("reconlx");
-const player = require('../../Handlers/music_player')
+const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'clearqueue',
-  description: `Clear all songs from a queue`,
-  userPermissions: [],
-  cooldown: {global: 0, user: 5000},
-  category: "Music",
-  
+  description: 'Clear all songs from thr queue',
+  permissions: { client: [], user: [] },
+  cooldown: { client: 0, user: 5000 },
+  category: 'Music',
+
   run: async (_, interaction) => {
-    let queue = player.getQueue(interaction.guild.id)
-    if (!queue.songs) return interaction.followUp(`There are no songs in the queue!`)
-    await queue.delete();
-    interaction.followUp(`Queue cleared`)
+    const queue = client.musicPlayer.getQueue(interaction.guild.id);
+
+    if (queue.songs) await queue.delete();
+    interaction.editReply('Queue cleared');
   }
 })
