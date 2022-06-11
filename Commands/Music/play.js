@@ -24,9 +24,7 @@ module.exports = new Command({
   ],
 
   run: async (client, interaction) => {
-    const
-      query = interaction.options.getString('query'),
-      member = interaction.guild.members.cache.get(interaction.member.id);
+    const query = interaction.options.getString('query');
 
     let
       rows = [],
@@ -35,31 +33,32 @@ module.exports = new Command({
       interaction0,
       i = 1;
 
-    if (/^(https?:\/\/)?(www.)?(youtube.com || youtu.be)/i.test(query)) {
-      return await client.musicPlayer.play(member.voice.channel, query, {
-        member: member,
+    if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
+      return await client.musicPlayer.play(interaction.member.voice.channel, query, {
+        member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
       })
     }
 
-    const search = await client.musicPlayer.search(query, { type: "video", limit: 5 });
+    const search = await client.musicPlayer.search(query, { type: 'video', limit: 5 });
 
     for (const result of search) {
+      if(results.join().length > 4096) {
+        results.pop();
+        break;
+      }
+
       if (result.name.length > 150) result.name = `${result.name.substring(0, 147)}...`;
 
       results.push(`${i++}. [${result.name}](${result.url}) by ${result.uploader.name}`);
-    }
-
-    while (results.join().length > 4096) {
-      results.pop();
     }
 
     const embed = new MessageEmbed()
       .setTitle('Please select a song. You have 30 seconds.')
       .setDescription(results.join('\n'));
 
-    for (let i = 1; i <= results.length; i++) {
+    for (let i = 1; i < results.length; i++) {
       if (i == 6) {
         rows.push(row);
         row = new MessageActionRow()
@@ -72,14 +71,14 @@ module.exports = new Command({
     }
 
     rows.push(row);
-    row = new MessageActionRow()
-      .addComponents(new MessageButton()
-        .setCustomId('cancel')
-        .setLabel('Cancel')
-        .setStyle('DANGER')
-      );
-
-    rows.push(row);
+    rows.push(
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setCustomId('cancel')
+          .setLabel('Cancel')
+          .setStyle('DANGER')
+      )
+    );
 
     await interaction.editReply({ embeds: [embed], components: rows })
       .then(msg => interaction0 = msg);
@@ -101,8 +100,8 @@ module.exports = new Command({
 
       if (interaction2.customId == 'cancel') return;
 
-      await client.musicPlayer.play(member.voice.channel, results[interaction2.customId - 1], {
-        member: member,
+      await client.musicPlayer.play(interaction.member.voice.channel, results[interaction2.customId - 1], {
+        member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
       })

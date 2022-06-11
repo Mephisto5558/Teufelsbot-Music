@@ -4,32 +4,32 @@ module.exports = async (client) => {
   client.musicPlayer = require('./music_player')(client);
 
   client.musicPlayer
-    .on('addSong', (queue, song) => {
-      queue.textChannel.send({
+    .on('addSong', (_, song) => {
+     client.interaction.editReply({
         embeds: [ new MessageEmbed()
           .setDescription(`Added [${song.name}](${song.url}) - \`${song.formattedDuration}\`\nRequested by: ${song.user}`)
         ]
       })
     })
 
-    .on('addList', (queue, playlist) => {
-      queue.textChannel.send({
+    .on('addList', (_, playlist) => {
+      client.interaction.editReply({
         embeds: [ new MessageEmbed()
           .setDescription(`Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to the queue by ${playlist.user}`)
         ]
       })
     })
 
-    .on('playSong', (queue, song) => {
-      queue.textChannel.send({
+    .on('playSong', (_, song) => {
+      client.interaction.editReply({
         embeds: [ new MessageEmbed()
           .setDescription(`Now playing:\n [${song.name}](${song.url}) - \`${song.formattedDuration}\`\nRequested by: ${song.user}`)
         ]
       })
     })
 
-    .on('disconnect', queue => {
-      queue.textChannel.send({
+    .on('disconnect', _ => {
+      client.interaction.editReply({
         embeds: [ new MessageEmbed()
           .setDescription(`Nothing left to play, leaving channel`)
         ]
@@ -41,13 +41,13 @@ module.exports = async (client) => {
       queue.volume = 100;
     })
 
-    .on('searchNoResult', message => {
-      message.channel.send('No result found!');
+    .on('searchNoResult', _ => {
+      client.interaction.editReply('No result found!');
     })
 
     .on('searchResult', (_, result) => {
       let i = 0
-      client.interaction.followUp(
+      client.interaction.editReply(
         `**Choose an option from below**\n${result
           .map(song => `**${i++}**. ${song.name} - \`${song.formattedDuration}\``)
           .join('\n')
