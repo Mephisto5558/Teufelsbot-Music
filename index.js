@@ -30,7 +30,7 @@ client.log = function log(data) {
   console.log(`[${date}] ${data}`)
 };
 
-for(const handler of fs.readdirSync('./Handlers').filter(file => file.endsWith('_handler.js'))) {
+for(const handler of fs.readdirSync('./Handlers').filter(file => file.endsWith('.js'))) {
   require(`./Handlers/${handler}`)(client);
 }
 
