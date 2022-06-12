@@ -11,6 +11,8 @@ module.exports = new Command({
 
   run: async (client, interaction) => {
     const queue = client.musicPlayer.getQueue(interaction.guild.id);
+    const song = queue.songs[0];
+
     if (!queue?.songs) return interaction.editReply('There are no songs in the queue!')
 
     const description = queue.songs.map((song, index) => {
@@ -21,7 +23,7 @@ module.exports = new Command({
       .setTitle('Queue')
       .setDescription(description.substring(0, 4096))
       .addField('Queue Length', queue.songs.formattedDuration || '0:00', true)
-      .addField('Current Song', queue.songs[0], true);
+      .addField('Current Song', `[${song.name}](${song.url}) ${song.info.uploader?`by ${song.info.uploader}`:''}`, true);
 
     interaction.editReply({ embeds: [embed] });
   }

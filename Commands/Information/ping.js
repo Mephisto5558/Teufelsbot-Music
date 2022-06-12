@@ -31,16 +31,16 @@ module.exports = new Command({
 
       interaction.editReply({ embeds: [embed] });
 
-      let pings = [], i;
+      let pings = []
 
-      for (i = 0; i <= 59; i++) {
+      for (let i = 0; i <= 59; i++) {
         pings.push(client.ws.ping);
         await client.functions.sleep(1000);
       }
 
       pings.sort((a, b) => a - b);
 
-      const averagePing = Math.round((pings.reduce((a, b) => a + b) / i) * 100) / 100;
+      const averagePing = Math.round((pings.reduce((a, b) => a + b) / 60) * 100) / 100;
 
       embed
         .setTitle('Ping')

@@ -14,12 +14,13 @@ module.exports = new Command({
 
   run: (client, interaction) => {
     const queue = client.musicPlayer.getQueue(interaction.guild.id);
+    const song = queue.songs[0];
 
     const embed = new MessageEmbed()
       .setTitle('Now playing')
       .setDescription(
         `I am currently playing\n` +
-        `[${queue.songs[0].name}](${queue.songs[0].url}) \`${song.formattedDuration - queue.formattedCurrentTime}:${queue.formattedCurrentTime}\``
+        `[${song.name}](${song.url}) \`${song.formattedDuration - queue.formattedCurrentTime}:${queue.formattedCurrentTime}\``
       )
       .setColor(colors.discord.BURPLE);
 
