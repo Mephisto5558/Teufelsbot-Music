@@ -21,7 +21,7 @@ module.exports = new Command({
   }],
 
   run: async (client, message, interaction) => {
-    if (message) return client.functions.reply('Please use `/ping`!', message, 10000);
+    if (message) return message.reply('Please use `/ping`!');
 
     if (interaction.options?.getBoolean('average')) {
       const embed = new MessageEmbed()

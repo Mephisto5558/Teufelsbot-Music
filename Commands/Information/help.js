@@ -54,7 +54,7 @@ module.exports = new Command({
       if (category == 'OWNER-ONLY') continue;
 
       for (let command of client.slashCommands) {
-        i = 0;
+        let i = 0;
         command = command[1];
         if (command.category.toUpperCase() != category.toUpperCase() || command.hideInHelp || command.disabled) continue;
     
