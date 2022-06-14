@@ -53,17 +53,17 @@ module.exports = new Command({
       const category = client.categories[i].toUpperCase();
       if (category == 'OWNER-ONLY') continue;
 
+      let a = 0;
       for (let command of client.slashCommands) {
-        let i = 0;
         command = command[1];
         if (command.category.toUpperCase() != category.toUpperCase() || command.hideInHelp || command.disabled) continue;
     
-        if (i % 5 == 0) cmdList += `\`${command.name}\`\n> `
+        if (a % 5 == 0) cmdList += `\`${command.name}\`\n> `
         else cmdList += `\`${command.name}\`, `
         i++
       }
 
-      if (i == 1) continue;
+      if (a == 1) continue;
 
       if (cmdList.endsWith(', ')) cmdList = cmdList.slice(0, -2);
       
