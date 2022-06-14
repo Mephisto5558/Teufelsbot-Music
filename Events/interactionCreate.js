@@ -6,7 +6,7 @@ module.exports = async (client, interaction) => {
   let command = client.slashCommands.get(interaction.commandName);
   if (!command) return;
 
-  const filter = !interaction.member.voice.channel && command.category != 'Information' && interaction.commandName != 'leave';
+  const filter = !interaction.member.voice.channel && !['information', 'useful'].includes(command.category.toLowerCase()) && interaction.commandName != 'leave';
   if (filter) return interaction.reply({ content: `You need to join a voice channel first!`, ephemeral: true });
 
   if (interaction.isCommand()) {
