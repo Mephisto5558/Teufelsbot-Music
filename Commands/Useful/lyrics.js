@@ -25,7 +25,7 @@ module.exports = new Command({
     }
   ],
 
-  run: async (_, __, interaction) => {
+  run: async (_, interaction) => {
     const
       song = interaction.options.getString('song'),
       embed = new MessageEmbed()
