@@ -27,7 +27,9 @@
     "mongoose": "^6.3.6",
     "reconlx": "^2.5.1",
     "serve-favicon": "^2.5.0",
-    "superagent": "^7.1.6"
+    "songlyrics": "^2.4.1",
+    "superagent": "^7.1.6",
+    "yt-search": "^2.10.3"
   },
   "devDependencies": {
     "node": "^17.1.0"
