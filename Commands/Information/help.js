@@ -19,7 +19,7 @@ module.exports = new Command({
   }],
 
   run: (client, interaction) => {
-     const query = interaction.options?.getString('command')?.toLowerCase();
+    const query = interaction.options?.getString('command')?.toLowerCase();
 
     let embed = new MessageEmbed().setColor(colors.discord.BURPLE);
 
@@ -47,7 +47,7 @@ module.exports = new Command({
       .setTitle(`🔰All my commands`)
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
 
-      let cmdList = '';
+    let cmdList = '';
 
     for (let i = 0; i < client.categories.length; i++) {
       const category = client.categories[i].toUpperCase();
@@ -56,8 +56,8 @@ module.exports = new Command({
       let a = 0;
       for (let command of client.slashCommands) {
         command = command[1];
-        if (command.category.toUpperCase() != category.toUpperCase() || command.hideInHelp || command.disabled) continue;
-    
+        if (command.category.toUpperCase() != category.toUpperCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
+
         if (a % 5 == 0) cmdList += `\`${command.name}\`\n> `
         else cmdList += `\`${command.name}\`, `
         i++
@@ -65,8 +65,9 @@ module.exports = new Command({
 
       if (a == 1) continue;
 
+      if (cmdList.endsWith('\n> ')) cmdList = cmdList.slice(0, -4);
       if (cmdList.endsWith(', ')) cmdList = cmdList.slice(0, -2);
-      
+
       embed.addField(`**${category} [${i - 1}]**`, `> ${cmdList}\n`);
     }
 
