@@ -7,6 +7,7 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldown: { client: 0, user: 500 },
   category: 'Music',
+  needsQueue: true, 
   options: [{
     name: 'vol',
     description: 'Give me Number between 0 and 200',
@@ -15,14 +16,11 @@ module.exports = new Command({
     max_value: 200
   }],
 
-  run: async (client, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
+  run: async (player, interaction) => {
     const volume = interaction.options.getNumber('vol');
-
-    if (!queue?.songs) return interaction.editReply('You need to play music first!')
     if (volume > 200) volume = 200;
 
-    await queue.setVolume(volume);
-    interaction.editReply(`The volume has been set to ${volume}%`);
+    await player.queue.setVolume(volume);
+    editReply(player, `The volume has been set to ${volume}%`,  true );
   }
 })

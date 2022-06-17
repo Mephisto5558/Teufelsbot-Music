@@ -7,10 +7,10 @@ module.exports = new Command({
   cooldown: { client: 0, user: 3000},
   category: 'Music',
 
-  run: async (_, interaction) => {
-    if (!interaction.guild.me.voice) return interaction.editReply(`I'm currently not connected to a voice channel.`);
+  run: async player => {
+    if (!player.guild.me.voice) return editReply(player, `I'm not connected to a voice channel.`,  true );
 
-    await interaction.guild.me.voice.disconnect();
-    interaction.editReply('left the voice channel');
+    await player.guild.me.voice.disconnect();
+    editReply(player, 'I left the voice channel.',  true );
   }
 })

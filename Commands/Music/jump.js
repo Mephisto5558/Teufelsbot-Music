@@ -6,6 +6,7 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldown: { client: 1000, user: 2000 },
   category: 'Music',
+  needsQueue: true,
   options: [{
     name: 'position',
     description: 'Jump to a Song Number in the queue',
@@ -13,14 +14,11 @@ module.exports = new Command({
     required: true
   }],
 
-  run: async (client, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
+  run: async (player, interaction) => {
     const postion = interaction.options.getNumber('position');
 
-    if (!queue.songs) return interaction.editReply('There are no songs in the queue!');
+    await player.queue.jump(postion);
 
-    await queue.jump(postion);
-
-    interaction.editReply(`Jumped to ${queue.songs[postion].name}`)
+    editReply(player, `Jumped to ${player.queue.songs[0].name}`,  true );
   }
 })

@@ -6,10 +6,11 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldown: { client: 0, user: 0 },
   category: 'Music',
+  needsQueue: true,
 
-  run: async (client, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
-    await queue.shuffle();
-    interaction.editReply('Shuffled the queue!');
+  run: async player => {
+    await player.queue.shuffle();
+
+    editReply(player, 'Shuffled the queue!',  true );
   }
 })

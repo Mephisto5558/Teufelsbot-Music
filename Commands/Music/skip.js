@@ -6,13 +6,10 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldown: { client: 0, user: 500 },
   category: 'Music',
+  needsQueue: true,
 
-  run: async (client, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
-
-    if (!queue?.songs) return interaction.editReply('There are no Songs in the queue!');
-
-    await queue.skip();
-    interaction.editReply('Song skiped');
+  run: async player => {
+    await player.queue.skip();
+    editReply(player, 'Song skiped',  true );
   }
 })

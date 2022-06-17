@@ -6,11 +6,10 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldown: { client: 0, user: 5000 },
   category: 'Music',
+  needsQueue: true,
 
-  run: async (_, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
-
-    if (queue.songs) await queue.delete();
-    interaction.editReply('Queue cleared');
+  run: async player => {
+    await player.queue.delete();
+    editReply(player, 'Queue cleared',  true );
   }
 })
