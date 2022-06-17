@@ -2,12 +2,20 @@ const { MessageEmbed } = require('discord.js');
 const { colors } = require('../Settings/embed.json');
 
 module.exports = async (client, interaction) => {
-
-  let command = client.slashCommands.get(interaction.commandName);
+  const command = client.slashCommands.get(interaction.commandName);
   if (!command) return;
 
-  const filter = !interaction.member.voice.channel && !['information', 'useful'].includes(command.category.toLowerCase()) && interaction.commandName != 'leave';
-  if (filter) return interaction.reply({ content: `You need to join a voice channel first!`, ephemeral: true });
+  let errorMsg;
+
+  let player = client.musicPlayer?.interaction?.get(interaction.guild.id);
+  if(!player || player.channel.id != interaction.channel.id) player = interaction; //add check if interaction has been deleted
+  else player.queue = client.musicPlayer.getQueue(interaction.guild.id);
+
+  if(!interaction.member.voice.channel && !['information', 'useful'].includes(command.category.toLowerCase()) && interaction.commandName != 'leave')
+    errorMsg = `You need to join a voice channel first!`;
+  else if(command.needsQueue && !player.queue) errorMsg = `You need to play music first!`;
+
+  if (errorMsg) return interaction.reply({ content: errorMsg, ephemeral: true });
 
   if (interaction.isCommand()) {
     command.permissions.user.push('SEND_MESSAGES');
@@ -36,8 +44,12 @@ module.exports = async (client, interaction) => {
 
     interaction.options._hoistedOptions.forEach(entry => { if(entry.type == 'STRING') entry.value = entry.value?.replace(/<@!/g, '<@') });
 
+    player.queue = client.musicPlayer.getQueue(player.guild.id);
+
     client.interaction = interaction;
-    await command.run(client, interaction);
-    return client.interaction = null;
+    await command.run(player, interaction, client);
+    if(player.id != interaction.id) interaction.deleteReply();
+
+    client.interaction = null;
   }
 }
