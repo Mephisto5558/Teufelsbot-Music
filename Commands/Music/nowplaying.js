@@ -1,7 +1,4 @@
-const
-  { Command } = require('reconlx'),
-  { MessageEmbed } = require('discord.js'),
-  { colors } = require('../../Settings/embed.json');
+const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'nowplaying',
@@ -10,20 +7,18 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { global: '', user: '' },
   category: 'Music',
-  ephemeralDefer: true,
+  needsQueue: true,
 
-  run: (client, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
-    const song = queue.songs[0];
+  run: player => {
+    const
+      song = player.queue.songs[0],
+      remainingTime = Number.prototype.toFormattedTime(player.queue.duration - player.queue.currentTime);
 
-    const embed = new MessageEmbed()
-      .setTitle('Now playing')
-      .setDescription(
-        `I am currently playing\n` +
-        `[${song.name}](${song.url}) \`${song.formattedDuration - queue.formattedCurrentTime}:${queue.formattedCurrentTime}\``
-      )
-      .setColor(colors.discord.BURPLE);
-
-    interaction.editReply({ embeds: [embed] });
+    editReply(player,
+      `I am currently playing\n` +
+      `[${song.name}](${song.url}) \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\`\n` +
+      `Requested by: ${song.user}`,
+      true
+    )
   }
 })
