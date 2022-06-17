@@ -8,13 +8,15 @@ module.exports = new Command({
   cooldown: { client: 0, user: 3000 },
   category: 'Music',
 
-  run: (_, interaction) => {
+  run: (player, interaction) => {
+    if (interaction.member.voice.channelId == interaction.guild.me.voice.channelId) return editReply(player, "I'm already in your voice channel!",  true );
+
     joinVoiceChannel({
       channelId: interaction.member.voice.channelId,
       guildId: interaction.guild.id,
       adapterCreator: interaction.guild.voiceAdapterCreator
     });
 
-    interaction.editReply('I joined your voice channel');
+    editReply(player, 'I joined your voice channel.',  true );
   }
 })
