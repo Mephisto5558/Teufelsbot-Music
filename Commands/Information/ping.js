@@ -20,7 +20,7 @@ module.exports = new Command({
     required: false
   }],
 
-  run: async (client, message, interaction) => {
+  run: async (_, interaction, client) => {
     if (message) return message.reply('Please use `/ping`!');
 
     if (interaction.options?.getBoolean('average')) {

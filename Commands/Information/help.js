@@ -18,7 +18,7 @@ module.exports = new Command({
     required: false
   }],
 
-  run: (client, interaction) => {
+  run: (_, interaction, client) => {
     const query = interaction.options?.getString('command')?.toLowerCase();
 
     let embed = new MessageEmbed().setColor(colors.discord.BURPLE);
