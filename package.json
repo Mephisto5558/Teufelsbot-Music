@@ -7,7 +7,7 @@
   "author": "Mephisto",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
+    "@discordjs/opus": "github:discordjs/opus",
     "@discordjs/voice": "^0.10.0",
     "@distube/soundcloud": "^1.0.0",
     "@distube/spotify": "^1.0.0",
