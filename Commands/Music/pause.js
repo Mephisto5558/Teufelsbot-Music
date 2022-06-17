@@ -2,18 +2,21 @@ const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'pause',
-  description: 'pauses the player',
+  aliases: ['resume'],
+  description: 'pauses/resumes the player',
   permissions: { client: [], user: [] },
   cooldown: { client: 0, user: 2000 },
   category: 'Music',
+  needsQueue: true,
 
-  run: async (client, interaction) => {
-    const queue = client.musicPlayer.getQueue(interaction.guild.id);
-
-    if (!queue?.songs) return interaction.editReply('There are no songs in the queue');
-    else if (queue.paused) return interaction.editReply('The player is already paused');
-
-    await queue.pause();
-    interaction.editReply('Player paused');
+  run: async (player) => {
+    if (player.queue.paused) {
+      await player.queue.resume();
+      editReply(player, 'Player resumed',  true );
+    }
+    else {
+      await player.queue.pause();
+      editReply(player, 'Player paused',  true );
+    }
   }
 })
