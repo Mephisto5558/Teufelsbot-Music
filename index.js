@@ -1,15 +1,15 @@
 console.time('Starting time');
 console.log('Starting...');
 
-const { Client, Collection } = require('discord.js');
-const fs = require('fs');
+const
+  { Client, Collection, MessageEmbed } = require('discord.js'),
+  fs = require('fs'),
+  { colors } = require('./Settings/embed.json'),
+  client = new Client({ intents: 32767 });
 
 fs.rmSync('./Logs/debug.log', { force: true });
 
-const client = new Client({ intents: 32767 });
 client.on('debug', debug => fs.appendFileSync('./Logs/debug.log', debug + `\n`));
-
-module.exports = client;
 
 client.userID = '979747543405711371';
 client.owner = '691550551825055775';
@@ -21,16 +21,16 @@ client.sleep = function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 client.log = function log(data) {
-  let date = new Date().toLocaleString('en-GB', {
+  const date = new Date().toLocaleString('en', {
     hour12: false,
-    hour:   '2-digit',
+    hour: '2-digit',
     minute: '2-digit',
     second: '2-digit'
   });
   console.log(`[${date}] ${data}`)
 };
 
-for(const handler of fs.readdirSync('./Handlers').filter(file => file.endsWith('.js'))) {
+for (const handler of fs.readdirSync('./Handlers').filter(file => file.endsWith('.js'))) {
   require(`./Handlers/${handler}`)(client);
 }
 
@@ -40,3 +40,41 @@ client.login(process.env.token)
 process.on('exit', async _ => {
   client.destroy();
 });
+
+Number.prototype.toFormattedTime = function toFormattedTime(seconds) {
+  if(typeof seconds != 'number') throw new SyntaxError(`seconds must be type of number, received ${typeof seconds}`);
+  if(seconds >= 86400) throw new RangeError(`seconds cannot be bigger then 86400!, got ${seconds}`);
+
+  return new Date(1000 * seconds).toISOString().substring(seconds < 3600 ? 14 : 11, 19);
+}
+
+global.editReply = function editReply(interaction, content, asEmbed, asError) {
+  if (!content) throw new SyntaxError('Missing data to send');
+
+  if (asEmbed) {
+    const embed = new MessageEmbed()
+      .setTitle('Music Player')
+      .setDescription(content)
+      .setColor(asError ? colors.discord.RED : colors.discord.BURPLE);
+
+    content = { embeds: [embed] };
+  }
+
+  if (typeof content == 'object') {
+    for (const item of Object.entries(content)) {
+      if (item[1] && ['embeds', 'files', 'attachments', 'components'].includes(item[0]) && !item[1]?.[0])
+        item[1] = Array(item[1]);
+    }
+
+    if (asError) for (const embed of content.embeds) embed.setColor(colors.discord.RED);
+
+    interaction.editReply({
+      embeds: content.embeds || [],
+      content: content.content || null,
+      files: content.files || [],
+      attachments: content.attachments || [],
+      components: content.components || []
+    })
+  }
+  else interaction.editReply(content);
+}
