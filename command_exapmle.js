@@ -8,7 +8,7 @@ module.exports = new Command({
     category : '',
     needsQueue: false,
 
-    run: async ({ client, interaction, args }) => {
+    run: async (player, interaction, client) => {
 
     }
 })
