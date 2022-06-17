@@ -1,6 +1,7 @@
 const
   { Command } = require('reconlx'),
-  { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+  { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js'),
+  { colors } = require('../../Settings/embed.json');
 
 module.exports = new Command({
   name: 'play',
@@ -16,22 +17,35 @@ module.exports = new Command({
       required: true,
     },
     {
+      name: 'use_this_interaction',
+      description: 'Change the player interaction to this one',
+      type: 'BOOLEAN',
+      required: false
+    },
+    {
       name: 'skip',
       description: "Skip the current song to play your's instant",
+      type: 'BOOLEAN',
+      required: false
+    },
+    {
+      name: 'autoplay',
+      description: 'Use the YouTube autoplay feature after this song',
       type: 'BOOLEAN',
       required: false
     }
   ],
 
-  run: async (client, interaction) => {
+  run: async (player, interaction, client) => {
     const query = interaction.options.getString('query');
 
     let
       rows = [],
       row = new MessageActionRow(),
       results = [],
-      interaction0,
       i = 1;
+      
+    if(interaction.options.getBoolean('use_this_interaction')) player = interaction;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
       return await client.musicPlayer.play(interaction.member.voice.channel, query, {
@@ -44,10 +58,7 @@ module.exports = new Command({
     const search = await client.musicPlayer.search(query, { type: 'video', limit: 5 });
 
     for (const result of search) {
-      if(results.join().length > 4096) {
-        results.pop();
-        break;
-      }
+      if (results.join().length > 4096) break;
 
       if (result.name.length > 150) result.name = `${result.name.substring(0, 147)}...`;
 
@@ -55,10 +66,11 @@ module.exports = new Command({
     }
 
     const embed = new MessageEmbed()
-      .setTitle('Please select a song. You have 30 seconds.')
-      .setDescription(results.join('\n'));
+      .setTitle('Please select a song.')
+      .setDescription(results.join('\n'))
+      .setColor(colors.discord.BURPLE);
 
-    for (let i = 1; i < results.length; i++) {
+    for (let i = 1; i <= results.length; i++) {
       if (i == 6) {
         rows.push(row);
         row = new MessageActionRow()
@@ -80,15 +92,16 @@ module.exports = new Command({
       )
     );
 
-    await interaction.editReply({ embeds: [embed], components: rows })
-      .then(msg => interaction0 = msg);
+    await editReply(player, { embeds: [embed], components: rows });
 
     const filter = i => i.member.id == interaction.member.id;
     const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
 
-    collector.on('collect', async interaction2 => {
-      interaction2.deferUpdate();
+    collector.on('collect', async button => {
+      await button.deferUpdate();
       collector.stop();
+      
+      if(interaction.id == player.id) client.musicPlayer.interaction.set(interaction.guild.id, interaction);
 
       for (const row of rows) {
         for (const button of row.components) {
@@ -96,20 +109,27 @@ module.exports = new Command({
         }
       }
 
-      interaction.editReply({ embeds: [embed], components: rows });
+      editReply(player, { embeds: [embed], components: rows });
 
-      if (interaction2.customId == 'cancel') return;
+      if (button.customId == 'cancel') return;
 
-      await client.musicPlayer.play(interaction.member.voice.channel, results[interaction2.customId - 1], {
+      await client.musicPlayer.play(interaction.member.voice.channel, results[button.customId - 1], {
         member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
-      })
+      });
+
+      if (interaction.options.getBoolean('autoplay')) {
+        const queue = client.musicPlayer.getQueue(interaction.guild.id);
+        queue.autoplay(true);
+      }
     });
 
-    collector.on('end', async _ => {
+    collector.on('end', async collected => {
+      if((collected.size && collected.toJSON()[0].customId != 'cancel')|| client.musicPlayer.getQueue(interaction.guild.id)) return;
+
       await client.sleep(15000);
-      interaction0.delete();
+      player.deleteReply();
     })
 
   }
