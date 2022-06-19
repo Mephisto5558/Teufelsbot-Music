@@ -9,7 +9,28 @@ const
 
 fs.rmSync('./Logs/debug.log', { force: true });
 
-client.on('debug', debug => fs.appendFileSync('./Logs/debug.log', debug + `\n`));
+client.on('debug', debug => {
+    if (
+      debug.includes('Sending a heartbeat.') ||
+      debug.includes('Heartbeat acknowledged')
+    ) return;
+
+    const timestamp = new Date().toLocaleString('en', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    fs.appendFileSync('./Logs/debug.log', `[${timestamp}] ${debug}\n`);
+    if (debug.includes('Hit a 429')) {
+      if (!client.isReady()) {
+        console.error(errorColor('Hit a 429 while trying to login. Restarting shell.'));
+        process.kill(1);
+      }
+      else console.error(errorColor('Hit a 429 while trying to execute a request'));
+    }
+  });
 
 client.userID = '979747543405711371';
 client.owner = '691550551825055775';
