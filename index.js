@@ -5,6 +5,7 @@ const
   { Client, Collection, MessageEmbed } = require('discord.js'),
   fs = require('fs'),
   { colors } = require('./Settings/embed.json'),
+  errorColor = require('chalk').bold.red,
   client = new Client({ intents: 32767 });
 
 fs.rmSync('./Logs/debug.log', { force: true });
