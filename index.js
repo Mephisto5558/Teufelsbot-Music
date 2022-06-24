@@ -11,8 +11,8 @@ fs.rmSync('./Logs/debug.log', { force: true });
 
 client.on('debug', debug => fs.appendFileSync('./Logs/debug.log', debug + `\n`));
 
-client.userID = '979747543405711371';
-client.owner = '691550551825055775';
+client.userID = process.env.userID;
+client.owner = process.env.ownerID;
 client.events = new Collection();
 client.slashCommands = new Collection();
 client.cooldown = new Collection();
