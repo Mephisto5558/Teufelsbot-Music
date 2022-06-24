@@ -41,7 +41,8 @@ module.exports = new Command({
     if (!lyrics || !song.split(' ').filter(a => a.length > 3 && title.includes(a)).length) {
       embed.setDescription(
         `No Lyrics found for \`${song}\` with matching title.\n` +
-        'Maybe try another title or the `author` option, if not used.'
+        'Maybe try another title or the `author` option, if not used.\n' +
+        'If you know any lyric api, please message the dev.'
       );
 
       return interaction.editReply({ embeds: [embed] });
