@@ -16,14 +16,15 @@ module.exports = new Command({
     remainingSongTime = Number.prototype.toFormattedTime(player.queue.duration - player.queue.currentTime);
 
     const description = player.queue.songs.map((song, index) => {
-      return `\`${index + 1}.\` **[${song.name}](${song.url})** \`[${song.formattedDuration}]\``;
+      return `**${index + 1}** [${song.name}](${song.url}) \`[${song.formattedDuration}]\``;
     }).join('\n');
 
     const embed = new MessageEmbed()
       .setTitle('Queue')
       .setDescription(description.substring(0, 4096))
-      .addField('Current Song', `[${song.name}](${song.url}) by ${song.uploader.name} \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\``)
-      .addField('Queue Length', player.queue.formattedDuration)
+      .addField('Current Song', `[${song.name}](${song.url}) by ${song.uploader.name} \`${player.queue.formattedCurrentTime}\` / \`${remainingSongTime}\``)
+      .addField('Queue Length', player.queue.formattedDuration, true)
+      .addField('Autoplay', player.queue.autoplay ? 'On' : 'Off', true)
       .setColor(colors.discord.BURPLE);
 
     editReply(player, { embeds: [embed] });
