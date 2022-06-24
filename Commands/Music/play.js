@@ -17,10 +17,14 @@ module.exports = new Command({
       required: true,
     },
     {
-      name: 'use_this_interaction',
-      description: 'Change the player interaction to this one',
-      type: 'BOOLEAN',
-      required: false
+      name: 'type',
+      description: 'The type of search results you want',
+      type: 'STRING',
+      required: false,
+      choices: [
+        { name: 'video', value: 'video' },
+        { name: 'playlist', value: 'playlist' }
+      ]
     },
     {
       name: 'skip',
@@ -28,9 +32,15 @@ module.exports = new Command({
       type: 'BOOLEAN',
       required: false
     },
-    {
+   /* {
       name: 'autoplay',
       description: 'Use the YouTube autoplay feature after this song',
+      type: 'BOOLEAN',
+      required: false
+    }, */
+    {
+      name: 'use_this_interaction',
+      description: 'Change the player interaction to this one',
       type: 'BOOLEAN',
       required: false
     }
@@ -38,14 +48,15 @@ module.exports = new Command({
 
   run: async (player, interaction, client) => {
     const query = interaction.options.getString('query');
+    const autoplay = interaction.options.getBoolean('autoplay');
 
     let
       rows = [],
       row = new MessageActionRow(),
       results = [],
       i = 1;
-      
-    if(interaction.options.getBoolean('use_this_interaction')) player = interaction;
+
+    if (interaction.options.getBoolean('use_this_interaction')) player = interaction;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
       return await client.musicPlayer.play(interaction.member.voice.channel, query, {
@@ -55,7 +66,10 @@ module.exports = new Command({
       })
     }
 
-    const search = await client.musicPlayer.search(query, { type: 'video', limit: 5 });
+    const search = await client.musicPlayer.search(query, {
+      type: interaction.options.getString('type') || 'video',
+      limit: 5
+    });
 
     for (const result of search) {
       if (results.join().length > 4096) break;
@@ -100,8 +114,8 @@ module.exports = new Command({
     collector.on('collect', async button => {
       await button.deferUpdate();
       collector.stop();
-      
-      if(interaction.id == player.id) client.musicPlayer.interaction.set(interaction.guild.id, interaction);
+
+      if (interaction.id == player.id) client.musicPlayer.interaction.set(interaction.guild.id, interaction);
 
       for (const row of rows) {
         for (const button of row.components) {
@@ -119,14 +133,14 @@ module.exports = new Command({
         skip: interaction.options.getBoolean('skip') || false
       });
 
-      if (interaction.options.getBoolean('autoplay')) {
+      if (autoplay || autoplay === false) {
         const queue = client.musicPlayer.getQueue(interaction.guild.id);
-        queue.autoplay(true);
+        if ((autoplay && !queue.autoplay) || (!autoplay && queue.autoplay)) queue.toggleAutoplay();
       }
     });
 
     collector.on('end', async collected => {
-      if((collected.size && collected.toJSON()[0].customId != 'cancel')|| client.musicPlayer.getQueue(interaction.guild.id)) return;
+      if ((collected.size && collected.toJSON()[0].customId != 'cancel') || client.musicPlayer.getQueue(interaction.guild.id)) return;
 
       await client.sleep(15000);
       player.deleteReply();
