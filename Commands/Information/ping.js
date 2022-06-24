@@ -21,29 +21,26 @@ module.exports = new Command({
   }],
 
   run: async (_, interaction, client) => {
-    if (message) return message.reply('Please use `/ping`!');
-
     if (interaction.options?.getBoolean('average')) {
       const embed = new MessageEmbed()
-        .setTitle('Pinging...')
-        .setDescription(`Loading (this takes about one minute)`)
+        .setTitle('Ping')
+        .setDescription(`Pinging... (this takes about one minute)`)
         .setColor(colors.discord.BURPLE);
 
       interaction.editReply({ embeds: [embed] });
 
-      let pings = []
+      let pings = [], i;
 
-      for (let i = 0; i <= 59; i++) {
+      for (i = 0; i <= 59; i++) {
         pings.push(client.ws.ping);
         await client.functions.sleep(1000);
       }
 
       pings.sort((a, b) => a - b);
 
-      const averagePing = Math.round((pings.reduce((a, b) => a + b) / 60) * 100) / 100;
+      const averagePing = Math.round((pings.reduce((a, b) => a + b) / i) * 100) / 100;
 
       embed
-        .setTitle('Ping')
         .setDescription(
           `Pings: \`${pings.length}\`\n` +
           `Lowest Ping: \`${pings[0]}ms\`\n` +
