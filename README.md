@@ -1,4 +1,4 @@
-# Teufelswerk-Bot-Music
+# Teufelsbot-Music
 <a href="https://github.com/Mephisto5558/Teufelsbot-Music/pulse" alt="Activity">
   <img src="https://img.shields.io/github/commit-activity/m/Mephisto5558/Teufelsbot-Music" />
 </a>
