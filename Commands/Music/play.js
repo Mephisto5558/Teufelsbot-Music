@@ -32,12 +32,12 @@ module.exports = new Command({
       type: 'BOOLEAN',
       required: false
     },
-   /* {
-      name: 'autoplay',
-      description: 'Use the YouTube autoplay feature after this song',
-      type: 'BOOLEAN',
-      required: false
-    }, */
+    /* {
+       name: 'autoplay',
+       description: 'Use the YouTube autoplay feature after this song',
+       type: 'BOOLEAN',
+       required: false
+     }, */
     {
       name: 'use_this_interaction',
       description: 'Change the player interaction to this one',
@@ -76,7 +76,7 @@ module.exports = new Command({
 
       if (result.name.length > 150) result.name = `${result.name.substring(0, 147)}...`;
 
-      results.push(`${i++}. [${result.name}](${result.url}) by ${result.uploader.name}`);
+      results.push(`${i++}. [${result.name}](${result.url}) ${result.uploader.name ? `by ${result.uploader.name}` : ''}`);
     }
 
     const embed = new MessageEmbed()
@@ -89,6 +89,7 @@ module.exports = new Command({
         rows.push(row);
         row = new MessageActionRow()
       }
+
       row.addComponents(new MessageButton()
         .setCustomId(i.toString())
         .setLabel(i.toString())
