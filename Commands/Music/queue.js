@@ -27,6 +27,6 @@ module.exports = new Command({
       .addField('Autoplay', player.queue.autoplay ? 'On' : 'Off', true)
       .setColor(colors.discord.BURPLE);
 
-    editReply(player, { embeds: [embed] });
+    await editReply(player, { embeds: [embed] });
   }
 })

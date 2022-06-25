@@ -10,6 +10,6 @@ module.exports = new Command({
 
   run: async player => {    
     await player.queue.stop();
-    editReply(player, 'Player stopped',  true );
+    await editReply(player, 'Player stopped',  true );
   }
 })

@@ -12,6 +12,6 @@ module.exports = new Command({
   run: async player => {
     await player.queue.toggleAutoplay();
 
-    editReply(player, `Autoplay has been ${player.queue.autoplay ? 'enabled' : 'disabled'}.`, true);
+    await editReply(player, `Autoplay has been ${player.queue.autoplay ? 'enabled' : 'disabled'}.`, true);
   }
 })

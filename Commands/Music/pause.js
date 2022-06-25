@@ -12,11 +12,11 @@ module.exports = new Command({
   run: async (player) => {
     if (player.queue.paused) {
       await player.queue.resume();
-      editReply(player, 'Player resumed',  true );
+      await editReply(player, 'Player resumed',  true );
     }
     else {
       await player.queue.pause();
-      editReply(player, 'Player paused',  true );
+      await editReply(player, 'Player paused',  true );
     }
   }
 })

@@ -10,6 +10,6 @@ module.exports = new Command({
 
   run: async player => {
     await player.queue.skip();
-    editReply(player, 'Song skiped',  true );
+    await editReply(player, 'Song skiped',  true );
   }
 })

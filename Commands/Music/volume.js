@@ -21,6 +21,6 @@ module.exports = new Command({
     if (volume > 200) volume = 200;
 
     await player.queue.setVolume(volume);
-    editReply(player, `The volume has been set to ${volume}%`,  true );
+    await editReply(player, `The volume has been set to ${volume}%`,  true );
   }
 })

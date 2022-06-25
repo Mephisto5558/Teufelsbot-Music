@@ -124,7 +124,7 @@ module.exports = new Command({
         }
       }
 
-      editReply(player, { embeds: [embed], components: rows });
+      await editReply(player, { embeds: [embed], components: rows });
 
       if (button.customId == 'cancel') return;
 

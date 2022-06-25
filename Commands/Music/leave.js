@@ -11,6 +11,6 @@ module.exports = new Command({
     if (!player.guild.me.voice) return editReply(player, `I'm not connected to a voice channel.`,  true );
 
     await player.guild.me.voice.disconnect();
-    editReply(player, 'I left the voice channel.',  true );
+    await editReply(player, 'I left the voice channel.',  true );
   }
 })

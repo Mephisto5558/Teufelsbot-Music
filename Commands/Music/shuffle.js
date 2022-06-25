@@ -10,7 +10,6 @@ module.exports = new Command({
 
   run: async player => {
     await player.queue.shuffle();
-
-    editReply(player, 'Shuffled the queue!',  true );
+    await editReply(player, 'Shuffled the queue!',  true );
   }
 })

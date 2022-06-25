@@ -26,6 +26,6 @@ module.exports = new Command({
 
     await player.queue.setRepeatMode(player.queue.repeatMode > 0 ? 0 : (cmd == 'song' ? 1 : 2));
 
-    editReply(player, `${player.queue.repeatMode > 0 ? 'Disabled' : (cmd == 'song' ? 'Enabled song' : 'Enabled queue')} loop.`, true);
+    await editReply(player, `${player.queue.repeatMode > 0 ? 'Disabled' : (cmd == 'song' ? 'Enabled song' : 'Enabled queue')} loop.`, true);
   }
 })

@@ -19,6 +19,6 @@ module.exports = new Command({
 
     await player.queue.jump(postion);
 
-    editReply(player, `Jumped to ${player.queue.songs[0].name}`,  true );
+    await editReply(player, `Jumped to ${player.queue.songs[0].name}`,  true );
   }
 })

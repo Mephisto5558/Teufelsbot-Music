@@ -10,6 +10,6 @@ module.exports = new Command({
 
   run: async player => {
     await player.queue.delete();
-    editReply(player, 'Queue cleared',  true );
+    await editReply(player, 'Queue cleared',  true );
   }
 })
