@@ -29,7 +29,7 @@
     "reconlx": "^2.5.1",
     "serve-favicon": "^2.5.0",
     "songlyrics": "^2.4.2",
-    "superagent": "^7.1.6",
+    "superagent": "^8.0.0",
     "yt-search": "^2.10.3"
   },
   "devDependencies": {},
