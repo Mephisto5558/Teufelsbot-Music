@@ -128,7 +128,7 @@ module.exports = new Command({
 
       if (button.customId == 'cancel') return;
 
-      await client.musicPlayer.play(interaction.member.voice.channel, results[button.customId - 1], {
+      await client.musicPlayer.play(interaction.member.voice.channel, /\((.*)\)/g.exec(results[button.customId - 1])[1], {
         member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip') || false
