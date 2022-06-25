@@ -48,7 +48,7 @@ module.exports = async (client, interaction) => {
 
     client.interaction = interaction;
     await command.run(player, interaction, client);
-    if(player.id && player.id != interaction.id) interaction.deleteReply();
+    if(command.category.toLowerCase() == 'music' && player.id && player.id != interaction.id) interaction.deleteReply();
 
     client.interaction = null;
   }
