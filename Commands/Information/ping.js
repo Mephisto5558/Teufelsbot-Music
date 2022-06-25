@@ -33,7 +33,7 @@ module.exports = new Command({
 
       for (i = 0; i <= 59; i++) {
         pings.push(client.ws.ping);
-        await client.functions.sleep(1000);
+        await client.sleep(1000);
       }
 
       pings.sort((a, b) => a - b);
