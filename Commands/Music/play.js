@@ -32,6 +32,12 @@ module.exports = new Command({
       type: 'BOOLEAN',
       required: false
     },
+    {
+      name: 'shuffle',
+      description: 'shuffle the queue',
+      type: 'BOOLEAN',
+      required: false
+    },
     /* {
        name: 'autoplay',
        description: 'Use the YouTube autoplay feature after this song',
@@ -134,10 +140,10 @@ module.exports = new Command({
         skip: interaction.options.getBoolean('skip') || false
       });
 
-      if (autoplay || autoplay === false) {
-        const queue = client.musicPlayer.getQueue(interaction.guild.id);
-        if ((autoplay && !queue.autoplay) || (!autoplay && queue.autoplay)) queue.toggleAutoplay();
-      }
+      const queue = client.musicPlayer.getQueue(interaction.guild.id);
+      if (autoplay || autoplay === false && ((autoplay && !queue.autoplay) || (!autoplay && queue.autoplay))) queue.toggleAutoplay();
+
+      if(interaction.options.getBoolean('shuffle')) queue.shuffle();
     });
 
     collector.on('end', async collected => {
