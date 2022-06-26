@@ -3,7 +3,6 @@ const { Command } = require('reconlx');
 module.exports = new Command({
   name: 'volume',
   description: 'Set the player volume',
-  userPermissions: [],
   permissions: { client: [], user: [] },
   cooldown: { client: 0, user: 500 },
   category: 'Music',
