@@ -12,7 +12,7 @@ module.exports = new Command({
   run: async player => {
     const
       song = player.queue.songs[0],
-      remainingTime = Number.prototype.toFormattedTime(player.queue.duration - player.queue.currentTime);
+      remainingTime = Number.prototype.toFormattedTime(song.duration - player.queue.currentTime);
 
     await editReply(player,
       `I am currently playing\n` +

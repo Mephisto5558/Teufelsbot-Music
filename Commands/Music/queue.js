@@ -13,7 +13,7 @@ module.exports = new Command({
 
   run: async player => {
     const song = player.queue.songs[0];
-    remainingSongTime = Number.prototype.toFormattedTime(player.queue.duration - player.queue.currentTime);
+    remainingSongTime = Number.prototype.toFormattedTime(song.duration - player.queue.currentTime);
 
     let description = player.queue.songs.map((song, index) => {
       if (!index) return;

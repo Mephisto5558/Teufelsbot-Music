@@ -38,7 +38,7 @@ module.exports = async client => {
       reply(
         client,
         `Added [${song.name}](${song.url}) - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n` +
-        `It will play in about \`${Number.prototype.toFormattedTime(queue.duration - queue.currentTime)}\``,
+        `It will play in about \`${Number.prototype.toFormattedTime(queue.duration - song.duration)}\``,
         queue.textChannel
       )
     })
@@ -47,7 +47,7 @@ module.exports = async client => {
       reply(
         client,
         `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to the queue by ${playlist.user}\n` +
-        `They will play in about \`${Number.prototype.toFormattedTime(queue.duration - queue.currentTime)}\``,
+        `They will play in about \`${Number.prototype.toFormattedTime(queue.duration - playlist.duration)}\``,
         queue.textChannel
       )
     })
