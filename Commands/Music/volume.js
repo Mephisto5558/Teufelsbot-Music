@@ -17,7 +17,7 @@ module.exports = new Command({
   }],
 
   run: async (player, interaction) => {
-    const volume = interaction.options.getNumber('vol');
+    let volume = interaction.options.getNumber('vol');
     if (volume > 200) volume = 200;
 
     await player.queue.setVolume(volume);
