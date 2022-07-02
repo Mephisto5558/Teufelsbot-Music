@@ -21,7 +21,9 @@ module.exports = new Command({
   run: (_, interaction, client) => {
     const query = interaction.options?.getString('command')?.toLowerCase();
 
-    let embed = new MessageEmbed().setColor(colors.discord.BURPLE);
+    let embed = new MessageEmbed({
+      color: colors.discord.BURPLE
+    });
 
     if (query) {
       const cmd = client.slashCommands.get(query);
@@ -32,20 +34,19 @@ module.exports = new Command({
           .setColor(colors.RED);
       }
       else {
-        if (cmd.name) embed.setTitle(`Detailed Information about: \`${cmd.name}\``);
-        if (cmd.description) embed.setDescription(cmd.description);
+        if (cmd.name) embed.title = `Detailed Information about: \`${cmd.name}\``;
+        if (cmd.description) embed.description = cmd.description;
         if (cmd.aliases?.length) embed.addField('Aliases', `\`${listCommands(cmd.aliases, '', 1).replace(/> /g, '')}\``);
         if (cmd.usage) embed.addField('Usage', `${cmd.slashCommand ? 'SLASH Command: look at the option descriptions.\n' : ''} ${cmd.usage || ''}`);
 
-        embed.setFooter({ text: 'Syntax: <> = required, [] = optional' });
+        embed.footer = { text: 'Syntax: <> = required, [] = optional' };
       }
 
       return interaction.editReply({ embeds: [embed] });
     }
 
-    embed
-      .setTitle(`🔰All my commands`)
-      .setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
+    embed.title = `🔰All my commands`;
+    embed.thumbnail = client.user.displayAvatarURL({ dynamic: true });
 
     let cmdList = '';
 
@@ -71,8 +72,8 @@ module.exports = new Command({
       embed.addField(`**${category} [${i - 1}]**`, `> ${cmdList}\n`);
     }
 
-    if (!embed.fields) embed.setDescription('No commands found...');
-    else embed.setFooter({ text: `Use the 'command' option to get more information about a specific command.` });
+    if (!embed.fields) embed.description = 'No commands found...';
+    else embed.footer = { text: `Use the 'command' option to get more information about a specific command.` };
 
     interaction.editReply({ embeds: [embed] });
 

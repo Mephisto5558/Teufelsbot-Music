@@ -85,10 +85,11 @@ module.exports = new Command({
       results.push(`${i++}. [${result.name}](${result.url}) ${result.uploader.name ? `by ${result.uploader.name}` : ''}`);
     }
 
-    const embed = new MessageEmbed()
-      .setTitle('Please select a song.')
-      .setDescription(results.join('\n'))
-      .setColor(colors.discord.BURPLE);
+    const embed = new MessageEmbed({
+      title: 'Please select a song.',
+      description: results.join('\n'),
+      color: colors.discord.BURPLE
+    });
 
     for (let i = 1; i <= results.length; i++) {
       if (i == 6) {
@@ -96,22 +97,22 @@ module.exports = new Command({
         row = new MessageActionRow()
       }
 
-      row.addComponents(new MessageButton()
-        .setCustomId(i.toString())
-        .setLabel(i.toString())
-        .setStyle('PRIMARY')
-      )
-    }
+      row.components = [new MessageButton({
+        customId: i.toString(),
+        label: i.toString(),
+        style: 'PRIMARY'
+      })];
 
-    rows.push(row);
-    rows.push(
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId('cancel')
-          .setLabel('Cancel')
-          .setStyle('DANGER')
-      )
-    );
+      rows.push(row);
+      rows.push(new MessageActionRow({
+        components: [new MessageButton({
+          customId: 'cancel',
+          label: 'Cancel',
+          style: 'DANGER'
+        })]
+      }));
+
+    }
 
     await editReply(player, { embeds: [embed], components: rows });
 
@@ -143,7 +144,7 @@ module.exports = new Command({
       const queue = client.musicPlayer.getQueue(interaction.guild.id);
       if (autoplay || autoplay === false && ((autoplay && !queue.autoplay) || (!autoplay && queue.autoplay))) queue.toggleAutoplay();
 
-      if(interaction.options.getBoolean('shuffle')) queue.shuffle();
+      if (interaction.options.getBoolean('shuffle')) queue.shuffle();
     });
 
     collector.on('end', async collected => {

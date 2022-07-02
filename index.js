@@ -11,27 +11,27 @@ const
 fs.rmSync('./Logs/debug.log', { force: true });
 
 client.on('debug', debug => {
-    if (
-      debug.includes('Sending a heartbeat.') ||
-      debug.includes('Heartbeat acknowledged')
-    ) return;
+  if (
+    debug.includes('Sending a heartbeat.') ||
+    debug.includes('Heartbeat acknowledged')
+  ) return;
 
-    const timestamp = new Date().toLocaleString('en', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-
-    fs.appendFileSync('./Logs/debug.log', `[${timestamp}] ${debug}\n`);
-    if (debug.includes('Hit a 429')) {
-      if (!client.isReady()) {
-        console.error(errorColor('Hit a 429 while trying to login. Restarting shell.'));
-        process.kill(1);
-      }
-      else console.error(errorColor('Hit a 429 while trying to execute a request'));
-    }
+  const timestamp = new Date().toLocaleString('en', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
   });
+
+  fs.appendFileSync('./Logs/debug.log', `[${timestamp}] ${debug}\n`);
+  if (debug.includes('Hit a 429')) {
+    if (!client.isReady()) {
+      console.error(errorColor('Hit a 429 while trying to login. Restarting shell.'));
+      process.kill(1);
+    }
+    else console.error(errorColor('Hit a 429 while trying to execute a request'));
+  }
+});
 
 client.userID = process.env.userID;
 client.owner = process.env.ownerID;
@@ -64,8 +64,8 @@ process.on('exit', async _ => {
 });
 
 Number.prototype.toFormattedTime = function toFormattedTime(seconds) {
-  if(typeof seconds != 'number') throw new SyntaxError(`seconds must be type of number, received ${typeof seconds}`);
-  if(seconds >= 86400) throw new RangeError(`seconds cannot be bigger then 86400!, got ${seconds}`);
+  if (typeof seconds != 'number') throw new SyntaxError(`seconds must be type of number, received ${typeof seconds}`);
+  if (seconds >= 86400) throw new RangeError(`seconds cannot be bigger then 86400!, got ${seconds}`);
 
   return new Date(1000 * seconds).toISOString().substring(seconds < 3600 ? 14 : 11, 19);
 }
@@ -74,10 +74,11 @@ global.editReply = function editReply(interaction, content, asEmbed, asError) {
   if (!content) throw new SyntaxError('Missing data to send');
 
   if (asEmbed) {
-    const embed = new MessageEmbed()
-      .setTitle('Music Player')
-      .setDescription(content)
-      .setColor(asError ? colors.discord.RED : colors.discord.BURPLE);
+    const embed = new MessageEmbed({
+      title: 'Music Player',
+      description: content,
+      color: asError ? colors.discord.RED : colors.discord.BURPLE
+    });
 
     content = { embeds: [embed] };
   }
@@ -88,7 +89,7 @@ global.editReply = function editReply(interaction, content, asEmbed, asError) {
         item[1] = Array(item[1]);
     }
 
-    if (asError) for (const embed of content.embeds) embed.setColor(colors.discord.RED);
+    if (asError) for (const embed of content.embeds) embed.color = colors.discord.RED;
 
     interaction.editReply({
       embeds: content.embeds || [],

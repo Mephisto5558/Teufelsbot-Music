@@ -22,10 +22,11 @@ module.exports = new Command({
 
   run: async (_, interaction, client) => {
     if (interaction.options?.getBoolean('average')) {
-      const embed = new MessageEmbed()
-        .setTitle('Ping')
-        .setDescription(`Pinging... (this takes about one minute)`)
-        .setColor(colors.discord.BURPLE);
+      const embed = new MessageEmbed({
+        title: 'Ping',
+        description: `Pinging... (this takes about one minute)`,
+        color: colors.discord.BURPLE
+      });
 
       interaction.editReply({ embeds: [embed] });
 
@@ -53,13 +54,13 @@ module.exports = new Command({
 
     const ping = Math.abs(Date.now() - interaction.createdTimestamp);
 
-    const embed = new MessageEmbed()
-      .setTitle('Ping')
-      .setDescription(
+    const embed = new MessageEmbed({
+      title: 'Ping',
+      description:
         `Latency: \`${ping}ms\`\n` +
-        `API Latency: \`${Math.round(client.ws.ping)}ms\``
-      )
-      .setColor(colors.discord.BURPLE);
+        `API Latency: \`${Math.round(client.ws.ping)}ms\``,
+      color: colors.discord.BURPLE
+    });
 
     interaction.editReply({ embeds: [embed] });
   }
