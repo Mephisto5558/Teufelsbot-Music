@@ -61,7 +61,7 @@ module.exports = new Command({
     if (video) {
       embed.title = `${video.title} by ${video.author.name}`;
       embed.url = video.url;
-      embed.thumbnail = video.image;
+      embed.setThumbnail(video.image);
     }
 
     interaction.editReply({ embeds: [embed] })

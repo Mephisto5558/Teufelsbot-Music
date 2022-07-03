@@ -46,7 +46,7 @@ module.exports = new Command({
     }
 
     embed.title = `🔰All my commands`;
-    embed.thumbnail = client.user.displayAvatarURL({ dynamic: true });
+    embed.setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
 
     let cmdList = '';
 
