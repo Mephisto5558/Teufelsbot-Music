@@ -16,7 +16,7 @@ const
 module.exports = async client => {
   if (client.botType == 'dev') return client.log('Disabled website loading due to dev version.');
 
-  const websiteMessage = websiteMessages[Math.floor(Math.random() * websiteMessages.length)];
+  const websiteMessage = websiteMessages[Math.round(Math.random() * websiteMessages.length)];
 
   app
     .use(favicon('Website/favicon.ico'))
@@ -42,12 +42,12 @@ module.exports = async client => {
       switch (req.path) {
         case '/uptime':
           let totalSeconds = client.uptime / 1000;
-          let days = Math.floor(totalSeconds / 86400).toString().padStart(2, 0);
+          let days = Math.round(totalSeconds / 86400).toString().padStart(2, 0);
           totalSeconds %= 86400;
-          let hours = Math.floor(totalSeconds / 3600).toString().padStart(2, 0);
+          let hours = Math.round(totalSeconds / 3600).toString().padStart(2, 0);
           totalSeconds %= 3600;
-          let minutes = Math.floor(totalSeconds / 60).toString().padStart(2, 0);
-          let seconds = Math.floor(totalSeconds % 60).toString().padStart(2, 0);
+          let minutes = Math.round(totalSeconds / 60).toString().padStart(2, 0);
+          let seconds = Math.round(totalSeconds % 60).toString().padStart(2, 0);
 
           res.send({
             total: client.uptime,
