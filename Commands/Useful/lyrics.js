@@ -33,7 +33,7 @@ module.exports = new Command({
         color: 'RANDOM',
         footer: {
           text: interaction.user.tag,
-          iconURL: interaction.user.displayAvatarURL()
+          iconURL: interaction.user.displayAvatarURL({ dynamic: true })
         }
       });
 
@@ -51,7 +51,7 @@ module.exports = new Command({
     if (lyrics.length > 4092) lyrics = lyrics.substring(0, lyrics.substring(0, 4081).lastIndexOf('/n')) + '...';
 
     embed.description = lyrics;
-    embed.footer = { text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() };
+    embed.footer = { text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) };
     embed.addField('Source', `[${source.url}](${source.link})`, true);
 
     const video = (await search(title)).videos
