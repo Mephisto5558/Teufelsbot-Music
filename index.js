@@ -16,12 +16,7 @@ client.on('debug', debug => {
     debug.includes('Heartbeat acknowledged')
   ) return;
 
-  const timestamp = new Date().toLocaleString('en', {
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
+  const timestamp = new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false });
 
   fs.appendFileSync('./Logs/debug.log', `[${timestamp}] ${debug}\n`);
   if (debug.includes('Hit a 429')) {
@@ -42,14 +37,9 @@ client.categories = fs.readdirSync('./Commands/');
 client.sleep = function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
-client.log = function log(data) {
-  const date = new Date().toLocaleString('en', {
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-  console.log(`[${date}] ${data}`)
+client.log = (...data) => {
+  const date = new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false });
+  console.log(`[${date}] ${data}`);
 };
 
 for (const handler of fs.readdirSync('./Handlers').filter(file => file.endsWith('.js'))) {
