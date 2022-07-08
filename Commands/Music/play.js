@@ -92,27 +92,27 @@ module.exports = new Command({
     });
 
     for (let i = 1; i <= results.length; i++) {
-      if (i == 6) {
+      if (i != 1 && (i - 1) % 5 == 0) {
         rows.push(row);
-        row = new MessageActionRow()
+        row = new MessageActionRow();
       }
 
-      row.components = [new MessageButton({
+      row.components.push(new MessageButton({
         customId: i.toString(),
         label: i.toString(),
         style: 'PRIMARY'
-      })];
-
-      rows.push(row);
-      rows.push(new MessageActionRow({
-        components: [new MessageButton({
-          customId: 'cancel',
-          label: 'Cancel',
-          style: 'DANGER'
-        })]
       }));
-
     }
+
+    rows.push(row);
+
+    rows.push(new MessageActionRow({
+      components: [new MessageButton({
+        customId: 'cancel',
+        label: 'Cancel',
+        style: 'DANGER'
+      })]
+    }));
 
     await editReply(player, { embeds: [embed], components: rows });
 
@@ -131,6 +131,7 @@ module.exports = new Command({
         }
       }
 
+      if(button.customId != 'cancel') embed.description = `Loading ${results[button.customId -1]}...`;
       await editReply(player, { embeds: [embed], components: rows });
 
       if (button.customId == 'cancel') return;
