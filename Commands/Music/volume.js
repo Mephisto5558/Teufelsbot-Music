@@ -12,7 +12,7 @@ module.exports = new Command({
     description: 'Give me Number between 0 and 200',
     required: true,
     type: 'NUMBER',
-    max_value: 200
+    maxValue: 200
   }],
 
   run: async (player, interaction) => {
