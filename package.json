@@ -35,10 +35,10 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mephisto5558/Teufelswerk-Bot-Music.git"
+    "url": "git+https://github.com/Mephisto5558/Teufelsbot-Music.git"
   },
   "bugs": {
-    "url": "https://github.com/Mephisto5558/Teufelswerk-Bot-Music/issues"
+    "url": "https://github.com/Mephisto5558/Teufelsbot-Music/issues"
   },
-  "homepage": "https://github.com/Mephisto5558/Teufelswerk-Bot-Music#readme"
+  "homepage": "https://github.com/Mephisto5558/Teufelsbot-Music#readme"
 }
