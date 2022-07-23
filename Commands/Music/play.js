@@ -1,25 +1,25 @@
 const
   { Command } = require('reconlx'),
-  { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js'),
-  { colors } = require('../../Settings/embed.json');
+  { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors, ComponentType } = require('discord.js');
 
 module.exports = new Command({
   name: 'play',
+  aliases: [],
   description: 'plays a song',
   permissions: { client: [], user: [] },
-  cooldown: { global: 0, user: 1000 },
+  cooldowns: { global: 0, user: 1000 },
   category: 'Music',
   options: [
     {
       name: 'query',
       description: 'Type the video name or provide a link',
-      type: 'STRING',
+      type: 'String',
       required: true,
     },
     {
       name: 'type',
       description: 'The type of search results you want',
-      type: 'STRING',
+      type: 'String',
       required: false,
       choices: [
         { name: 'video', value: 'video' },
@@ -29,50 +29,43 @@ module.exports = new Command({
     {
       name: 'skip',
       description: "Skip the current song to play your's instant",
-      type: 'BOOLEAN',
+      type: 'Boolean',
       required: false
     },
     {
       name: 'shuffle',
       description: 'shuffle the queue',
-      type: 'BOOLEAN',
+      type: 'Boolean',
       required: false
     },
-    /* {
-       name: 'autoplay',
-       description: 'Use the YouTube autoplay feature after this song',
-       type: 'BOOLEAN',
-       required: false
-     }, */
     {
       name: 'use_this_interaction',
-      description: 'Change the player interaction to this one',
-      type: 'BOOLEAN',
+      description: 'Change the player embed to this interaction',
+      type: 'Boolean',
       required: false
     }
   ],
 
-  run: async (player, interaction, client) => {
+  run: async (player, interaction, { musicPlayer, functions }) => {
     const query = interaction.options.getString('query');
-    const autoplay = interaction.options.getBoolean('autoplay');
 
     let
       rows = [],
-      row = new MessageActionRow(),
+      row = new ActionRowBuilder(),
       results = [],
       i = 1;
 
     if (interaction.options.getBoolean('use_this_interaction')) player = interaction;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
-      return await client.musicPlayer.play(interaction.member.voice.channel, query, {
+      return await musicPlayer.play(interaction.member.voice.channel, query, {
         member: interaction.member,
         textChannel: interaction.channel,
-        skip: interaction.options.getBoolean('skip') || false
+        skip: interaction.options.getBoolean('skip')
       })
     }
 
-    const search = await client.musicPlayer.search(query, {
+    const search = await musicPlayer.search(query, {
       type: interaction.options.getString('type') || 'video',
       limit: 5
     });
@@ -85,73 +78,68 @@ module.exports = new Command({
       results.push(`${i++}. [${result.name}](${result.url}) ${result.uploader.name ? `by ${result.uploader.name}` : ''}`);
     }
 
-    const embed = new MessageEmbed({
+    const embed = new EmbedBuilder({
       title: 'Please select a song.',
       description: results.join('\n'),
-      color: colors.discord.BURPLE
+      color: Colors.Blurple
     });
 
-    for (let i = 1; i <= results.length; i++) {
-      if (i != 1 && (i - 1) % 5 == 0) {
+    for (let i = 0; i < results.length; i++) {
+      if (i % 5 == 4) {
         rows.push(row);
-        row = new MessageActionRow();
+        row = new ActionRowBuilder();
       }
 
-      row.components.push(new MessageButton({
+      row.components.push(new ButtonBuilder({
         customId: i.toString(),
         label: i.toString(),
-        style: 'PRIMARY'
+        style: ButtonStyle.Primary
       }));
     }
 
-    rows.push(row);
-
-    rows.push(new MessageActionRow({
-      components: [new MessageButton({
+    rows.push(row, new ActionRowBuilder({
+      components: [new ButtonBuilder({
         customId: 'cancel',
         label: 'Cancel',
         style: 'DANGER'
       })]
     }));
 
-    await editReply(player, { embeds: [embed], components: rows });
+    await functions.editPlayer(player, { embeds: [embed], components: rows });
 
     const filter = i => i.member.id == interaction.member.id;
-    const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
+    const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000, componentType: ComponentType.Button });
 
     collector.on('collect', async button => {
       await button.deferUpdate();
       collector.stop();
 
-      if (interaction.id == player.id) client.musicPlayer.interaction.set(interaction.guild.id, interaction);
+      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, interaction);
 
-      for (const row of rows) {
-        for (const button of row.components) {
+      for (const row of rows)
+        for (const button of row.components)
           button.setDisabled(true);
-        }
-      }
 
-      if(button.customId != 'cancel') embed.description = `Loading ${results[button.customId -1]}...`;
-      await editReply(player, { embeds: [embed], components: rows });
+      if (button.customId != 'cancel') embed.data.description = `Loading ${results[button.customId - 1]}...`;
+      await functions.editPlayer(player, { embeds: [embed], components: rows });
 
       if (button.customId == 'cancel') return;
 
-      await client.musicPlayer.play(interaction.member.voice.channel, /\((.*)\)/g.exec(results[button.customId - 1])[1], {
+      await musicPlayer.play(interaction.member.voice.channel, results[button.customId - 1].match(/\((.*)\)/g)[0], {
         member: interaction.member,
         textChannel: interaction.channel,
-        skip: interaction.options.getBoolean('skip') || false
+        skip: interaction.options.getBoolean('skip')
       });
 
-      const queue = client.musicPlayer.getQueue(interaction.guild.id);
-      if (autoplay || autoplay === false && ((autoplay && !queue.autoplay) || (!autoplay && queue.autoplay))) queue.toggleAutoplay();
+      const queue = musicPlayer.getQueue(interaction.guild.id);
 
-      if (interaction.options.getBoolean('shuffle')) queue.shuffle();
+      if (interaction.options.getBoolean('shuffle')) await queue.shuffle();
     });
 
     collector.on('end', async collected => {
-      if ((collected.size && collected.toJSON()[0].customId != 'cancel') || client.musicPlayer.getQueue(interaction.guild.id)) return;
+      if ((collected.size && collected.first().customId != 'cancel') || musicPlayer.getQueue(interaction.guild.id)) return;
 
-      await client.sleep(15000);
+      await functions.sleep(15000);
       player.deleteReply();
     })
 

@@ -3,20 +3,21 @@ const { joinVoiceChannel } = require('@discordjs/voice');
 
 module.exports = new Command({
   name: 'join',
+  aliases: [],
   description: 'Joins the voice channel you are in',
   permissions: { client: [], user: [] },
-  cooldown: { client: 0, user: 3000 },
+  cooldowns: { client: 0, user: 3000 },
   category: 'Music',
 
-  run: async (player, interaction) => {
-    if (interaction.member.voice.channelId == interaction.guild.me.voice.channelId) return editReply(player, "I'm already in your voice channel!",  true );
+  run: async (player, { member, guild }) => {
+    if (member.voice.channelId == guild.me.voice.channelId) return client.functions.editPlayer(player, "I'm already in your voice channel!", true);
 
     joinVoiceChannel({
-      channelId: interaction.member.voice.channelId,
-      guildId: interaction.guild.id,
-      adapterCreator: interaction.guild.voiceAdapterCreator
+      channelId: member.voice.channelId,
+      guildId: guild.id,
+      adapterCreator: guild.voiceAdapterCreator
     });
 
-    await editReply(player, 'I joined your voice channel.',  true );
+   client.functions.editPlayer(player, 'I joined your voice channel.', true);
   }
 })

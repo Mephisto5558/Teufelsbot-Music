@@ -1,81 +1,89 @@
 const
   { Command } = require('reconlx'),
-  { MessageEmbed } = require('discord.js'),
-  { colors } = require('../../Settings/embed.json');
+  { EmbedBuilder, Colors } = require('discord.js');
+
+function listCommands(list, output, count, category) {
+  for (let command of list) {
+    command = command[1];
+
+    if (command.category.toUpperCase() != category?.toUpperCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
+
+    if (count % 5 == 0) output += `\`${command.name}\`\n> `
+    else output += `\`${command.name}\`, `
+    count++
+  }
+  return [output, count];
+}
 
 module.exports = new Command({
   name: 'help',
-  aliases: [],
+  aliases: [] ,
   description: 'Shows all bot commands',
-  permissions: { client: [], user: [] },
-  cooldowns: { global: '', user: '' },
+  permissions: { client: ['EmbedLinks'], user: [] },
+  cooldowns: { guild: 0, user: 50 },
   category: 'Information',
   ephemeralDefer: true,
   options: [{
     name: 'command',
     description: 'Type a command here to get more information about it',
-    type: 'STRING',
+    type: 'String',
     required: false
   }],
 
   run: (_, interaction, client) => {
+    const embed = new EmbedBuilder({ color: Colors.Blurple });
     const query = interaction.options?.getString('command')?.toLowerCase();
 
-    let embed = new MessageEmbed({
-      color: colors.discord.BURPLE
-    });
-
     if (query) {
-      const cmd = client.slashCommands.get(query);
+      const cmd = client.commands.get(query);
 
-      if (!cmd?.name || cmd.hideInHelp || cmd.disabled || cmd.category.toUpperCase() == 'OWNER-ONLY') {
-        embed
-          .setDescription(`No Information found for command \`${query}\``)
-          .setColor(colors.RED);
+      if (!cmd?.name || cmd.hideInHelp || cmd.disabled || cmd.category.toLowerCase() == 'owner-only') {
+        embed.data.description = `No Information found for command \`${query}\``;
+        embed.data.color = Colors.Red;
       }
       else {
-        if (cmd.name) embed.title = `Detailed Information about: \`${cmd.name}\``;
-        if (cmd.description) embed.description = cmd.description;
-        if (cmd.aliases?.length) embed.addField('Aliases', `\`${listCommands(cmd.aliases, '', 1).replace(/> /g, '')}\``);
-        if (cmd.usage) embed.addField('Usage', `${cmd.slashCommand ? 'SLASH Command: look at the option descriptions.\n' : ''} ${cmd.usage || ''}`);
-
-        embed.footer = { text: 'Syntax: <> = required, [] = optional' };
+        embed.data.title = `Detailed Information about: \`${cmd.name}\``;
+        embed.data.description = cmd.description ?? 'No description found';
+        embed.data.fields = [
+          cmd.aliases?.length ? { name: 'Command Aliases', value: `\`${listCommands(cmd.aliases, '', 1)[0].replace(/> /g, '')}\``, inline: true } : null,
+          cmd.permissions?.client?.length ? { name: 'Required Bot Permissions', value: `\`${cmd.permissions.client.join('`, `')}\``, inline: false } : null,
+          cmd.permissions?.user?.length ? { name: 'Required User Permissions', value: `\`${cmd.permissions.user.join('`, `')}\``, inline: true } : null,
+          cmd.cooldowns?.guild || cmd.cooldowns?.user ? {
+            name: 'Command Cooldowns', inline: false, value:
+              (cmd.cooldowns.guild ? `Guild: \`${parseFloat((cmd.cooldowns.guild / 1000).toFixed(2))}\`s${cmd.cooldowns.user ? ', ' : ''}` : '') +
+              (cmd.cooldowns.user ? `User: \`${parseFloat((cmd.cooldowns.user / 1000).toFixed(2))}\`s` : '')
+          } : null,
+          cmd.usage ? { name: 'Usage', value: `${cmd.slashCommand ? 'Look at the option descriptions.\n' : ''} ${cmd.usage || ''}`, inline: false } : null
+        ].filter(e => e);
       }
 
-      return interaction.editReply({ embeds: [embed] });
+      return interaction.editReply({ embeds: [embed] })
     }
 
-    embed.title = `🔰All my commands`;
-    embed.setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
-
-    let cmdList = '';
+    embed.data.title = `🔰All my commands`;
+    embed.setThumbnail(client.user.displayAvatarURL());
 
     for (let i = 0; i < client.categories.length; i++) {
-      const category = client.categories[i].toUpperCase();
-      if (category == 'OWNER-ONLY') continue;
+      const category = client.categories[i].toLowerCase();
+      if (category == 'owner-only') continue;
 
-      let a = 0;
-      for (let command of client.slashCommands) {
-        command = command[1];
-        if (command.category.toUpperCase() != category.toUpperCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
+      let data = listCommands(client.commands, '', 1, category);
+      data = listCommands(client.commands, data[0], data[1], category);
 
-        if (a % 5 == 0) cmdList += `\`${command.name}\`\n> `
-        else cmdList += `\`${command.name}\`, `
-        i++
-      }
+      if (data[1] == 1) continue;
 
-      if (a == 1) continue;
+      let cmdList = data[0];
 
       if (cmdList.endsWith('\n> ')) cmdList = cmdList.slice(0, -4);
       if (cmdList.endsWith(', ')) cmdList = cmdList.slice(0, -2);
+      if (!cmdList.endsWith('`')) cmdList += '`';
 
-      embed.addField(`**${category} [${i - 1}]**`, `> ${cmdList}\n`);
+      if (cmdList) embed.addFields([{ name: `**${category} [${data[1] - 1}]**`, value: `> ${cmdList}\n`, inline: true }]);
     }
 
-    if (!embed.fields) embed.description = 'No commands found...';
-    else embed.footer = { text: `Use the 'command' option to get more information about a specific command.` };
+    if (!embed.data.fields) embed.data.description = 'No commands found...';
+    else embed.data.footer = { text: `Use the 'command' option to get more information about a specific command.` };
 
     interaction.editReply({ embeds: [embed] });
-
   }
 })

@@ -1,14 +1,19 @@
-const { MessageEmbed } = require('discord.js');
-const { colors } = require('../Settings/embed.json');
+const { EmbedBuilder, Colors, InteractionType, PermissionFlagsBits } = require('discord.js');
 
 module.exports = async (client, interaction) => {
-  const command = client.slashCommands.get(interaction.commandName);
-  if (!command) return;
+  const command = client.commands.get(interaction.commandName);
+  if (!command || !interaction.isRepliable()) return;
+
+  const cooldown = await require('../Functions/private/cooldowns.js')(client, interaction.user, command);
+  if (cooldown) return interaction.reply(`This command is on cooldown! Try again in \`${cooldown}\`s.`);
+
+  if (command.category.toLowerCase() == 'owner-only' && interaction.user.id != client.application.owner.id) return;
+  //DO NOT REMOVE THIS LINE!
 
   let errorMsg;
 
-  let player = client.musicPlayer?.interaction?.get(interaction.guild.id);
-  if (!player || player.channel.id != interaction.channel.id) player = interaction; //add check if interaction has been deleted
+  const player = client.musicPlayer?.interaction?.get(interaction.guild.id);
+  if (!player || player.channel.id != interaction.channel.id) player = interaction;
   else player.queue = client.musicPlayer.getQueue(interaction.guild.id);
 
   if (!interaction.member.voice.channel && !['information', 'useful'].includes(command.category.toLowerCase()) && interaction.commandName != 'leave')
@@ -17,39 +22,30 @@ module.exports = async (client, interaction) => {
 
   if (errorMsg) return interaction.reply({ content: errorMsg, ephemeral: true });
 
-  if (interaction.isCommand()) {
-    command.permissions.user.push('SEND_MESSAGES');
-    command.permissions.client.push('SEND_MESSAGES');
+  if (interaction.type === InteractionType.ApplicationCommand) {
+    const userPerms = interaction.member.permissionsIn(interaction.channel).missing([...command.permissions.user, PermissionFlagsBits.SendMessages]);
+    const botPerms = interaction.guild.members.me.permissionsIn(interaction.channel).missing([...command.permissions.client, PermissionFlagsBits.SendMessages]);
 
-    let embed = new MessageEmbed({
+    const embed = new EmbedBuilder({
       title: 'Insufficient Permissions',
-      color: colors.discord.RED
+      color: Colors.Red,
+      description:
+        `${userPerms.length ? 'You' : 'I'} need the following permissions in this channel to run this command:\n\`` +
+        (botPerms.length ? botPerms : userPerms).join('`, `') + '`'
     });
 
-    if (interaction.isCommand()) {
-      const userPerms = interaction.member.permissionsIn(interaction.channel).missing([...command.permissions.user, 'SEND_MESSAGES']);
-      const botPerms = interaction.guild.me.permissionsIn(interaction.channel).missing([...command.permissions.client, 'SEND_MESSAGES']);
+    if (botPerms.length || userPerms.length) return interaction.reply({ embeds: [embed], ephemeral: true });
+    if (!command.noDefer) await interaction.deferReply({ ephemeral: command.ephemeralDefer || false });
 
-      const embed = new MessageEmbed({
-        title: 'Insufficient Permissions',
-        color: colors.discord.RED,
-        description:
-          `${userPerms.length ? 'You' : 'I'} need the following permissions in this channel to run this command:\n\`` +
-          (botPerms.length ? botPerms : userPerms).join('`, `') + '`'
-      });
+    for (const entry of interaction.options._hoistedOptions)
+      if (entry.type == 'STRING') entry.value = entry.value.replace(/<@!/g, '<@');
 
-      if (botPerms.length || userPerms.length) return interaction.reply({ embeds: [embed], ephemeral: true });
-      if (!command.noDefer) await interaction.deferReply({ ephemeral: command.ephemeralDefer || false });
+    player.queue = client.musicPlayer.getQueue(player.guild.id);
 
-      interaction.options._hoistedOptions.forEach(entry => { if (entry.type == 'STRING') entry.value = entry.value?.replace(/<@!/g, '<@') });
+    client.interaction = interaction;
+    await command.run(player, interaction, client);
+    client.interaction = null;
 
-      player.queue = client.musicPlayer.getQueue(player.guild.id);
-
-      client.interaction = interaction;
-      await command.run(player, interaction, client);
-      if (command.category.toLowerCase() == 'music' && player.id && player.id != interaction.id) interaction.deleteReply();
-
-      client.interaction = null;
-    }
+    if (command.category.toLowerCase() == 'music' && player.id && player.id != interaction.id) interaction.deleteReply();
   }
 }

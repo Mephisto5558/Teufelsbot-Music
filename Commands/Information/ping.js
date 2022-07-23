@@ -1,7 +1,6 @@
 const
   { Command } = require('reconlx'),
-  { MessageEmbed } = require('discord.js'),
-  { colors } = require('../../Settings/embed.json');
+  { EmbedBuilder, Colors } = require('discord.js');
 
 module.exports = new Command({
   name: 'ping',
@@ -11,21 +10,19 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { global: '', user: '' },
   category: 'Information',
-  slashCommand: true,
-  prefixCommand: true,
   options: [{
     name: 'average',
     description: 'Gets the ping average',
-    type: 'BOOLEAN',
+    type: 'Boolean',
     required: false
   }],
 
   run: async (_, interaction, client) => {
     if (interaction.options?.getBoolean('average')) {
-      const embed = new MessageEmbed({
+      const embed = new EmbedBuilder({
         title: 'Ping',
         description: `Pinging... (this takes about one minute)`,
-        color: colors.discord.BURPLE
+        color: Colors.Blurple
       });
 
       interaction.editReply({ embeds: [embed] });
@@ -34,7 +31,7 @@ module.exports = new Command({
 
       for (i = 0; i <= 59; i++) {
         pings.push(client.ws.ping);
-        await client.sleep(1000);
+        await client.functions.sleep(1000);
       }
 
       pings.sort((a, b) => a - b);
@@ -54,12 +51,12 @@ module.exports = new Command({
 
     const ping = Math.abs(Date.now() - interaction.createdTimestamp);
 
-    const embed = new MessageEmbed({
+    const embed = new EmbedBuilder({
       title: 'Ping',
       description:
         `Latency: \`${ping}ms\`\n` +
         `API Latency: \`${Math.round(client.ws.ping)}ms\``,
-      color: colors.discord.BURPLE
+      color: Colors.Blurple
     });
 
     interaction.editReply({ embeds: [embed] });

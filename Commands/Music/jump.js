@@ -2,15 +2,16 @@ const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'jump',
+  aliases: [],
   description: 'Jump to a song',
   permissions: { client: [], user: [] },
-  cooldown: { client: 1000, user: 2000 },
+  cooldowns: { client: 1000, user: 2000 },
   category: 'Music',
   needsQueue: true,
   options: [{
     name: 'position',
     description: 'Jump to a Song Number in the queue',
-    type: 'NUMBER',
+    type: 'Number',
     required: true
   }],
 
@@ -19,6 +20,6 @@ module.exports = new Command({
 
     await player.queue.jump(postion);
 
-    await editReply(player, `Jumped to ${player.queue.songs[0].name}`,  true );
+    await client.functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`,  true );
   }
 })

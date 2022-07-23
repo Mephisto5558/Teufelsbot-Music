@@ -1,6 +1,6 @@
 const
   { Command } = require('reconlx'),
-  { MessageEmbed } = require('discord.js'),
+  { EmbedBuilder } = require('discord.js'),
   getLyrics = require('songlyrics').default,
   { search } = require('yt-search');
 
@@ -28,7 +28,7 @@ module.exports = new Command({
   run: async (_, interaction) => {
     const
       song = interaction.options.getString('song'),
-      embed = new MessageEmbed({
+      embed = new EmbedBuilder({
         title: song,
         color: 'RANDOM',
         footer: {

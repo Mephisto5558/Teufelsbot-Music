@@ -5,18 +5,13 @@ module.exports = new Command({
   aliases: ['resume'],
   description: 'pauses/resumes the player',
   permissions: { client: [], user: [] },
-  cooldown: { client: 0, user: 2000 },
+  cooldowns: { client: 0, user: 2000 },
   category: 'Music',
   needsQueue: true,
 
-  run: async (player) => {
-    if (player.queue.paused) {
-      await player.queue.resume();
-      await editReply(player, 'Player resumed',  true );
-    }
-    else {
-      await player.queue.pause();
-      await editReply(player, 'Player paused',  true );
-    }
+  run: async (player, _, { functions }) => {
+    player.queue.paused ? await player.queue.resume() : await player.queue.pause();
+
+    functions.editPlayer(player, `Player ${player.queue.paused ? 'paused' : 'resumed'}`, true);
   }
 })

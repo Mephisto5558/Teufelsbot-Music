@@ -2,14 +2,15 @@ const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'clearqueue',
-  description: 'Clear all songs from thr queue',
+  aliases: [],
+  description: 'Clear all songs from the queue',
   permissions: { client: [], user: [] },
-  cooldown: { client: 0, user: 5000 },
+  cooldowns: { client: 0, user: 5000 },
   category: 'Music',
   needsQueue: true,
 
   run: async player => {
     await player.queue.delete();
-    await editReply(player, 'Queue cleared',  true );
+   client.functions.editPlayer(player, 'Queue cleared', true);
   }
 })

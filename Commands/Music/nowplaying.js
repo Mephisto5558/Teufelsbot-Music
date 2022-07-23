@@ -11,13 +11,13 @@ module.exports = new Command({
 
   run: async player => {
     const
-      song = player.queue.songs[0],
-      remainingTime = Number.prototype.toFormattedTime(song.duration - player.queue.currentTime);
+      { name, url, user } = player.queue.songs[0],
+      remainingTime = (song.duration - player.queue.currentTime).toFormattedTime();
 
-    await editReply(player,
+    await client.functions.editPlayer(player,
       `I am currently playing\n` +
-      `[${song.name}](${song.url}) \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\`\n` +
-      `Requested by: ${song.user}`,
+      `[${name}](${url}) \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\`\n` +
+      `Requested by: ${user}`,
       true
     )
   }

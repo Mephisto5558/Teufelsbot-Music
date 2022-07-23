@@ -1,152 +1,112 @@
 const
+  { Collection, ApplicationCommandType, ApplicationCommandOptionType, PermissionsBitField, ChannelType } = require('discord.js'),
   { readdirSync } = require('fs'),
-  { Client } = require('discord-slash-commands-client'),
-  errorColor = require('chalk').bold.red,
   event = require('../Events/interactionCreate.js');
 
-let
-  commandCount = 0,
-  delCommandCount = 0,
-  skipCommandCount = 0,
-  commands = [],
-  clientCommands = [];
+let deletedCommandCount = 0;
 
-function work(option) {
-  if (Array.isArray(option.options))
-    for (const subOption of option.options) work(subOption);
+function equal(a, b) {
+  if (!a?.toString() && !b?.toString()) return true;
+  if(typeof a == 'string' || typeof b == 'string') return a == b;
+  if (
+    a.name != b.name || a.description != b.description || a.type != b.type || a.autocomplete != b.autocomplete ||
+    a.value != b.value || (a.options?.length ?? 0) != (b.options?.length ?? 0) || (a.channelTypes?.length ?? 0) != (b.channelTypes?.length ?? 0) ||
+    a.minValue != b.minValue || a.maxValue != b.maxValue || !!a.required != !!b.required || !equal(a.choices, b.choices) ||
+    a.defaultMemberPermissions?.bitfield != b.defaultMemberPermissions?.bitfield
+  ) return;
 
-  if (!option.type) {
-    console.log(errorColor(`options.type IS MISSING! Fixing.`))
-    return option.type = 1;
-  }
+  for (let i = 0; i < (a.options?.length || 0); i++) if (!equal(a.options?.[i], b?.options?.[i])) return;
+  for(let i = 0; i < (a.channelTypes?.length || 0); i++) if (!equal(a.channelTypes?.[i], b.channelTypes?.[i])) return;
 
-  if (/[A-Z]/.test(option.name)) {
-    console.log(errorColor(`${option.name} IS UPPERCASE! UPPERCASE IS INVALID! Fixing.`))
-    option.name = option.name.toLowerCase();
-  }
-
-  option.type = option.type.toString()
-    .replace('SUB_COMMAND_GROUP', 2).replace('SUB_COMMAND', 1)
-    .replace('STRING', 3).replace('INTEGER', 4)
-    .replace('BOOLEAN', 5).replace('USER', 6)
-    .replace('CHANNEL', 7).replace('ROLE', 8)
-    .replace('MENTIONABLE', 9).replace('NUMBER', 10)
-    .replace('ATTACHMENT', 11)
+  return true;
 }
 
-async function compareCommands(input) {
-  output = formatOptions(input);
-  for (let i = 0; i < output.length; i++) {
-    output[i] = JSON.stringify(output[i])
-      .replace(/([0-9]+)([^"0-9"])/g, '"$1"$2');
+function format(option) {
+  if (option.options) for (let subOption of option.options) subOption = format(subOption);
+  if (option.run) {
+    if (!option.type) option.type = ApplicationCommandType.ChatInput;
+    else if (!ApplicationCommandType[option.type]) throw new Error(`Invalid option.type, got ${option.type}`);
+    else if (isNaN(option.type)) option.type = ApplicationCommandType[option.type];
+
+    if (option.permissions?.user.length) option.defaultMemberPermissions = new PermissionsBitField(option.permissions?.user);
+
+    return option;
   }
 
-  return output[0] == output[1];
+  option.channelTypes = option.channelTypes?.map(e => {
+    if (!ChannelType[e] && ChannelType[e] != 0) throw Error(`Invalid option.channelType, got ${e}`);
+    return isNaN(e) ? ChannelType[e] : e;
+  });
+
+  if (!option.type || !ApplicationCommandOptionType[option.type]) throw Error(`Missing or invalid option.type, got ${option.type}`);
+  if (isNaN(option.type)) option.type = ApplicationCommandOptionType[option.type];
+
+  return option;
 }
 
-function formatOptions(input) {
-  let output = [];
+module.exports = async (client, SyncGuild) => {
+  await client.ready();
 
-  for (const entry of input) {
-    output.push({
-      name: entry.name,
-      description: entry.description,
-      required: entry.required || false,
-      choices: entry.choices || false,
-      options: entry.options ? formatOptions(entry.options) : false
-    })
-  }
+  const skippedCommands = new Collection();
+  const applicationCommands = await client.application.commands.fetch(undefined, { guildId: SyncGuild && SyncGuild != '*' ? SyncGuild : undefined });
 
-  return output;
-}
+  if (!SyncGuild || SyncGuild == '*') {
+    client.commands = new Collection();
 
-module.exports = async (client, guildForForceSync) => {
-  const commandClient = new Client(process.env.token, client.userID);
-
-  clientCommands = await commandClient.getCommands({});
-
-  if (!guildForForceSync) {
-    for (const subFolder of readdirSync('./Commands')) {
+    for (const subFolder of getDirectoriesSync('./Commands')) {
       for (const file of readdirSync(`./Commands/${subFolder}`).filter(file => file.endsWith('.js'))) {
+        const command = format(require(`../Commands/${subFolder}/${file}`));
+        let skipped = false;
 
-        let command = require(`../Commands/${subFolder}/${file}`);
         if (command.disabled || (client.botType == 'dev' && !command.beta)) continue;
 
-        if (Array.isArray(command.options)) for (const option of command.options) work(option);
-        else if (command.options) work(commandOption.options);
-
-        commands.push(command);
-        client.slashCommands.set(command.name, command);
-      }
-    }
-  }
-
-  for (const command of commands) {
-    let same = false;
-
-    if (!guildForForceSync) {
-      for (const clientCommand of clientCommands) {
-        same = await compareCommands([command, clientCommand]);
-        if (same) {  
-          client.log(`Skipped Registration of Slash Command ${command.name}`);
-          skipCommandCount++;
+        for (const applicationCommand of applicationCommands) {
+          if (!equal(command, applicationCommand[1])) continue;
+          client.log(`Skipped Slash Command ${command.name}`);
+          skipped = true;
+          skippedCommands.set(command.name, command);
           break;
+        }
+        if (!skipped) {
+          client.commands.set(command.name, command);
+          for (const alias of command.aliases.slash) client.commands.set(alias, command);
         }
       }
     }
 
-    clientCommands = clientCommands.filter(entry => entry.name != command.name);
-
-    if (same) continue;
-    if (commandCount && commands[commandCount + 1])
-      await client.sleep(10000);
-
-    try {
-      await commandClient.createCommand({
-        name: command.name,
-        description: command.description,
-        options: command.options
-      }, guildForForceSync?.id);
-
-      client.log(`Registered Slash Command ${command.name}${guildForForceSync?` for guild ${guildForForceSync.id}`:''}`);
-      commandCount++
-    }
-    catch (err) {
-      console.error(errorColor('[Error Handling] :: Unhandled Slash Handler Error/Catch'));
-      console.error(err);
-      if (err.response?.data.errors)
-        console.error(errorColor(JSON.stringify(err.response.data, null, 2)));
+    for (const guild of await client.guilds.fetch()) {
+      await client.application.commands.set([], guild[0]);
+      client.log(`Cleared Slash Commands for Guild ${guild[0]}`);
     }
   }
 
-  for (const clientCommand of clientCommands) {
-    try {
-      await commandClient.deleteCommand(clientCommand.id);
-      client.log(`Deleted Slash Command ${clientCommand.name}`);
-      delCommandCount++
-    }
-    catch (err) {
-      console.error(errorColor('[Error Handling] :: Unhandled Slash Command Handler Error/Catch'));
-      console.error(err);
-      if (err.response.data.errors)
-        console.error(errorColor(JSON.stringify(err.response.data, null, 2)));
-    }
-
-    if (clientCommands[delCommandCount + 1]) await client.sleep(10000);
+  for (const command of client.commands) {
+    await client.application.commands.create(command[1], SyncGuild && SyncGuild != '*' ? SyncGuild : null);
+    client.log(`Registered Slash Comand ${command[0]}`);
   }
 
-  client.log(`Registered ${commandCount} Slash commands`);
-  client.log(`Skipped ${skipCommandCount} Slash Commands`);
-  client.log(`Deleted ${delCommandCount} Slash commands\n`);
+  const commandNames = [...client.commands, ...skippedCommands].map(e => e[0]);
+  for (const clientCommand of applicationCommands) {
+    if (commandNames.includes(clientCommand[1].name)) continue;
+
+    await client.application.commands.delete(clientCommand[1], SyncGuild && SyncGuild != '*' ? SyncGuild : null);
+    client.log(`Deleted Slash Comand ${clientCommand[1].name}`);
+    deletedCommandCount++
+  }
+
+  if (SyncGuild) return;
+
+  client.log(`Registered ${client.commands.size} Slash Commands`);
+
+  skippedCommands.forEach((v, k) => client.commands.set(k, v));
+
+  client.log(`Skipped ${skippedCommands.size} Slash Commands`);
+  client.log(`Deleted ${deletedCommandCount} Slash Commands`);
 
   client.on('interactionCreate', event.bind(null, client));
-  client.log(`Loaded Event interactionCreate`);
-  client.log(`Ready to receive slash commands\n`);
+  client.log('Loaded Event interactionCreate');
+  client.log('Ready to receive slash commands\n');
 
-  if (guildForForceSync) return;
-
-  while (!client.isReady()) await client.sleep(100);
-
-  client.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)} users.\n`);
+  client.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${new Set(client.guilds.cache.map(g => Array.from(g.members.cache.filter(e => !e.user.bot).keys())).flat()).size} unique users.\n`);
   console.timeEnd('Starting time');
 }
