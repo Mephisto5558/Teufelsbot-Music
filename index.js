@@ -50,4 +50,10 @@ for (const handler of readdirSync('./Handlers')) require(`./Handlers/${handler}`
 client.login(process.env.token)
   .then(_ => client.log(`Logged in`));
 
-process.on('exit', _ => client.destroy());
+client.rest.on('rateLimited', info => client.log(`Waiting for ${info.global ? 'global ratelimit' : `ratelimit on ${info.route}`} to subside (${info.timeToReset}ms)`));
+
+process
+  .on('unhandledRejection', err => require('./Functions/private/error_handler.js')(null, err))
+  .on('uncaughtExceptionMonitor', err => require('./Functions/private/error_handler.js')(null, err))
+  .on('uncaughtException', err => require('./Functions/private/error_handler.js')(null, err))
+  .on('exit', _ => client.destroy());
