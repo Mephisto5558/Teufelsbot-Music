@@ -8,9 +8,10 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { client: 0, user: 3000 },
   category: 'Music',
+  needsVC: true,
 
-  run: async (player, { member, guild }) => {
-    if (member.voice.channelId == guild.me.voice.channelId) return client.functions.editPlayer(player, "I'm already in your voice channel!", true);
+  run: async (player, { member, guild }, { functions }) => {
+    if (member.voice.channelId == guild.members.me.voice.channelId) return functions.editPlayer(player, "I'm already in your voice channel!", true);
 
     joinVoiceChannel({
       channelId: member.voice.channelId,
@@ -18,6 +19,6 @@ module.exports = new Command({
       adapterCreator: guild.voiceAdapterCreator
     });
 
-   client.functions.editPlayer(player, 'I joined your voice channel.', true);
+    functions.editPlayer(player, 'I joined your voice channel.', true);
   }
 })

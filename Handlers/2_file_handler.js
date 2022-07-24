@@ -13,7 +13,7 @@ module.exports = async client => {
 
     fs.writeFile('./Logs/startCount.log', startCount.toString(), err => {
       if (err) throw err;
-    })
+    });
   });
 
   client.on('debug', debug => {

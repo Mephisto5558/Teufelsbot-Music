@@ -14,13 +14,13 @@ module.exports = new Command({
     {
       name: 'song',
       description: 'The title of the song',
-      type: 'STRING',
+      type: 'String',
       required: true
     },
     {
       name: 'artist',
       description: 'who made the song',
-      type: 'STRING',
+      type: 'String',
       required: true
     }
   ],

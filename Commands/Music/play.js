@@ -9,6 +9,7 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { global: 0, user: 1000 },
   category: 'Music',
+  needsVC: true,
   options: [
     {
       name: 'query',

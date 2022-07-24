@@ -7,6 +7,7 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { global: 0, user: 2000 },
   category: 'Music',
+  needsVC: true,
   needsQueue: true,
   options: [
     {
@@ -21,11 +22,10 @@ module.exports = new Command({
     }
   ],
 
-  run: async (player, { options }) => {
+  run: async (player, { options }, { functions }) => {
     const cmd = options.getSubcommand();
 
     await player.queue.setRepeatMode(player.queue.repeatMode > 0 ? 0 : (cmd == 'song' ? 1 : 2));
-
-    await client.functions.editPlayer(player, `${player.queue.repeatMode > 0 ? 'Disabled' : (cmd == 'song' ? 'Enabled song' : 'Enabled queue')} loop.`, true);
+    functions.editPlayer(player, `${player.queue.repeatMode > 0 ? 'Disabled' : (cmd == 'song' ? 'Enabled song' : 'Enabled queue')} loop.`, true);
   }
 })

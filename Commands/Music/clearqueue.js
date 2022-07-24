@@ -7,10 +7,11 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { client: 0, user: 5000 },
   category: 'Music',
+  needsVC: true,
   needsQueue: true,
 
-  run: async player => {
+  run: async (player, _, { functions }) => {
     await player.queue.delete();
-   client.functions.editPlayer(player, 'Queue cleared', true);
+    functions.editPlayer(player, 'Queue cleared', true);
   }
 })

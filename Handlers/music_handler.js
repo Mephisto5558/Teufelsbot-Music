@@ -21,7 +21,6 @@ module.exports = async client => {
     leaveOnEmpty: false,
     leaveOnFinish: false,
     leaveOnStop: false,
-    youtubeDL: false,
     savePreviousSongs: true,
     plugins: [
       new YtDlpPlugin(),
@@ -66,9 +65,9 @@ module.exports = async client => {
 
     .on('disconnect', ({ textChannel }) => reply(client, `Leaving Channel`, textChannel))
 
-    .on('initQueue', ({ autoplay, volume }) => {
-      autoplay = false;
-      volume = 100;
+    .on('initQueue', queue => {
+      queue.autoplay = false;
+      queue.volume = 100;
     })
 
     .on('error', (channel, err) => {

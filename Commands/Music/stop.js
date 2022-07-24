@@ -9,8 +9,8 @@ module.exports = new Command({
   category: 'Music',
   needsQueue: true,
 
-  run: async player => {
+  run: async (player, _, { functions }) => {
     await player.queue.stop();
-    client.functions.editPlayer(player, 'Player stopped', true);
+    functions.editPlayer(player, 'Player stopped', true);
   }
 })

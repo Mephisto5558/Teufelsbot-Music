@@ -9,12 +9,12 @@ module.exports = new Command({
   category: 'Music',
   needsQueue: true,
 
-  run: async player => {
+  run: async (player, _, { functions }) => {
     const
       { name, url, user } = player.queue.songs[0],
       remainingTime = (song.duration - player.queue.currentTime).toFormattedTime();
 
-    await client.functions.editPlayer(player,
+    await functions.editPlayer(player,
       `I am currently playing\n` +
       `[${name}](${url}) \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\`\n` +
       `Requested by: ${user}`,

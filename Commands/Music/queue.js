@@ -11,7 +11,7 @@ module.exports = new Command({
   category: 'Music',
   needsQueue: true,
 
-  run: async player => {
+  run: async (player, _, { functions }) => {
     const song = player.queue.songs[0];
     const remainingSongTime = (song.duration - player.queue.currentTime).toFormattedTime();
 
@@ -29,6 +29,6 @@ module.exports = new Command({
       ]
     });
 
-    await client.functions.editPlayer(player, { embeds: [embed] });
+    functions.editPlayer(player, { embeds: [embed] });
   }
 })

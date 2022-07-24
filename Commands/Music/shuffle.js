@@ -9,8 +9,8 @@ module.exports = new Command({
   category: 'Music',
   needsQueue: true,
 
-  run: async player => {
+  run: async (player, _, { functions }) => {
     await player.queue.shuffle();
-    client.functions.editPlayer(player, 'Shuffled the queue!', true);
+    functions.editPlayer(player, 'Shuffled the queue!', true);
   }
 })

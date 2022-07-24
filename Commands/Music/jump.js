@@ -7,6 +7,7 @@ module.exports = new Command({
   permissions: { client: [], user: [] },
   cooldowns: { client: 1000, user: 2000 },
   category: 'Music',
+  needsVC: true,
   needsQueue: true,
   options: [{
     name: 'position',
@@ -15,11 +16,11 @@ module.exports = new Command({
     required: true
   }],
 
-  run: async (player, interaction) => {
-    const postion = interaction.options.getNumber('position');
+  run: async (player, { options }, { functions }) => {
+    const postion = options.getNumber('position');
 
     await player.queue.jump(postion);
 
-    await client.functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`,  true );
+    await functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`, true);
   }
 })
