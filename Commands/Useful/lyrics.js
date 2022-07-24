@@ -6,6 +6,7 @@ const
 
 module.exports = new Command({
   name: 'lyrics',
+  aliases: [],
   description: 'search for song lyrics',
   permissions: { client: [], user: [] },
   cooldowns: { global: 0, user: 5000 },

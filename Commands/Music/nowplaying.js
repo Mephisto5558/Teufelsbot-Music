@@ -11,8 +11,8 @@ module.exports = new Command({
 
   run: async (player, _, { functions }) => {
     const
-      { name, url, user } = player.queue.songs[0],
-      remainingTime = (song.duration - player.queue.currentTime).toFormattedTime();
+      { duration, name, url, user } = player.queue.songs[0],
+      remainingTime = (duration - player.queue.currentTime).toFormattedTime();
 
     await functions.editPlayer(player,
       `I am currently playing\n` +

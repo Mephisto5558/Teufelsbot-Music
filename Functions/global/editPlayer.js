@@ -13,14 +13,14 @@ module.exports = (interaction, content, asEmbed, asError) => {
     content = { embeds: [embed] };
   }
 
-  if(typeof content == 'object') {
-    for (const item of Object.entries(content)) {
+  if (typeof content == 'object') {
+    for (const item of Object.entries(content))
       if (item[1] && ['embeds', 'files', 'attachments', 'components'].includes(item[0]) && !item[1]?.[0])
         item[1] = Array(item[1]);
-    }
 
     if (asError) for (const embed of content.embeds) embed.data.color = Colors.Red;
   }
 
-  interaction.replied ? interaction.editReply(content) : interaction.channel.send(content);
+  /*try { */return interaction.editReply(content)/* }
+  catch { */interaction.reply(content) //}
 }

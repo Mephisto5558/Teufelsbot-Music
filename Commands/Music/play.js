@@ -59,11 +59,18 @@ module.exports = new Command({
     if (interaction.options.getBoolean('use_this_interaction')) player = interaction;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
-      return await musicPlayer.play(interaction.member.voice.channel, query, {
+      await musicPlayer.play(interaction.member.voice.channel, query, {
         member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip')
-      })
+      });
+
+      if (interaction.options.getBoolean('shuffle')) {
+        const queue = musicPlayer.getQueue(interaction.guild.id);
+        await queue.shuffle();
+      }
+
+      return;
     }
 
     const search = await musicPlayer.search(query, {
@@ -85,8 +92,8 @@ module.exports = new Command({
       color: Colors.Blurple
     });
 
-    for (let i = 0; i < results.length; i++) {
-      if (i % 5 == 4) {
+    for (let i = 1; i <= results.length; i++) {
+      if (i > 1 && i % 5 == 1) {
         rows.push(row);
         row = new ActionRowBuilder();
       }
@@ -102,47 +109,38 @@ module.exports = new Command({
       components: [new ButtonBuilder({
         customId: 'cancel',
         label: 'Cancel',
-        style: 'DANGER'
+        style: ButtonStyle.Danger
       })]
     }));
 
     await functions.editPlayer(player, { embeds: [embed], components: rows });
 
     const filter = i => i.member.id == interaction.member.id;
-    const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000, componentType: ComponentType.Button });
+    const collector = interaction.channel.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 30000 });
 
     collector.on('collect', async button => {
       await button.deferUpdate();
-      collector.stop();
+
+      embed.data.title = 'Music Player';
 
       if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, interaction);
 
-      for (const row of rows)
-        for (const button of row.components)
-          button.setDisabled(true);
-
-      if (button.customId != 'cancel') embed.data.description = `Loading ${results[button.customId - 1]}...`;
-      await functions.editPlayer(player, { embeds: [embed], components: rows });
+      if (button.customId != 'cancel') embed.data.description = `Loading ${results[button.customId - 1].replace(/^.*\. /, '')}...`;
+      await functions.editPlayer(player, { embeds: [embed], components: [] });
 
       if (button.customId == 'cancel') return;
 
-      await musicPlayer.play(interaction.member.voice.channel, results[button.customId - 1].match(/\((.*)\)/g)[0], {
+      await musicPlayer.play(interaction.member.voice.channel, /\((.*)\)/g.exec(results[button.customId - 1])[1], {
         member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip')
       });
 
-      const queue = musicPlayer.getQueue(interaction.guild.id);
-
-      if (interaction.options.getBoolean('shuffle')) await queue.shuffle();
+      if (interaction.options.getBoolean('shuffle')) {
+        const queue = musicPlayer.getQueue(interaction.guild.id);
+        await queue.shuffle();
+      }
     });
-
-    collector.on('end', async collected => {
-      if ((collected.size && collected.first().customId != 'cancel') || musicPlayer.getQueue(interaction.guild.id)) return;
-
-      await functions.sleep(15000);
-      player.deleteReply();
-    })
 
   }
 })

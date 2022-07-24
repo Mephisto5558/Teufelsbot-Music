@@ -4,11 +4,11 @@ const
 
 module.exports = new Command({
   name: 'ping',
-  aliases: [],
+  aliases: { prefix: [], slash: [] },
   description: `Get the bot's ping`,
   usage: '',
-  permissions: { client: [], user: [] },
-  cooldowns: { global: '', user: '' },
+  permissions: { client: ['EmbedLinks'], user: [] },
+  cooldowns: { guild: 0, user: 1000 },
   category: 'Information',
   options: [{
     name: 'average',
@@ -17,8 +17,8 @@ module.exports = new Command({
     required: false
   }],
 
-  run: async (_, interaction, client) => {
-    if (interaction.options?.getBoolean('average')) {
+  run: async ({ ws, functions }, message, interaction) => {
+    if (interaction?.options?.getBoolean('average')) {
       const embed = new EmbedBuilder({
         title: 'Ping',
         description: `Pinging... (this takes about one minute)`,
@@ -30,34 +30,39 @@ module.exports = new Command({
       let pings = [], i;
 
       for (i = 0; i <= 59; i++) {
-        pings.push(client.ws.ping);
-        await client.functions.sleep(1000);
+        pings.push(ws.ping);
+        await functions.sleep(1000);
       }
 
       pings.sort((a, b) => a - b);
 
       const averagePing = Math.round((pings.reduce((a, b) => a + b) / i) * 100) / 100;
 
-      embed
-        .setDescription(
-          `Pings: \`${pings.length}\`\n` +
-          `Lowest Ping: \`${pings[0]}ms\`\n` +
-          `Highest Ping: \`${pings[pings.length - 1]}ms\`\n` +
-          `Average Ping: \`${averagePing}ms\``
-        )
+      embed.data.description =
+        `Pings: \`${pings.length}\`\n` +
+        `Lowest Ping: \`${pings[0]}ms\`\n` +
+        `Highest Ping: \`${pings[pings.length - 1]}ms\`\n` +
+        `Average Ping: \`${averagePing}ms\``;
 
       return interaction.editReply({ embeds: [embed] })
     }
 
-    const ping = Math.abs(Date.now() - interaction.createdTimestamp);
-
     const embed = new EmbedBuilder({
-      title: 'Ping',
-      description:
-        `Latency: \`${ping}ms\`\n` +
-        `API Latency: \`${Math.round(client.ws.ping)}ms\``,
-      color: Colors.Blurple
+      title: 'Latency',
+      description: 'Loading...',
+      color: Colors.Green
     });
+
+    const messagePing = Date.now();
+    await interaction.editReply({ embeds: [embed] });
+    const endMessagePing = Date.now() - messagePing;
+
+    embed.data.fields = [
+      { name: 'API', value: `\`${Math.round(ws.ping)}\`ms`, inline: true },
+      { name: 'Bot', value: `\`${Math.abs(Date.now() - interaction.createdTimestamp)}\`ms`, inline: true },
+      { name: 'Message Send', value: `\`${endMessagePing}\`ms`, inline: true }
+    ];
+    embed.data.description = ' ';
 
     interaction.editReply({ embeds: [embed] });
   }

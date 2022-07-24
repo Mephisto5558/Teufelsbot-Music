@@ -2,6 +2,7 @@ const { Command } = require('reconlx');
 
 module.exports = new Command({
   name: 'leave',
+  aliases: [],
   description: 'Leave the current voice channel',
   permissions: { client: [], user: [] },
   cooldowns: { client: 0, user: 3000 },
