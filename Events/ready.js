@@ -1,5 +1,3 @@
-module.exports = async client => {
-  client.user.setActivity({ name: '/help', type: 'PLAYING' });
+const { ActivityType } = require('discord.js');
 
-  client.log('Ready to receive prefix commands');
-}
+module.exports = async ({ user }) => user.setActivity({ name: '/help', type: ActivityType.Playing })
