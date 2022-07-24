@@ -22,7 +22,7 @@
     "formidable": "^2.0.1",
     "lyrics-finder": "^21.7.0",
     "node": "^18.5.0",
-    "reconlx": "^2.5.6",
+    "reconlx": "github:Mephisto5558/reconlx-without-db",
     "songlyrics": "^2.4.2",
     "superagent": "^8.0.0",
     "yt-search": "^2.10.3"
