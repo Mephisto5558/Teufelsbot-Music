@@ -3,8 +3,7 @@ console.log('Starting...');
 
 const
   { Client, Collection, GatewayIntentBits, Partials } = require('discord.js'),
-  { readdirSync } = require('fs'),
-  webServer = require('express')();
+  { readdirSync } = require('fs');
 
 global.getDirectoriesSync = path => readdirSync(path, { withFileTypes: true }).filter(e => e.isDirectory()).map(directory => directory.name);
 
@@ -41,9 +40,6 @@ client.log = (...data) => {
   const date = new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false });
   console.log(`[${date}] ${data}`)
 };
-
-webServer.all('*', (_, res) => res.sendStatus(200));
-webServer.listen(8000, _ => client.log('Website is online'));
 
 for (const handler of readdirSync('./Handlers')) require(`./Handlers/${handler}`)(client);
 
