@@ -12,9 +12,9 @@ const pull = _ => exec('git pull', { maxBuffer: 1024 * 600 }, (err, stdout, stde
 
 pull();
 
-app.listen(1337);
+app.listen(process.env.port || 8080);
 app.get('*', (_, res) => res.sendStatus(200));
-app.post((_, res) => {
+app.post('/github/hooks/pull', (_, res) => {
   res.sendStatus(200);
   pull();
 });
