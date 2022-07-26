@@ -4,7 +4,7 @@ const
 
 module.exports = new Command({
   name: 'ping',
-  aliases: { prefix: [], slash: [] },
+  aliases: [],
   description: `Get the bot's ping`,
   usage: '',
   permissions: { client: ['EmbedLinks'], user: [] },
