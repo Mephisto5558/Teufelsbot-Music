@@ -7,12 +7,12 @@ const
 
 global.getDirectoriesSync = path => readdirSync(path, { withFileTypes: true }).filter(e => e.isDirectory()).map(directory => directory.name);
 
-Number.prototype.toFormattedTime = function toFormattedTime() {
-  if (isNaN(parseInt(this))) throw new SyntaxError(`${this} is not a valid number!`);
-  if (this >= 86400) throw new RangeError(`Number cannot be bigger then 86400, got ${this}!`);
+Number.prototype.toFormattedTime = function (num = this) {
+  if (isNaN(parseInt(num))) throw new SyntaxError(`${num} is not a valid number!`);
+  if (num >= 86400) throw new RangeError(`Number cannot be bigger then 86400, got ${num}!`);
 
-  return new Date(this * 1000).toISOString().substring(this < 3600 ? 14 : 11, 19);
-}
+  return new Date(num * 1000).toISOString().substring(num < 3600 ? 14 : 11, 19);
+};
 
 (async _ => require('./website.js'))();
 

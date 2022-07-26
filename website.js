@@ -19,5 +19,5 @@ app.post('/github/hooks/pull', (_, res) => {
   pull();
 });
 
-client.log('Website is online')
+console.log('Website is online')
 console.log('Git auto pull is running');
