@@ -37,7 +37,7 @@ module.exports = async (client, interaction) => {
 
   try { await command.run(player, interaction, client) }
   catch (err) {
-    await require('../Functions/private/error_handler.js')(interaction, err);
+    await require('../Functions/private/error_handler.js')(err, client, interaction);
   }
 
   if (command.category.toLowerCase() == 'music' && player.id != interaction.id) {

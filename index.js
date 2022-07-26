@@ -53,7 +53,7 @@ client.login(process.env.token)
 client.rest.on('rateLimited', info => client.log(`Waiting for ${info.global ? 'global ratelimit' : `ratelimit on ${info.route}`} to subside (${info.timeToReset}ms)`));
 
 process
-  .on('unhandledRejection', err => require('./Functions/private/error_handler.js')(null, err))
-  .on('uncaughtExceptionMonitor', err => require('./Functions/private/error_handler.js')(null, err))
-  .on('uncaughtException', err => require('./Functions/private/error_handler.js')(null, err))
+  .on('unhandledRejection', err => require('./Functions/private/error_handler.js')(err))
+  .on('uncaughtExceptionMonitor', err => require('./Functions/private/error_handler.js')(err))
+  .on('uncaughtException', err => require('./Functions/private/error_handler.js')(err))
   .on('exit', _ => client.destroy());

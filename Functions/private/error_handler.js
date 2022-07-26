@@ -2,18 +2,18 @@ const
   { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js'),
   { Octokit } = require('@octokit/core'),
   { red } = require('chalk').bold,
-  octokit = new Octokit({ auth: process.env.githubKey }),
   package = require('../../package.json')?.repository?.url
     .replace(/.*\.com\/|\.git/g, '').split('/');
 
-module.exports = async (interaction, err) => {
+module.exports = async (err, { keys } = {}, interaction) => {
   if (!interaction) {
     console.error(red(' [Error Handling] :: Uncaught Error'));
     console.error(err);
     return console.error('\n');
   }
-
+  
   const
+    octokit = new Octokit({ auth: keys.githubKey }),
     embed = new EmbedBuilder({
       title: 'Whoooops',
       description:
