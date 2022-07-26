@@ -14,6 +14,8 @@ Number.prototype.toFormattedTime = function toFormattedTime() {
   return new Date(this * 1000).toISOString().substring(this < 3600 ? 14 : 11, 19);
 }
 
+(async _ => require('./website.js'))();
+
 const client = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
   allowedMentions: { parse: ['users', 'roles'] },
