@@ -1,13 +1,12 @@
 const
   { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js'),
   { Octokit } = require('@octokit/core'),
-  { red } = require('chalk').bold,
   package = require('../../package.json')?.repository?.url
     .replace(/.*\.com\/|\.git/g, '').split('/');
 
 module.exports = async (err, { keys } = {}, interaction) => {
   if (!interaction) {
-    console.error(red(' [Error Handling] :: Uncaught Error'));
+    console.error(errorColor, ' [Error Handling] :: Uncaught Error');
     console.error(err);
     return console.error('\n');
   }
@@ -41,7 +40,7 @@ module.exports = async (err, { keys } = {}, interaction) => {
       break;
 
     default:
-      console.error(red(' [Error Handling] :: Uncaught Error'))
+      console.error(errorColor, ' [Error Handling] :: Uncaught Error');
       console.error(err);
       console.error('\n');
 

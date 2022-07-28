@@ -6,6 +6,7 @@ const
   { readdirSync } = require('fs');
 
 global.getDirectoriesSync = path => readdirSync(path, { withFileTypes: true }).filter(e => e.isDirectory()).map(directory => directory.name);
+global.errorColor = '\x1b[1;31m%s\x1b[0m';
 
 Number.prototype.toFormattedTime = function (num = this) {
   if (isNaN(parseInt(num))) throw new SyntaxError(`${num} is not a valid number!`);
@@ -40,7 +41,7 @@ client.commands = new Collection();
 client.guildData = new Collection();
 client.log = (...data) => {
   const date = new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false });
-  console.log(`[${date}] ${data}`)
+  console.info(`[${date}] ${data}`)
 };
 
 for (const handler of readdirSync('./Handlers')) require(`./Handlers/${handler}`)(client);
