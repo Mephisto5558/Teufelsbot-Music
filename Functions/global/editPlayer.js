@@ -21,6 +21,6 @@ module.exports = (interaction, content, asEmbed, asError) => {
     if (asError) for (const embed of content.embeds) embed.data.color = Colors.Red;
   }
 
-  /*try { */return interaction.editReply(content)/* }
-  catch { */interaction.reply(content) //}
+  try { return interaction.editReply(content) }
+  catch { interaction.reply(content) }
 }
