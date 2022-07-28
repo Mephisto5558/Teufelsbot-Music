@@ -17,7 +17,7 @@ module.exports = new Command({
     required: false
   }],
 
-  run: async ({ ws, functions }, message, interaction) => {
+  run: async (_, interaction, { ws, functions }) => {
     if (interaction?.options?.getBoolean('average')) {
       const embed = new EmbedBuilder({
         title: 'Ping',
