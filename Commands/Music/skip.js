@@ -9,5 +9,5 @@ module.exports = new Command({
   category: 'Music',
   needsQueue: true,
 
-  run: async player => await player.queue.skip()
+  run: player => player.queue.skip()
 })
