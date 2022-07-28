@@ -1,5 +1,5 @@
 console.time('Starting time');
-console.log('Starting...');
+console.info('Starting...');
 
 const
   { Client, Collection, GatewayIntentBits, Partials } = require('discord.js'),
