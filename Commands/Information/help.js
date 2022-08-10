@@ -3,10 +3,8 @@ const
   { EmbedBuilder, Colors } = require('discord.js');
 
 function listCommands(list, output, count, category) {
-  for (let command of list) {
-    command = command[1];
-
-    if (command.category.toUpperCase() != category?.toUpperCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
+  for (const command of list.values()) {
+    if (command.category.toLowerCase() != category?.toLowerCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
 
     if (count % 5 == 0) output += `\`${command.name}\`\n> `
     else output += `\`${command.name}\`, `
@@ -63,12 +61,10 @@ module.exports = new Command({
     embed.data.title = `🔰All my commands`;
     embed.setThumbnail(client.user.displayAvatarURL());
 
-    for (let category of client.categories) {
-      category = category.toLowerCase();
-      if (category == 'owner-only') continue;
+    for (const category of client.categories.map(e => e.toUpperCase())) {
+      if (category == 'OWNER-ONLY') continue;
 
-      let data = listCommands(client.commands, '', 1, category);
-      data = listCommands(client.commands, data[0], data[1], category);
+      const data = listCommands(client.commands, '', 1, category);
 
       if (data[1] == 1) continue;
 

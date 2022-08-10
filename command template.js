@@ -7,6 +7,7 @@ module.exports = new Command({
     permissions: { client: [], user: [] },
     cooldowns: { client: 0, user: 0 },
     category : '',
+    ephemeralDefer: false,
     needsQueue: false,
 
     run: async (player, interaction, client) => {

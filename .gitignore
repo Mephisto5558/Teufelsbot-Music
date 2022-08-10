@@ -1,6 +1,7 @@
 replit.nix
 node_modules
 .github
+config.json
 
 # Logs
 logs

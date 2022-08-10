@@ -54,7 +54,7 @@ module.exports = async (client, SyncGuild) => {
     client.commands = new Collection();
 
     for (const subFolder of getDirectoriesSync('./Commands')) {
-      for (const file of readdirSync(`./Commands/${subFolder}`).filter(file => file.endsWith('.js'))) {
+      for (const file of readdirSync(`./Commands/${subFolder}`).filter(e => e.endsWith('.js'))) {
         const command = format(require(`../Commands/${subFolder}/${file}`));
         let skipped = false;
 
