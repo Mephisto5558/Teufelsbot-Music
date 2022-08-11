@@ -3,7 +3,7 @@ const
   { Octokit } = require('@octokit/core'),
   { Github } = require('../../config.json');
 
-module.exports = async (err, { keys } = {}, interaction) => {
+module.exports = async (err, interaction) => {
   if (!interaction) {
     console.error(errorColor, ' [Error Handling] :: Uncaught Error');
     console.error(err);
@@ -11,7 +11,7 @@ module.exports = async (err, { keys } = {}, interaction) => {
   }
   
   const
-    octokit = new Octokit({ auth: keys.githubKey }),
+    octokit = new Octokit({ auth: process.env.githubKey }),
     embed = new EmbedBuilder({
       title: 'Whoooops',
       description:

@@ -1,7 +1,7 @@
 const { EmbedBuilder, Colors, InteractionType, PermissionFlagsBits } = require('discord.js');
 
 module.exports = async (client, interaction) => {
-  const command = client.slashCommands.get(interaction.commandName);
+  const command = client.commands.get(interaction.commandName);
   if (!command || !interaction.isRepliable()) return;
 
   const cooldown = await require('../Functions/private/cooldowns.js')(client, interaction, command);
@@ -39,8 +39,8 @@ module.exports = async (client, interaction) => {
     for (const entry of interaction.options._hoistedOptions)
       if (entry.type == ApplicationCommandOptionType.String) entry.value = entry.value.replace(/<@!/g, '<@');
 
-    command.run(interaction, client)
-      .catch(err => require('../Functions/private/error_handler.js')(err, client, interaction));
+    command.run(player, interaction, client)
+      .catch(err => require('../Functions/private/error_handler.js')(err, interaction));
 
     if (command.category.toLowerCase() == 'music' && player.id != interaction.id) {
       await client.functions.sleep(10000);
