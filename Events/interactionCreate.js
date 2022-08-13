@@ -1,4 +1,4 @@
-const { EmbedBuilder, Colors, InteractionType, PermissionFlagsBits } = require('discord.js');
+const { EmbedBuilder, Colors, InteractionType, ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
 
 module.exports = async (client, interaction) => {
   const command = client.commands.get(interaction.commandName);
