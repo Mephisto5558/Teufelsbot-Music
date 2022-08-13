@@ -52,7 +52,7 @@ module.exports = new Command({
 
     embed.description = lyrics;
     embed.footer = { text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) };
-    embed.addField('Source', `[${source.url}](${source.link})`, true);
+    embed.addFields([{ name: 'Source', value: `[${source.url}](${source.link})`, inline: true }]);
 
     const video = (await search(title)).videos
       .slice(0, 5)
