@@ -40,7 +40,7 @@ module.exports = new Command({
     let { lyrics, title, source } = await getLyrics(`${song} ${interaction.options.getString('artist')}`) || { lyrics: null, title: null, source: null }
 
     if (!lyrics || !song.split(' ').filter(a => a.length > 3 && title.includes(a)).length) {
-      embed.description =
+      embed.data.description =
         `No Lyrics found for \`${song}\` with matching title.\n` +
         'Maybe try another title or the `author` option, if not used.\n' +
         'If you know any lyric api, please message the dev.';
@@ -50,8 +50,8 @@ module.exports = new Command({
 
     if (lyrics.length > 4092) lyrics = lyrics.substring(0, lyrics.substring(0, 4081).lastIndexOf('/n')) + '...';
 
-    embed.description = lyrics;
-    embed.footer = { text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) };
+    embed.data.description = lyrics;
+    embed.data.footer = { text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) };
     embed.addFields([{ name: 'Source', value: `[${source.url}](${source.link})`, inline: true }]);
 
     const video = (await search(title)).videos
@@ -59,8 +59,8 @@ module.exports = new Command({
       .sort((a, b) => b.views - a.views)[0];
 
     if (video) {
-      embed.title = `${video.title} by ${video.author.name}`;
-      embed.url = video.url;
+      embed.data.title = `${video.title} by ${video.author.name}`;
+      embed.data.url = video.url;
       embed.setThumbnail(video.image);
     }
 
