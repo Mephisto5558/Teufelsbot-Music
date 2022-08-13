@@ -31,12 +31,11 @@ module.exports = new Command({
       song = interaction.options.getString('song'),
       embed = new EmbedBuilder({
         title: song,
-        color: 'RANDOM',
         footer: {
           text: interaction.user.tag,
           iconURL: interaction.user.displayAvatarURL({ dynamic: true })
         }
-      });
+      }).setColor('Random');
 
     let { lyrics, title, source } = await getLyrics(`${song} ${interaction.options.getString('artist')}`) || { lyrics: null, title: null, source: null }
 
