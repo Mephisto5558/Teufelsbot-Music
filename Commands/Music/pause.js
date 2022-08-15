@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'pause',
   aliases: ['resume'],
   description: 'pauses/resumes the player',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 2000 },
   category: 'Music',
   needsQueue: true,

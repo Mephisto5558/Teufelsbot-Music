@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'clearqueue',
   aliases: [],
   description: 'Clear all songs from the queue',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 5000 },
   category: 'Music',
   needsVC: true,

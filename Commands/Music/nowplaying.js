@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'nowplaying',
   aliases: ['np'],
   description: 'Shows the currently playing song',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { global: '', user: '' },
   category: 'Music',
   needsQueue: true,

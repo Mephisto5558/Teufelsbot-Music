@@ -8,7 +8,7 @@ module.exports = new Command({
   name: 'lyrics',
   aliases: [],
   description: 'search for song lyrics',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { global: 0, user: 5000 },
   category: 'Useful',
   options: [

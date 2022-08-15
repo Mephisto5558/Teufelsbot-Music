@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'shuffle',
   aliases: [],
   description: 'Shuffles the queue',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 0 },
   category: 'Music',
   needsQueue: true,

@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'loop',
   aliases: ['repeat'],
   description: 'Loop a song or the whole queue',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { global: 0, user: 2000 },
   category: 'Music',
   needsVC: true,

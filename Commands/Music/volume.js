@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'volume',
   aliases: [],
   description: 'Set the player volume',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 500 },
   category: 'Music',
   needsQueue: true,

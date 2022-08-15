@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'leave',
   aliases: [],
   description: 'Leave the current voice channel',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 3000 },
   category: 'Music',
   ephemeralDefer: true,

@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'join',
   aliases: [],
   description: 'Joins the voice channel you are in',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 3000 },
   category: 'Music',
   needsVC: true,

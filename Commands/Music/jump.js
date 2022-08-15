@@ -4,7 +4,7 @@ module.exports = new Command({
   name: 'jump',
   aliases: [],
   description: 'Jump to a song',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 1000, user: 2000 },
   category: 'Music',
   needsVC: true,

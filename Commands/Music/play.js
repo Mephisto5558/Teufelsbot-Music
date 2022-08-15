@@ -6,7 +6,7 @@ module.exports = new Command({
   name: 'play',
   aliases: [],
   description: 'plays a song',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { global: 0, user: 1000 },
   category: 'Music',
   needsVC: true,

@@ -6,7 +6,7 @@ module.exports = new Command({
   name: 'queue',
   aliases: [],
   description: 'Shows the queue',
-  permissions: { client: [], user: [] },
+  permissions: { client: ['EmbedLinks'], user: [] },
   cooldowns: { client: 0, user: 2000 },
   category: 'Music',
   needsQueue: true,
