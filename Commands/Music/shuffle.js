@@ -11,6 +11,6 @@ module.exports = new Command({
 
   run: async (player, _, { functions }) => {
     await player.queue.shuffle();
-    functions.editPlayer(player, 'Shuffled the queue!', true);
+    functions.editPlayer(player, 'Shuffled the queue!', { asEmbed: true });
   }
 })

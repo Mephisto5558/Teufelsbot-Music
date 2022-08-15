@@ -1,5 +1,6 @@
 const
   { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js'),
+  { DisTubeError } = require('distube'),
   { Octokit } = require('@octokit/core'),
   { Github } = require('../../config.json');
 
@@ -9,7 +10,7 @@ module.exports = async (err, interaction) => {
     console.error(err);
     return console.error('\n');
   }
-  
+
   const
     octokit = new Octokit({ auth: process.env.githubKey }),
     embed = new EmbedBuilder({
@@ -31,22 +32,21 @@ module.exports = async (err, interaction) => {
     }),
     filter = i => i.member.id == interaction.member.id && i.customId == 'reportError';
 
-  let msg;
+  if (err instanceof DisTubeError) {
+    switch (err.code) {
+      case 'VOICE_FULL': return interaction.followUp('Your voice channel is full!');
+      case 'VOICE_CONNECT_FAILED': return interaction.followUp("I couldn't connect to your voice channel. Please try again!");
+      case 'VOICE_MISSING_PERMS': return interaction.followUp("I don't have permission to join your voice channel!");
 
-  switch (err.name) {
-    case 'DiscordAPIError':
-      interaction.followUp('An Discord API Error occurred, please try again and message the dev if this keeps happening.');
-      break;
-
-    default:
-      console.error(errorColor, ' [Error Handling] :: Uncaught Error');
-      console.error(err);
-      console.error('\n');
-
-      msg = await interaction.followUp({ embeds: [embed], components: [comp] });
+      case 'NO_UP_NEXT': return;
+    }
   }
 
-  if (!msg) return;
+  console.error(errorColor, ' [Error Handling] :: Uncaught Error');
+  console.error(err);
+  console.error('\n');
+
+  const msg = await interaction.followUp({ embeds: [embed], components: [comp] });
 
   const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, componentType: ComponentType.Button, time: 60000 });
   collector.on('collect', async button => {
@@ -67,7 +67,7 @@ module.exports = async (err, interaction) => {
         body:
           `<h3>Reported by ${interaction.user.tag} (${interaction.user.id}) with bot ${interaction.guild.members.me.id}</h3>\n\n` +
           err.stack,
-          assignees: [Github.UserName],
+        assignees: [Github.UserName],
         labels: ['bug']
       });
 

@@ -29,8 +29,8 @@ module.exports = new Command({
   }],
 
   run: (_, interaction, client) => {
-    const embed = new EmbedBuilder({ color: Colors.Blurple });
     const query = interaction.options?.getString('command')?.toLowerCase();
+    const embed = new EmbedBuilder({ color: Colors.Blurple });
 
     if (query) {
       const cmd = client.commands.get(query);

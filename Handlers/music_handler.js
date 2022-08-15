@@ -5,20 +5,17 @@ const
   { SpotifyPlugin } = require('@distube/spotify'),
   { SoundCloudPlugin } = require('@distube/soundcloud');
 
-const reply = ({ musicPlayer, interaction, functions }, data, channel, asError) => {
-  const player = musicPlayer.interaction?.get(channel?.guild.id) || musicPlayer.interaction?.get(interaction?.guild.id);
+const reply = ({ musicPlayer, functions }, content, channel) => {
+  const player = musicPlayer.interaction?.get(channel.guild.id);
+  if (!player) return channel.send(content);
 
-  if (!data) throw new SyntaxError('Missing data to send');
-  if (!player) return interaction?.editReply(data);
-  
-  try { functions.editPlayer(player, data, true, asError) }
-  catch { player.reply(data) }
+  functions.editPlayer(player, content, { asEmbed: true });
 };
 
 module.exports = async client => {
   client.musicPlayer = new DisTube(client, {
     leaveOnEmpty: true,
-    emptyCooldown: 1*60*60, //1h
+    emptyCooldown: 1 * 60 * 60, //1h
     leaveOnStop: false,
     youtubeCookie: process.env.ytCookie,
     plugins: [
@@ -31,32 +28,29 @@ module.exports = async client => {
   client.musicPlayer.interaction = new Collection();
 
   client.musicPlayer
-    .on('addSong', (queue, song) => {
-      reply(
-        client,
-        `Added [${song.name}](${song.url}) - \`${song.formattedDuration}\`\nRequested by: <@${song.user.id}>\n` +
-        `It will play in about \`${(queue.duration - song.duration).toFormattedTime()}\``,
-        queue.textChannel
+    .on('addSong', ({ duration, textChannel }, song) => {
+      reply(client,
+        `Added [${song.name}](${song.url}) - \`${song.formattedDuration}\`.\n` +
+        `Requested by: <@${song.user.id}>\n` +
+        `It will play in about \`${(duration - song.duration).toFormattedTime()}\`.`,
+        textChannel
       );
     })
 
     .on('addList', ({ textChannel, duration }, playlist) => {
-      const player = client.musicPlayer.interaction?.get(textChannel.guild.id);
-      player.playlist = { name: playlist.name, url: playlist.url };
-
-      client.musicPlayer.interaction.set(textChannel.guild.id);
-
-      reply(
-        client,
-        `Added \`[${playlist.name}](${playlist.url})\` playlist (\`${playlist.songs.length}\` songs)\nRequested by: <@${playlist.user.id}>\n` +
-        `They will play in about \`${(duration - playlist.duration).toFormattedTime()}\``,
+      reply(client,
+        `Added [${playlist.name}](${playlist.url}) playlist (\`${playlist.songs.length}\` songs).\n` +
+        `Requested by: <@${playlist.user.id}>\n` +
+        `They will play in about \`${(duration - playlist.duration).toFormattedTime()}\`.`,
         textChannel
       );
     })
 
     .on('playSong', ({ textChannel }, { name, url, formattedDuration, user }) => {
-      reply(
-        client, `**Now playing**:\n [${name}](${url}) - \`${formattedDuration}\`\nRequested by: <@${user.id}>`,
+      reply(client,
+        '**Now playing**:\n' +
+        `[${name}](${url}) - \`${formattedDuration}\`\n` +
+        `Requested by: <@${user.id}>`,
         textChannel
       );
     })
@@ -66,5 +60,6 @@ module.exports = async client => {
     .on('initQueue', queue => {
       queue.autoplay = false;
       queue.volume = 100;
-    });
+    })
+    .on('error', (_, err) => { throw err });
 }

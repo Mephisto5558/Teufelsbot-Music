@@ -18,7 +18,7 @@ module.exports = new Command({
       `I am currently playing\n` +
       `[${name}](${url}) \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\`\n` +
       `Requested by: ${user}`,
-      true
+      { asEmbed: true }
     )
   }
 })

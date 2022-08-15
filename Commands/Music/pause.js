@@ -12,6 +12,6 @@ module.exports = new Command({
   run: async (player, _, { functions }) => {
     player.queue.paused ? await player.queue.resume() : await player.queue.pause();
 
-    functions.editPlayer(player, `Player ${player.queue.paused ? 'paused' : 'resumed'}`, true);
+    functions.editPlayer(player, `Player ${player.queue.paused ? 'paused' : 'resumed'}`, { asEmbed: true });
   }
 })

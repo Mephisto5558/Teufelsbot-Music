@@ -35,7 +35,7 @@ module.exports = new Command({
     },
     {
       name: 'shuffle',
-      description: 'shuffle the queue',
+      description: 'shuffle the queue after adding the song(s)',
       type: 'Boolean',
       required: false
     },
@@ -59,11 +59,16 @@ module.exports = new Command({
     if (interaction.options.getBoolean('use_this_interaction')) player = interaction;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
+      functions.editPlayer(player, 'Loading...', { asEmbed: true });
+
+      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, interaction);
+
       await musicPlayer.play(interaction.member.voice.channel, query, {
         member: interaction.member,
         textChannel: interaction.channel,
         skip: interaction.options.getBoolean('skip')
       });
+
 
       if (interaction.options.getBoolean('shuffle')) {
         const queue = musicPlayer.getQueue(interaction.guild.id);
@@ -80,10 +85,10 @@ module.exports = new Command({
 
     for (const result of search) {
       if (results.join().length > 4096) break;
-
       if (result.name.length > 150) result.name = `${result.name.substring(0, 147)}...`;
 
-      results.push(`${i++}. [${result.name}](${result.url}) ${result.uploader.name ? `by ${result.uploader.name}` : ''}`);
+      const uploader = result.uploader.name ? `by ${result.uploader.name}` : '';
+      results.push(`${i++}. [${result.name}](${result.url}) ${uploader}`);
     }
 
     const embed = new EmbedBuilder({
@@ -125,10 +130,13 @@ module.exports = new Command({
 
       if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, interaction);
 
-      if (button.customId != 'cancel') embed.data.description = `Loading ${results[button.customId - 1].replace(/^.*\. /, '')}...`;
-      await functions.editPlayer(player, { embeds: [embed], components: [] });
+      if (button.customId == 'cancel') embed.data.description = 'Command canceled.';
+      else embed.data.description = `Loading ${results[button.customId - 1].replace(/^.*\. /, '')}...`;
 
-      if (button.customId == 'cancel') return;
+      functions.editPlayer(player, { embeds: [embed], components: [] });
+
+      if (button.customId == 'cancel' && musicPlayer.getQueue(interaction.guild.id)?.songs?.length)
+        return require('./nowplaying.js').run(player, interaction, { functions });
 
       await musicPlayer.play(interaction.member.voice.channel, /\((.*)\)/g.exec(results[button.customId - 1])[1], {
         member: interaction.member,
@@ -140,6 +148,11 @@ module.exports = new Command({
         const queue = musicPlayer.getQueue(interaction.guild.id);
         await queue.shuffle();
       }
+    });
+
+    collector.on('end', async collected => {
+      if (collected.size) return;
+      functions.editPlayer(player, { components: [] });
     });
 
   }

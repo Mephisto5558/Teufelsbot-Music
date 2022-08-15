@@ -17,10 +17,8 @@ module.exports = new Command({
   }],
 
   run: async (player, { options }, { functions }) => {
-    const postion = options.getNumber('position');
+    await player.queue.jump(options.getNumber('position'));
 
-    await player.queue.jump(postion);
-
-    await functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`, true);
+    await functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`, { asEmbed: true });
   }
 })

@@ -21,6 +21,6 @@ module.exports = new Command({
     if (volume > 200) volume = 200;
 
     await player.queue.setVolume(volume);
-    await functions.editPlayer(player, `The volume has been set to ${volume}%`, true);
+    await functions.editPlayer(player, `The volume has been set to ${volume}%`, { asEmbed: true });
   }
 })

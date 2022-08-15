@@ -39,12 +39,13 @@ module.exports = async (client, interaction) => {
     for (const entry of interaction.options._hoistedOptions)
       if (entry.type == ApplicationCommandOptionType.String) entry.value = entry.value.replace(/<@!/g, '<@');
 
-    command.run(player, interaction, client)
-      .catch(err => require('../Functions/private/error_handler.js')(err, interaction));
+    try { await command.run(player, interaction, client) }
+    catch (err) { return require('../Functions/private/error_handler.js')(err, interaction) }
 
-    if (command.category.toLowerCase() == 'music' && player.id != interaction.id) {
+    if (command.category.toLowerCase() == 'music' && player.id != interaction.id && !interaction.deferred) {
+      await interaction.editReply(`Successfully executed command. Deleting message in 10s.`);
       await client.functions.sleep(10000);
       interaction.deleteReply();
-    } 
+    }
   }
 }

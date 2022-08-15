@@ -1,5 +1,4 @@
 const { Command } = require('reconlx');
-const { joinVoiceChannel } = require('@discordjs/voice');
 
 module.exports = new Command({
   name: 'join',
@@ -9,16 +8,13 @@ module.exports = new Command({
   cooldowns: { client: 0, user: 3000 },
   category: 'Music',
   needsVC: true,
+  ephemeralDefer: true,
 
-  run: async (player, { member, guild }, { functions }) => {
-    if (member.voice.channelId == guild.members.me.voice.channelId) return functions.editPlayer(player, "I'm already in your voice channel!", true);
+  run: async (player, { member, guild }, { functions, musicPlayer }) => {
+    if (member.voice.channelId == guild.members.me.voice.channelId) return interaction.editReply("I'm already in your voice channel!");
 
-    joinVoiceChannel({
-      channelId: member.voice.channelId,
-      guildId: guild.id,
-      adapterCreator: guild.voiceAdapterCreator
-    });
+    await musicPlayer.voices.join(member.voice.channel);
 
-    functions.editPlayer(player, 'I joined your voice channel.', true);
+    functions.editPlayer(player, 'I joined your voice channel.', { asEmbed: true });
   }
 })

@@ -22,7 +22,7 @@ function equal(a, b) {
 }
 
 function format(option) {
-  if (option.options) for (let subOption of option.options) subOption = format(subOption);
+  if (option.options) option.options = option.options.map(e => format(e));
   if (option.run) {
     if (!option.type) option.type = ApplicationCommandType.ChatInput;
     else if (!ApplicationCommandType[option.type]) throw new Error(`Invalid option.type, got ${option.type}`);

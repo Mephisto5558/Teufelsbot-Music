@@ -12,6 +12,6 @@ module.exports = new Command({
 
   run: async (player, _, { functions }) => {
     await player.queue.delete();
-    functions.editPlayer(player, 'Queue cleared', true);
+    functions.editPlayer(player, 'Queue cleared', { asEmbed: true });
   }
 })
