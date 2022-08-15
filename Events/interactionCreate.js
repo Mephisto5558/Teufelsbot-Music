@@ -1,4 +1,4 @@
-const { EmbedBuilder, Colors, InteractionType, ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { EmbedBuilder, Colors, InteractionType, ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = async (client, interaction) => {
   const command = client.commands.get(interaction.commandName);
@@ -19,16 +19,16 @@ module.exports = async (client, interaction) => {
   if (command.needsQueue && !player.queue) return interaction.editReply('You need to play music first!');
 
   if (interaction.type === InteractionType.ApplicationCommand) {
-    const userPerms = interaction.member.permissionsIn(interaction.channel).missing([...command.permissions.user, PermissionFlagsBits.SendMessages]);
-    const botPerms = interaction.guild.members.me.permissionsIn(interaction.channel).missing([...command.permissions.client, PermissionFlagsBits.SendMessages]);
+    const userPermsMissing = interaction.member.permissionsIn(interaction.channel).missing(command.permissions.user);
+    const botPermsMissing = interaction.guild.members.me.permissionsIn(interaction.channel).missing(command.permissions.client);
 
-    if (botPerms.length || userPerms.length) {
+    if (botPermsMissing.length || userPermsMissing.length) {
       const embed = new EmbedBuilder({
         title: 'Insufficient Permissions',
         color: Colors.Red,
         description:
-          `${userPerms.length ? 'You' : 'I'} need the following permissions in this channel to run this command:\n\`` +
-          (botPerms.length ? botPerms : userPerms).join('`, `') + '`'
+          `${userPermsMissing.length ? 'You' : 'I'} need the following permissions in this channel to run this command:\n\`` +
+          (botPermsMissing.length ? botPermsMissing : userPermsMissing).join('`, `') + '`'
       });
 
       return interaction.reply({ embeds: [embed], ephemeral: true });
