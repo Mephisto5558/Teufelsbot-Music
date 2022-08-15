@@ -66,21 +66,5 @@ module.exports = async client => {
     .on('initQueue', queue => {
       queue.autoplay = false;
       queue.volume = 100;
-    })
-
-    .on('error', (channel, err) => {
-      if (err.errorCode == 'VOICE_FULL') return reply(client, 'This voice channel is full.', channel, true);
-      if (err.errorCode == 'VOICE_MISSING_PERMS') return reply(client, "I don't have permission to join this voice channel!", channel, true);
-
-      reply(
-        client,
-        'A unexpected error occurred, please message the dev.\n' +
-        `Error Type: \`${err.type || 'unknown'}\``,
-        channel, true
-      );
-
-      console.log(' [Error Handling] :: DisTubeError');
-      console.log(err, channel);
-      console.log(`\n`);
     });
 }
