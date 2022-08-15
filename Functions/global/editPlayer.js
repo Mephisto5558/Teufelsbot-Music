@@ -15,9 +15,9 @@ module.exports = (playerInteraction, content, { asEmbed, asError } = {}) => {
 
   if (asError && content.embeds?.length) for (const embed of content.embeds) embed.data.color = Colors.Red;
 
-  try { playerInteraction.editReply(content) }
+  try { return playerInteraction.editReply(content); }
   catch {
-    try { playerInteraction.reply(content) }
-    catch { playerInteraction.channel.send(content) }
+    try { return playerInteraction.reply(content) }
+    catch { return playerInteraction.channel.send(content) }
   }
 }

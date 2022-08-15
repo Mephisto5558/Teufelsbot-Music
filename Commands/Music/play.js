@@ -59,9 +59,9 @@ module.exports = new Command({
     if (interaction.options.getBoolean('use_this_interaction')) player = interaction;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
-      functions.editPlayer(player, 'Loading...', { asEmbed: true });
+      const msg = await functions.editPlayer(player, 'Loading...', { asEmbed: true });
 
-      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, interaction);
+      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, msg);
 
       await musicPlayer.play(interaction.member.voice.channel, query, {
         member: interaction.member,
@@ -128,12 +128,12 @@ module.exports = new Command({
 
       embed.data.title = 'Music Player';
 
-      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, interaction);
-
       if (button.customId == 'cancel') embed.data.description = 'Command canceled.';
       else embed.data.description = `Loading ${results[button.customId - 1].replace(/^.*\. /, '')}...`;
 
-      functions.editPlayer(player, { embeds: [embed], components: [] });
+      const msg = await functions.editPlayer(player, { embeds: [embed], components: [] });
+
+      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, msg);
 
       if (button.customId == 'cancel' && musicPlayer.getQueue(interaction.guild.id)?.songs?.length)
         return require('./nowplaying.js').run(player, interaction, { functions });
