@@ -17,7 +17,7 @@ module.exports = (playerInteraction, content, { asEmbed, asError } = {}) => {
 
   try { return playerInteraction.edit(content) }
   catch {
-    try { return playerInteraction.reply(content) }
+    try { return playerInteraction.followUp(content) }
     catch { return playerInteraction.channel.send(content) }
   }
 }
