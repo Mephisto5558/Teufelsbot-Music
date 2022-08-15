@@ -24,7 +24,6 @@ const client = new Client({
   retryLimit: 2,
   intents: [
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates
   ]
