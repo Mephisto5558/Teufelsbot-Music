@@ -1,6 +1,6 @@
 const
   app = require('express')(),
-  exec = require('util').promisify(require('child_process').exec);
+  exec = require('util').promisify(require('child_process').exec),
   pull = async _ => {
     let data;
 
