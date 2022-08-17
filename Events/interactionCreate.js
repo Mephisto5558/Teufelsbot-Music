@@ -40,7 +40,7 @@ module.exports = async (client, interaction) => {
       if (entry.type == ApplicationCommandOptionType.String) entry.value = entry.value.replace(/<@!/g, '<@');
 
     try { await command.run(player, interaction, client) }
-    catch (err) { return require('../Functions/private/error_handler.js')(err, interaction) }
+    catch (err) { return require('../Functions/private/error_handler.js')(err, client, interaction) }
 
     if (command.category.toLowerCase() == 'music' && player.id != interaction.id && !interaction.deferred) {
       await interaction.editReply(`Successfully executed command. Deleting message in 10s.`);

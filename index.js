@@ -2,7 +2,7 @@ console.time('Starting time');
 console.info('Starting...');
 
 const
-  { Client, Collection, GatewayIntentBits, Partials } = require('discord.js'),
+  { Client, Collection, GatewayIntentBits, AllowedMentionsTypes } = require('discord.js'),
   { readdirSync } = require('fs');
 
 global.getDirectoriesSync = path => readdirSync(path, { withFileTypes: true }).filter(e => e.isDirectory()).map(directory => directory.name);
@@ -15,11 +15,15 @@ Number.prototype.toFormattedTime = function (num = this) {
   return new Date(num * 1000).toISOString().substring(num < 3600 ? 14 : 11, 19);
 };
 
-(async _ => require('./website.js'))();
+require('./website.js');
 
 const client = new Client({
-  partials: [Partials.Message, Partials.Channel, Partials.Reaction],
-  allowedMentions: { parse: ['users', 'roles'] },
+  allowedMentions: {
+    parse: [
+      AllowedMentionsTypes.User,
+      AllowedMentionsTypes.Role
+    ]
+  },
   shards: 'auto',
   retryLimit: 2,
   intents: [
@@ -33,25 +37,18 @@ client.startTime = Date.now();
 client.categories = getDirectoriesSync('./Commands');
 client.functions = {};
 client.dashboardOptionCount = {};
-client.lastRateLimit = new Collection();
 client.events = new Collection();
 client.cooldowns = new Collection();
 client.commands = new Collection();
 client.guildData = new Collection();
-client.log = (...data) => {
-  const date = new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false });
-  console.info(`[${date}] ${data}`)
-};
 
-for (const handler of readdirSync('./Handlers')) require(`./Handlers/${handler}`)(client);
+require('./Handlers/log_handler.js')(client);
+for (const handler of readdirSync('./Handlers').filter(e => e != 'log_handler.js')) require(`./Handlers/${handler}`)(client);
 
 client.login(process.env.token)
   .then(_ => client.log(`Logged in`));
-
-client.rest.on('rateLimited', info => client.log(`Waiting for ${info.global ? 'global ratelimit' : `ratelimit on ${info.route}`} to subside (${info.timeToReset}ms)`));
 
 process
   .on('unhandledRejection', err => require('./Functions/private/error_handler.js')(err))
   .on('uncaughtExceptionMonitor', err => require('./Functions/private/error_handler.js')(err))
   .on('uncaughtException', err => require('./Functions/private/error_handler.js')(err))
-  .on('exit', _ => client.destroy());

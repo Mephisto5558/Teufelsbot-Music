@@ -4,11 +4,10 @@ const
   { Octokit } = require('@octokit/core'),
   { Github } = require('../../config.json');
 
-module.exports = async (err, interaction) => {
+module.exports = async (err, { error = console.error } = {}, interaction) => {
   if (!interaction) {
-    console.error(errorColor, ' [Error Handling] :: Uncaught Error');
-    console.error(err);
-    return console.error('\n');
+    error(errorColor, ' [Error Handling] :: Uncaught Error');
+    return error(err);
   }
 
   const
@@ -42,9 +41,8 @@ module.exports = async (err, interaction) => {
     }
   }
 
-  console.error(errorColor, ' [Error Handling] :: Uncaught Error');
-  console.error(err);
-  console.error('\n');
+  error(errorColor, ' [Error Handling] :: Uncaught Error');
+  error(err);
 
   const msg = await interaction.followUp({ embeds: [embed], components: [comp] });
 
@@ -76,7 +74,7 @@ module.exports = async (err, interaction) => {
     }
     catch (err) {
       interaction.followUp(`An error occurred while trying to send your error report.\n${err?.response.statusText || ''}\nPlease message the dev directly.`);
-      console.error(err);
+      error(err);
     }
   });
 
