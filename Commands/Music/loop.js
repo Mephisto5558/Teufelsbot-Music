@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'loop',
   aliases: ['repeat'],
   description: 'Loop a song or the whole queue',
@@ -29,4 +27,4 @@ module.exports = new Command({
     await player.queue.setRepeatMode(player.queue.repeatMode > 0 ? 0 : repeatMode[0]);
     functions.editPlayer(player, `${player.queue.repeatMode == 0 ? 'Disabled' : repeatMode[1]} loop.`, { asEmbed: true });
   }
-})
+}

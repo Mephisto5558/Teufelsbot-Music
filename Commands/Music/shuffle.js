@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'shuffle',
   aliases: [],
   description: 'Shuffles the queue',
@@ -13,4 +11,4 @@ module.exports = new Command({
     await player.queue.shuffle();
     functions.editPlayer(player, 'Shuffled the queue!', { asEmbed: true });
   }
-})
+}

@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'clearqueue',
   aliases: [],
   description: 'Clear all songs from the queue',
@@ -14,4 +12,4 @@ module.exports = new Command({
     await player.queue.delete();
     functions.editPlayer(player, 'Queue cleared', { asEmbed: true });
   }
-})
+}

@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'volume',
   aliases: [],
   description: 'Set the player volume',
@@ -23,4 +21,4 @@ module.exports = new Command({
     await player.queue.setVolume(volume);
     await functions.editPlayer(player, `The volume has been set to ${volume}%`, { asEmbed: true });
   }
-})
+}

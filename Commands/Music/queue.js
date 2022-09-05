@@ -1,8 +1,6 @@
-const
-  { Command } = require('reconlx'),
-  { EmbedBuilder, Colors } = require('discord.js');
+const { EmbedBuilder, Colors } = require('discord.js');
 
-module.exports = new Command({
+module.exports = {
   name: 'queue',
   aliases: [],
   description: 'Shows the queue',
@@ -15,7 +13,7 @@ module.exports = new Command({
     const song = player.queue.songs[0];
     const remainingSongTime = (song.duration - player.queue.currentTime).toFormattedTime();
 
-    let description = player.queue.songs.map(({ name, url, formattedDuration }, i) => `**${i+1}**. [${name.length <= 75 ? name : name.substring(0, 75) + '...'}](${url}) \`[${formattedDuration}]\``).join('\n');
+    let description = player.queue.songs.map(({ name, url, formattedDuration }, i) => `**${i + 1}**. [${name.length <= 75 ? name : name.substring(0, 75) + '...'}](${url}) \`[${formattedDuration}]\``).join('\n');
 
     if (description.length > 4096) description = description.substring(0, description.substring(0, 4096).lastIndexOf('\n**')) + '\n**...**';
 
@@ -31,4 +29,4 @@ module.exports = new Command({
 
     functions.editPlayer(player, { embeds: [embed] });
   }
-})
+}

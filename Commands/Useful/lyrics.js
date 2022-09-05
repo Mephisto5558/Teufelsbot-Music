@@ -1,10 +1,9 @@
 const
-  { Command } = require('reconlx'),
   { EmbedBuilder } = require('discord.js'),
   getLyrics = require('songlyrics').default,
   { search } = require('yt-search');
 
-module.exports = new Command({
+module.exports = {
   name: 'lyrics',
   aliases: [],
   description: 'search for song lyrics',
@@ -66,4 +65,4 @@ module.exports = new Command({
 
     interaction.editReply({ embeds: [embed] })
   }
-})
+}

@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'jump',
   aliases: [],
   description: 'Jump to a song',
@@ -21,4 +19,4 @@ module.exports = new Command({
 
     await functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`, { asEmbed: true });
   }
-})
+}

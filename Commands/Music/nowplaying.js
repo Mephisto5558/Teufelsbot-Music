@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'nowplaying',
   aliases: ['np'],
   description: 'Shows the currently playing song',
@@ -21,4 +19,4 @@ module.exports = new Command({
       { asEmbed: true }
     )
   }
-})
+}

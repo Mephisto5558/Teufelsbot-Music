@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'pause',
   aliases: ['resume'],
   description: 'pauses/resumes the player',
@@ -14,4 +12,4 @@ module.exports = new Command({
 
     functions.editPlayer(player, `Player ${player.queue.paused ? 'paused' : 'resumed'}`, { asEmbed: true });
   }
-})
+}

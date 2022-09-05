@@ -1,8 +1,6 @@
-const
-  { Command } = require('reconlx'),
-  { EmbedBuilder, Colors } = require('discord.js');
+const { EmbedBuilder, Colors } = require('discord.js');
 
-module.exports = new Command({
+module.exports = {
   name: 'ping',
   aliases: [],
   description: `Get the bot's ping`,
@@ -66,4 +64,4 @@ module.exports = new Command({
 
     interaction.editReply({ embeds: [embed] });
   }
-})
+}

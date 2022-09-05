@@ -1,8 +1,6 @@
-const
-  { Command } = require('reconlx'),
-  { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors, ComponentType } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors, ComponentType } = require('discord.js');
 
-module.exports = new Command({
+module.exports = {
   name: 'play',
   aliases: [],
   description: 'plays a song',
@@ -156,4 +154,4 @@ module.exports = new Command({
     });
 
   }
-})
+}

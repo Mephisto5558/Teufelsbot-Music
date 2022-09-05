@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'skip',
   aliases: [],
   description: 'Skips the current song',
@@ -10,4 +8,4 @@ module.exports = new Command({
   needsQueue: true,
 
   run: player => player.queue.skip()
-})
+}

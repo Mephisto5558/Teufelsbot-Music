@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'leave',
   aliases: [],
   description: 'Leave the current voice channel',
@@ -15,4 +13,4 @@ module.exports = new Command({
     await player.guild.members.me.voice.disconnect();
     await functions.editPlayer(player, 'I left the voice channel.', { asEmbed: true });
   }
-})
+}

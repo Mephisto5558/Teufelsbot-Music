@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
   name: 'join',
   aliases: [],
   description: 'Joins the voice channel you are in',
@@ -17,4 +15,4 @@ module.exports = new Command({
 
     functions.editPlayer(player, 'I joined your voice channel.', { asEmbed: true });
   }
-})
+}

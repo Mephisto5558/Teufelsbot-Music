@@ -1,6 +1,4 @@
-const { Command } = require('reconlx');
-
-module.exports = new Command({
+module.exports = {
     name: '',
     aliases: [],
     description: '',
@@ -13,4 +11,4 @@ module.exports = new Command({
     run: async (player, interaction, client) => {
 
     }
-})
+}
