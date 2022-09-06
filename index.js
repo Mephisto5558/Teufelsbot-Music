@@ -25,7 +25,7 @@ const client = new Client({
     ]
   },
   shards: 'auto',
-  retryLimit: 2,
+  rest: { retries: 2 },
   intents: [
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.Guilds,
