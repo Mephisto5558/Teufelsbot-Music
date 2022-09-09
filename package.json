@@ -22,7 +22,7 @@
     "libsodium-wrappers": "^0.7.10",
     "lyrics-finder": "^21.7.0",
     "node": "^18.9.0",
-    "songlyrics": "^2.4.2",
+    "songlyrics": "^2.4.4",
     "superagent": "^8.0.0",
     "yt-search": "^2.10.3"
   },
