@@ -44,11 +44,11 @@ module.exports = {
           cmd.aliases?.length ? { name: 'Command Aliases', value: `\`${listCommands(cmd.aliases, '', 1)[0].replace(/> /g, '')}\``, inline: true } : null,
           cmd.permissions?.client?.length ? { name: 'Required Bot Permissions', value: `\`${cmd.permissions.client.join('`, `')}\``, inline: false } : null,
           cmd.permissions?.user?.length ? { name: 'Required User Permissions', value: `\`${cmd.permissions.user.join('`, `')}\``, inline: true } : null,
-          cmd.cooldowns?.guild || cmd.cooldowns?.user ? {
+          cmd.cooldowns?.guild || (cmd.cooldowns?.user ? {
             name: 'Command Cooldowns', inline: false, value:
               (cmd.cooldowns.guild ? `Guild: \`${parseFloat((cmd.cooldowns.guild / 1000).toFixed(2))}\`s${cmd.cooldowns.user ? ', ' : ''}` : '') +
               (cmd.cooldowns.user ? `User: \`${parseFloat((cmd.cooldowns.user / 1000).toFixed(2))}\`s` : '')
-          } : null,
+          } : null),
           cmd.usage ? { name: 'Usage', value: `${cmd.slashCommand ? 'Look at the option descriptions.\n' : ''} ${cmd.usage || ''}`, inline: false } : null
         ].filter(Boolean);
       }
