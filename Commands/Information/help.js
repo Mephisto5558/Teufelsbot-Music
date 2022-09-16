@@ -50,7 +50,7 @@ module.exports = {
               (cmd.cooldowns.user ? `User: \`${parseFloat((cmd.cooldowns.user / 1000).toFixed(2))}\`s` : '')
           } : null,
           cmd.usage ? { name: 'Usage', value: `${cmd.slashCommand ? 'Look at the option descriptions.\n' : ''} ${cmd.usage || ''}`, inline: false } : null
-        ].filter(e => e);
+        ].filter(Boolean);
       }
 
       return interaction.editReply({ embeds: [embed] })
