@@ -7,8 +7,8 @@ module.exports = {
   category: 'Music',
   needsQueue: true,
 
-  run: async (player, _, { functions }) => {
+  run: async function (player) {
     await player.queue.shuffle();
-    functions.editPlayer(player, 'Shuffled the queue!', { asEmbed: true });
+    this.editPlayer('Shuffled the queue!', { asEmbed: true });
   }
 }

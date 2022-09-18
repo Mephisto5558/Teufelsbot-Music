@@ -9,7 +9,7 @@ module.exports = {
   category: 'Music',
   needsQueue: true,
 
-  run: async (player, _, { functions }) => {
+  run: async (player) => {
     const song = player.queue.songs[0];
     const remainingSongTime = (song.duration - player.queue.currentTime).toFormattedTime();
 
@@ -27,6 +27,6 @@ module.exports = {
       ]
     });
 
-    functions.editPlayer(player, { embeds: [embed] });
+    this.editPlayer({ embeds: [embed] });
   }
 }

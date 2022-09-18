@@ -15,15 +15,15 @@ module.exports = {
     required: false
   }],
 
-  run: async (_, interaction, { ws, functions }) => {
-    if (interaction?.options?.getBoolean('average')) {
+  run: async function (_, { ws, functions }) {
+    if (this?.options?.getBoolean('average')) {
       const embed = new EmbedBuilder({
         title: 'Ping',
         description: `Pinging... (this takes about one minute)`,
         color: Colors.Blurple
       });
 
-      interaction.editReply({ embeds: [embed] });
+      this.editReply({ embeds: [embed] });
 
       let pings = [], i;
 
@@ -42,7 +42,7 @@ module.exports = {
         `Highest Ping: \`${pings[pings.length - 1]}ms\`\n` +
         `Average Ping: \`${averagePing}ms\``;
 
-      return interaction.editReply({ embeds: [embed] })
+      return this.editReply({ embeds: [embed] })
     }
 
     const embed = new EmbedBuilder({
@@ -52,16 +52,16 @@ module.exports = {
     });
 
     const messagePing = Date.now();
-    await interaction.editReply({ embeds: [embed] });
+    await this.editReply({ embeds: [embed] });
     const endMessagePing = Date.now() - messagePing;
 
     embed.data.fields = [
       { name: 'API', value: `\`${Math.round(ws.ping)}\`ms`, inline: true },
-      { name: 'Bot', value: `\`${Math.abs(Date.now() - interaction.createdTimestamp)}\`ms`, inline: true },
+      { name: 'Bot', value: `\`${Math.abs(Date.now() - this.createdTimestamp)}\`ms`, inline: true },
       { name: 'Message Send', value: `\`${endMessagePing}\`ms`, inline: true }
     ];
     embed.data.description = ' ';
 
-    interaction.editReply({ embeds: [embed] });
+    this.editReply({ embeds: [embed] });
   }
 }

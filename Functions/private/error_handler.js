@@ -4,10 +4,11 @@ const
   { Octokit } = require('@octokit/core'),
   { Github } = require('../../config.json');
 
-module.exports = async (err, { error = console.error } = {}, interaction) => {
+module.exports = async function errorHandler(err, interaction) {
+  if (!this.error) this.error = console.error;
   if (!interaction) {
-    error(errorColor, ' [Error Handling] :: Uncaught Error');
-    return error(err);
+    this.error(errorColor, ' [Error Handling] :: Uncaught Error');
+    return this.error(err);
   }
 
   const
@@ -28,8 +29,7 @@ module.exports = async (err, { error = console.error } = {}, interaction) => {
           style: ButtonStyle.Danger
         })
       ]
-    }),
-    filter = i => i.member.id == interaction.member.id && i.customId == 'reportError';
+    });
 
   if (err instanceof DisTubeError) {
     switch (err.code) {
@@ -41,12 +41,12 @@ module.exports = async (err, { error = console.error } = {}, interaction) => {
     }
   }
 
-  error(errorColor, ' [Error Handling] :: Uncaught Error');
-  error(err);
+  this.error(errorColor, ' [Error Handling] :: Uncaught Error');
+  this.error(err);
 
   const msg = await interaction.followUp({ embeds: [embed], components: [comp] });
 
-  const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1, componentType: ComponentType.Button, time: 60000 });
+  const collector = interaction.channel.createMessageComponentCollector({ filter: i => i.member.id == interaction.member.id && i.customId == 'reportError', max: 1, componentType: ComponentType.Button, time: 60000 });
   collector.on('collect', async button => {
     await button.deferUpdate();
     collector.stop();
@@ -74,7 +74,7 @@ module.exports = async (err, { error = console.error } = {}, interaction) => {
     }
     catch (err) {
       interaction.followUp(`An error occurred while trying to send your error report.\n${err?.response.statusText || ''}\nPlease message the dev directly.`);
-      error(err);
+      this.error(err);
     }
   });
 

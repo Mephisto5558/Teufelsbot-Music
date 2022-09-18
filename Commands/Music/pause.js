@@ -7,9 +7,9 @@ module.exports = {
   category: 'Music',
   needsQueue: true,
 
-  run: async (player, _, { functions }) => {
+  run: async function (player) {
     player.queue.paused ? await player.queue.resume() : await player.queue.pause();
 
-    functions.editPlayer(player, `Player ${player.queue.paused ? 'paused' : 'resumed'}`, { asEmbed: true });
+    this.editPlayer(`Player ${player.queue.paused ? 'paused' : 'resumed'}`, { asEmbed: true });
   }
 }

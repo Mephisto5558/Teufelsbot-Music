@@ -5,17 +5,17 @@ const
   { SpotifyPlugin } = require('@distube/spotify'),
   { SoundCloudPlugin } = require('@distube/soundcloud');
 
-const reply = ({ musicPlayer, functions }, content, channel) => {
-  const player = musicPlayer.interaction?.get(channel.guild.id);
+function reply(content, channel) {
+  const player = this.musicPlayer.interaction?.get(channel.guild.id);
   if (!player) return channel.send(content);
 
-  functions.editPlayer(player, content, { asEmbed: true });
-};
+  player.editPlayer(content, { asEmbed: true });
+}
 
-module.exports = async client => {
-  client.musicPlayer = new DisTube(client, {
+module.exports = async function musicHandler() {
+  this.musicPlayer = new DisTube(this, {
     leaveOnEmpty: true,
-    emptyCooldown: 1 * 60 * 60, //1h
+    emptyCooldown: 1 * 60 * 60,
     leaveOnStop: false,
     youtubeCookie: process.env.ytCookie,
     plugins: [
@@ -25,11 +25,11 @@ module.exports = async client => {
     ]
   });
 
-  client.musicPlayer.interaction = new Collection();
+  this.musicPlayer.interaction = new Collection();
 
-  client.musicPlayer
+  this.musicPlayer
     .on('addSong', ({ duration, textChannel }, song) => {
-      reply(client,
+      reply.call(this,
         `Added [${song.name}](${song.url}) - \`${song.formattedDuration}\`.\n` +
         `Requested by: <@${song.user.id}>\n` +
         `It will play in about \`${(duration - song.duration).toFormattedTime()}\`.`,
@@ -38,7 +38,7 @@ module.exports = async client => {
     })
 
     .on('addList', ({ textChannel, duration }, playlist) => {
-      reply(client,
+      reply.call(this,
         `Added [${playlist.name}](${playlist.url}) playlist (\`${playlist.songs.length}\` songs).\n` +
         `Requested by: <@${playlist.user.id}>\n` +
         `They will play in about \`${(duration - playlist.duration).toFormattedTime()}\`.`,
@@ -47,7 +47,7 @@ module.exports = async client => {
     })
 
     .on('playSong', ({ textChannel }, { name, url, formattedDuration, user }) => {
-      reply(client,
+      reply.call(this,
         '**Now playing**:\n' +
         `[${name}](${url}) - \`${formattedDuration}\`\n` +
         `Requested by: <@${user.id}>`,
@@ -55,11 +55,11 @@ module.exports = async client => {
       );
     })
 
-    .on('disconnect', ({ textChannel }) => reply(client, `Leaving Channel`, textChannel))
+    .on('disconnect', ({ textChannel }) => reply.call(this, `Leaving Channel`, textChannel))
 
     .on('initQueue', queue => {
       queue.autoplay = false;
       queue.volume = 100;
     })
-    .on('error', (_, err) => { throw err });
+    .on('error', (_, err) => { throw err; });
 }

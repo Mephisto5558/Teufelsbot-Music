@@ -7,10 +7,10 @@ module.exports = {
   category: 'Music',
   ephemeralDefer: true,
 
-  run: async (player, _, { functions }) => {
-    if (!player.guild.members.me.voice.channel) return interaction.editReply(`I'm not connected to a voice channel.`);
+  run: async function (player) {
+    if (!player.guild.members.me.voice.channel) return this.editReply(`I'm not connected to a voice channel.`);
 
     await player.guild.members.me.voice.disconnect();
-    await functions.editPlayer(player, 'I left the voice channel.', { asEmbed: true });
+    await this.editPlayer('I left the voice channel.', { asEmbed: true });
   }
 }

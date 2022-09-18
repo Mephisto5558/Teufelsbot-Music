@@ -2,18 +2,20 @@ console.time('Starting time');
 console.info('Starting...');
 
 const
-  { Client, Collection, GatewayIntentBits, AllowedMentionsTypes } = require('discord.js'),
-  { readdirSync } = require('fs');
+  { Client, Collection, GatewayIntentBits, AllowedMentionsTypes, CommandInteraction } = require('discord.js'),
+  { readdirSync } = require('fs'),
+  editPlayer = require('./functions/private/editPlayer.js');
 
 global.getDirectoriesSync = path => readdirSync(path, { withFileTypes: true }).filter(e => e.isDirectory()).map(directory => directory.name);
 global.errorColor = '\x1b[1;31m%s\x1b[0m';
 
-Number.prototype.toFormattedTime = function (num = this) {
-  if (isNaN(parseInt(num))) throw new SyntaxError(`${num} is not a valid number!`);
-  if (num >= 86400) throw new RangeError(`Number cannot be bigger then 86400, got ${num}!`);
+Number.prototype.toFormattedTime = function () {
+  if (isNaN(parseInt(this))) throw new SyntaxError(`${this} is not a valid number!`);
+  if (this >= 86400) throw new RangeError(`Number cannot be bigger then 86400, got ${this}!`);
 
-  return new Date(num * 1000).toISOString().substring(num < 3600 ? 14 : 11, 19);
+  return new Date(this * 1000).toISOString().substring(this < 3600 ? 14 : 11, 19);
 };
+CommandInteraction.prototype.editPlayer = editPlayer;
 
 require('./website.js');
 
@@ -25,7 +27,6 @@ const client = new Client({
     ]
   },
   shards: 'auto',
-  rest: { retries: 2 },
   intents: [
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.Guilds,
@@ -34,21 +35,18 @@ const client = new Client({
 });
 
 client.startTime = Date.now();
-client.categories = getDirectoriesSync('./Commands');
 client.functions = {};
 client.dashboardOptionCount = {};
 client.events = new Collection();
 client.cooldowns = new Collection();
-client.commands = new Collection();
 client.guildData = new Collection();
 
-require('./Handlers/log_handler.js')(client);
-for (const handler of readdirSync('./Handlers').filter(e => e != 'log_handler.js')) require(`./Handlers/${handler}`)(client);
+for (const handler of readdirSync('./Handlers')) require(`./Handlers/${handler}`).call(client);
 
 client.login(process.env.token)
   .then(_ => client.log(`Logged in`));
 
 process
-  .on('unhandledRejection', err => require('./Functions/private/error_handler.js')(err))
-  .on('uncaughtExceptionMonitor', err => require('./Functions/private/error_handler.js')(err))
-  .on('uncaughtException', err => require('./Functions/private/error_handler.js')(err))
+  .on('unhandledRejection', require('./Functions/private/error_handler.js').bind(client))
+  .on('uncaughtExceptionMonitor', require('./Functions/private/error_handler.js').bind(client))
+  .on('uncaughtException', require('./Functions/private/error_handler.js').bind(client))

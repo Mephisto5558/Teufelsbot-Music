@@ -26,8 +26,8 @@ module.exports = {
     required: false
   }],
 
-  run: (_, interaction, client) => {
-    const query = interaction.options?.getString('command')?.toLowerCase();
+  run: (_, client) => {
+    const query = this.options?.getString('command')?.toLowerCase();
     const embed = new EmbedBuilder({ color: Colors.Blurple });
 
     if (query) {
@@ -53,13 +53,13 @@ module.exports = {
         ].filter(Boolean);
       }
 
-      return interaction.editReply({ embeds: [embed] })
+      return this.editReply({ embeds: [embed] })
     }
 
     embed.data.title = `🔰All my commands`;
     embed.setThumbnail(client.user.displayAvatarURL());
 
-    for (const category of client.categories.map(e => e.toUpperCase())) {
+    for (const category of getDirectoriesSync('./Commands').map(e => e.toUpperCase())) {
       if (category == 'OWNER-ONLY') continue;
 
       const data = listCommands(client.commands, '', 1, category);
@@ -78,6 +78,6 @@ module.exports = {
     if (!embed.data.fields) embed.data.description = 'No commands found...';
     else embed.data.footer = { text: `Use the 'command' option to get more information about a specific command.` };
 
-    interaction.editReply({ embeds: [embed] });
+    this.editReply({ embeds: [embed] });
   }
 }

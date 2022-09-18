@@ -45,8 +45,8 @@ module.exports = {
     }
   ],
 
-  run: async (player, interaction, { musicPlayer, functions }) => {
-    const query = interaction.options.getString('query');
+  run: async function (player, { musicPlayer }) {
+    const query = this.options.getString('query');
 
     let
       rows = [],
@@ -54,22 +54,22 @@ module.exports = {
       results = [],
       i = 1;
 
-    if (interaction.options.getBoolean('use_this_interaction')) player = interaction;
+    if (this.options.getBoolean('use_this_interaction')) player = this;
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
       const msg = await functions.editPlayer(player, 'Loading...', { asEmbed: true });
 
-      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, msg);
+      if (this.id == player.id) musicPlayer.interaction.set(this.guild.id, msg);
 
-      await musicPlayer.play(interaction.member.voice.channel, query, {
-        member: interaction.member,
-        textChannel: interaction.channel,
-        skip: interaction.options.getBoolean('skip')
+      await musicPlayer.play(this.member.voice.channel, query, {
+        member: this.member,
+        textChannel: this.channel,
+        skip: this.options.getBoolean('skip')
       });
 
 
-      if (interaction.options.getBoolean('shuffle')) {
-        const queue = musicPlayer.getQueue(interaction.guild.id);
+      if (this.options.getBoolean('shuffle')) {
+        const queue = musicPlayer.getQueue(this.guild.id);
         await queue.shuffle();
       }
 
@@ -77,7 +77,7 @@ module.exports = {
     }
 
     const search = await musicPlayer.search(query, {
-      type: interaction.options.getString('type') || 'video',
+      type: this.options.getString('type') || 'video',
       limit: 5
     });
 
@@ -118,8 +118,8 @@ module.exports = {
 
     await functions.editPlayer(player, { embeds: [embed], components: rows });
 
-    const filter = i => i.member.id == interaction.member.id;
-    const collector = interaction.channel.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 30000 });
+    const filter = i => i.member.id == this.member.id;
+    const collector = this.channel.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 30000 });
 
     collector.on('collect', async button => {
       await button.deferUpdate();
@@ -131,26 +131,26 @@ module.exports = {
 
       const msg = await functions.editPlayer(player, { embeds: [embed], components: [] });
 
-      if (interaction.id == player.id) musicPlayer.interaction.set(interaction.guild.id, msg);
+      if (this.id == player.id) musicPlayer.interaction.set(this.guild.id, msg);
 
-      if (button.customId == 'cancel' && musicPlayer.getQueue(interaction.guild.id)?.songs?.length)
-        return require('./nowplaying.js').run(player, interaction, { functions });
+      if (button.customId == 'cancel' && musicPlayer.getQueue(this.guild.id)?.songs?.length)
+        return require('./nowplaying.js').run.call(this, player);
 
-      await musicPlayer.play(interaction.member.voice.channel, /\((.*)\)/g.exec(results[button.customId - 1])[1], {
-        member: interaction.member,
-        textChannel: interaction.channel,
-        skip: interaction.options.getBoolean('skip')
+      await musicPlayer.play(this.member.voice.channel, /\((.*)\)/g.exec(results[button.customId - 1])[1], {
+        member: this.member,
+        textChannel: this.channel,
+        skip: this.options.getBoolean('skip')
       });
 
-      if (interaction.options.getBoolean('shuffle')) {
-        const queue = musicPlayer.getQueue(interaction.guild.id);
+      if (this.options.getBoolean('shuffle')) {
+        const queue = musicPlayer.getQueue(this.guild.id);
         await queue.shuffle();
       }
     });
 
     collector.on('end', async collected => {
       if (collected.size) return;
-      functions.editPlayer(player, { components: [] });
+      this.editPlayer({ components: [] });
     });
 
   }

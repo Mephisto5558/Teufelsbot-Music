@@ -8,8 +8,8 @@ module.exports = {
   needsVC: true,
   needsQueue: true,
 
-  run: async (player, _, { functions }) => {
+  run: async function (player) {
     await player.queue.delete();
-    functions.editPlayer(player, 'Queue cleared', { asEmbed: true });
+    this.editPlayer('Queue cleared', { asEmbed: true });
   }
 }

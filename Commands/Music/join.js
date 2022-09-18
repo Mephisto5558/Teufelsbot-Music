@@ -8,11 +8,11 @@ module.exports = {
   needsVC: true,
   ephemeralDefer: true,
 
-  run: async (player, { member, guild }, { functions, musicPlayer }) => {
-    if (member.voice.channelId == guild.members.me.voice.channelId) return interaction.editReply("I'm already in your voice channel!");
+  run: async function (_, { musicPlayer }) {
+    if (member.voice.channelId == this.guild.members.me.voice.channelId) return this.editReply("I'm already in your voice channel!");
 
-    await musicPlayer.voices.join(member.voice.channel);
+    await musicPlayer.voices.join(this.member.voice.channel);
 
-    functions.editPlayer(player, 'I joined your voice channel.', { asEmbed: true });
+    this.editPlayer('I joined your voice channel.', { asEmbed: true });
   }
 }

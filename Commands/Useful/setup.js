@@ -13,14 +13,13 @@ module.exports = {
     type: 'Subcommand'
   }],
 
-  run: async (_, interaction, client) => {
-    const cmd = interaction.options.getSubcommand();
+  run: async function (_, client) {
+    const cmd = this.options.getSubcommand();
 
     if (cmd == 'sync') {
-      await require('../../Handlers/slash_command_handler.js')(client, interaction.guild.id);
+      await require('../../Handlers/slash_command_handler.js').call(client, this.guild.id);
 
-      interaction.editReply('Finished syncing.');
+      this.editReply('Finished syncing.');
     }
-
   }
 }

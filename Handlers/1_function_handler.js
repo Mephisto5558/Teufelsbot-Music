@@ -1,7 +1,7 @@
 const { readdirSync } = require('fs');
 let functionCount = 0;
 
-module.exports = ({ functions, log }) => {
+module.exports = function functionHandler() {
   for (const file of readdirSync('./Functions/global').filter(e => e.endsWith('.js'))) {
     const functionName = file.split('.')[0];
 

@@ -1,3 +1,3 @@
 const { ActivityType } = require('discord.js');
 
-module.exports = ({ user }) => user.setActivity({ name: '/help', type: ActivityType.Playing });
+module.exports = function ready() { this.user.setActivity({ name: '/help', type: ActivityType.Playing }) };

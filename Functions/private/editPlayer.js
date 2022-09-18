@@ -1,6 +1,6 @@
 const { EmbedBuilder, Colors } = require('discord.js');
 
-module.exports = (playerInteraction, content, { asEmbed, asError } = {}) => {
+module.exports = function editPlayer(content, { asEmbed, asError } = {}) {
   if (!content) throw new SyntaxError('Missing data to send');
 
   if (asEmbed) {
@@ -15,9 +15,9 @@ module.exports = (playerInteraction, content, { asEmbed, asError } = {}) => {
 
   if (asError && content.embeds?.length) for (const embed of content.embeds) embed.data.color = Colors.Red;
 
-  try { return playerInteraction.edit(content) }
+  try { return this.edit(content) }
   catch {
-    try { return playerInteraction.followUp(content) }
-    catch { return playerInteraction.channel.send(content) }
+    try { return this.followUp(content) }
+    catch { return this.channel.send(content) }
   }
 }

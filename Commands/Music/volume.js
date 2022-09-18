@@ -14,11 +14,11 @@ module.exports = {
     maxValue: 200
   }],
 
-  run: async (player, { options }, { functions }) => {
-    let volume = options.getNumber('vol');
+  run: async function (player) {
+    let volume = this.options.getNumber('vol');
     if (volume > 200) volume = 200;
 
     await player.queue.setVolume(volume);
-    await functions.editPlayer(player, `The volume has been set to ${volume}%`, { asEmbed: true });
+    this.editPlayer(`The volume has been set to ${volume}%`, { asEmbed: true });
   }
 }

@@ -8,7 +8,7 @@ module.exports = {
     ephemeralDefer: false,
     needsQueue: false,
 
-    run: async (player, interaction, client) => {
+    run: async function (player, client) {
 
     }
 }

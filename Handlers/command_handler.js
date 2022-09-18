@@ -7,7 +7,7 @@ let deletedCommandCount = 0;
 
 function equal(a, b) {
   if (!a?.toString() && !b?.toString()) return true;
-  if(typeof a == 'string' || typeof b == 'string') return a == b;
+  if (typeof a == 'string' || typeof b == 'string') return a == b;
   if (
     a.name != b.name || a.description != b.description || a.type != b.type || a.autocomplete != b.autocomplete ||
     a.value != b.value || (a.options?.length ?? 0) != (b.options?.length ?? 0) || (a.channelTypes?.length ?? 0) != (b.channelTypes?.length ?? 0) ||
@@ -16,7 +16,7 @@ function equal(a, b) {
   ) return;
 
   for (let i = 0; i < (a.options?.length || 0); i++) if (!equal(a.options?.[i], b?.options?.[i])) return;
-  for(let i = 0; i < (a.channelTypes?.length || 0); i++) if (!equal(a.channelTypes?.[i], b.channelTypes?.[i])) return;
+  for (let i = 0; i < (a.channelTypes?.length || 0); i++) if (!equal(a.channelTypes?.[i], b.channelTypes?.[i])) return;
 
   return true;
 }
@@ -44,69 +44,74 @@ function format(option) {
   return option;
 }
 
-module.exports = async (client, SyncGuild) => {
-  await client.functions.ready(client);
+module.exports = async function commandHandler(SyncGuild) {
+  await this.functions.ready();
+
+  this.commands = new Collection();
 
   const skippedCommands = new Collection();
-  const applicationCommands = await client.application.commands.fetch(undefined, { guildId: SyncGuild && SyncGuild != '*' ? SyncGuild : undefined });
+  const applicationCommands = await this.application.commands.fetch(undefined, { guildId: SyncGuild && SyncGuild != '*' ? SyncGuild : undefined });
 
   if (!SyncGuild || SyncGuild == '*') {
-    client.commands = new Collection();
-
     for (const subFolder of getDirectoriesSync('./Commands')) {
       for (const file of readdirSync(`./Commands/${subFolder}`).filter(e => e.endsWith('.js'))) {
         const command = format(require(`../Commands/${subFolder}/${file}`));
         let skipped = false;
 
-        if (command.disabled || (client.botType == 'dev' && !command.beta)) continue;
+        if (command.disabled || (this.botType == 'dev' && !command.beta))
+          continue;
 
         for (const applicationCommand of applicationCommands) {
-          if (!equal(command, applicationCommand[1])) continue;
-          client.log(`Skipped Slash Command ${command.name}`);
+          if (!equal(command, applicationCommand[1]))
+            continue;
+          this.log(`Skipped Slash Command ${command.name}`);
           skipped = true;
           skippedCommands.set(command.name, command);
           break;
         }
         if (!skipped) {
-          client.commands.set(command.name, command);
-          for (const alias of command.aliases) client.commands.set(alias, command);
+          this.commands.set(command.name, command);
+          for (const alias of command.aliases)
+            this.commands.set(alias, command);
         }
       }
     }
 
-    for (const guild of await client.guilds.fetch()) {
-      await client.application.commands.set([], guild[0]);
-      client.log(`Cleared Slash Commands for Guild ${guild[0]}`);
+    for (const guild of await this.guilds.fetch()) {
+      await this.application.commands.set([], guild[0]);
+      this.log(`Cleared Slash Commands for Guild ${guild[0]}`);
     }
   }
 
-  for (const command of client.commands) {
-    await client.application.commands.create(command[1], SyncGuild && SyncGuild != '*' ? SyncGuild : null);
-    client.log(`Registered Slash Comand ${command[0]}`);
+  for (const command of this.commands) {
+    await this.application.commands.create(command[1], SyncGuild && SyncGuild != '*' ? SyncGuild : null);
+    this.log(`Registered Slash Comand ${command[0]}`);
   }
 
-  const commandNames = [...client.commands, ...skippedCommands].map(e => e[0]);
+  const commandNames = [...this.commands, ...skippedCommands].map(e => e[0]);
   for (const clientCommand of applicationCommands) {
-    if (commandNames.includes(clientCommand[1].name)) continue;
+    if (commandNames.includes(clientCommand[1].name))
+      continue;
 
-    await client.application.commands.delete(clientCommand[1], SyncGuild && SyncGuild != '*' ? SyncGuild : null);
-    client.log(`Deleted Slash Comand ${clientCommand[1].name}`);
-    deletedCommandCount++
+    await this.application.commands.delete(clientCommand[1], SyncGuild && SyncGuild != '*' ? SyncGuild : null);
+    this.log(`Deleted Slash Comand ${clientCommand[1].name}`);
+    deletedCommandCount++;
   }
 
-  if (SyncGuild) return;
+  if (SyncGuild)
+    return;
 
-  client.log(`Registered ${client.commands.size} Slash Commands`);
+  this.log(`Registered ${this.commands.size} Slash Commands`);
 
-  skippedCommands.forEach((v, k) => client.commands.set(k, v));
+  skippedCommands.forEach((v, k) => this.commands.set(k, v));
 
-  client.log(`Skipped ${skippedCommands.size} Slash Commands`);
-  client.log(`Deleted ${deletedCommandCount} Slash Commands`);
+  this.log(`Skipped ${skippedCommands.size} Slash Commands`);
+  this.log(`Deleted ${deletedCommandCount} Slash Commands`);
 
-  client.on('interactionCreate', event.bind(null, client));
-  client.log('Loaded Event interactionCreate');
-  client.log('Ready to receive slash commands\n');
+  this.on('interactionCreate', event.bind(null, this));
+  this.log('Loaded Event interactionCreate');
+  this.log('Ready to receive slash commands\n');
 
-  client.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${new Set(client.guilds.cache.map(g => Array.from(g.members.cache.filter(e => !e.user.bot).keys())).flat()).size} unique users.\n`);
+  this.log(`Ready to serve in ${this.channels.cache.size} channels on ${this.guilds.cache.size} servers, for a total of ${new Set(this.guilds.cache.map(g => Array.from(g.members.cache.filter(e => !e.user.bot).keys())).flat()).size} unique users.\n`);
   console.timeEnd('Starting time');
 }

@@ -14,9 +14,9 @@ module.exports = {
     required: true
   }],
 
-  run: async (player, { options }, { functions }) => {
-    await player.queue.jump(options.getNumber('position'));
+  run: async function (player) {
+    await player.queue.jump(this.options.getNumber('position'));
 
-    await functions.editPlayer(player, `Jumped to ${player.queue.songs[0].name}`, { asEmbed: true });
+    this.editPlayer(`Jumped to ${player.queue.songs[0].name}`, { asEmbed: true });
   }
 }

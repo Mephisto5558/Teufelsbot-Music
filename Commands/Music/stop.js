@@ -7,8 +7,8 @@ module.exports = {
   category: 'Music',
   needsQueue: true,
 
-  run: async (player, _, { functions }) => {
+  run: async function (player) {
     await player.queue.stop();
-    functions.editPlayer(player, 'Player stopped', { asEmbed: true });
+    this.editPlayer('Player stopped', { asEmbed: true });
   }
 }

@@ -7,13 +7,12 @@ module.exports = {
   category: 'Music',
   needsQueue: true,
 
-  run: async (player, _, { functions }) => {
+  run: function (player) {
     const
       { duration, name, url, user } = player.queue.songs[0],
       remainingTime = (duration - player.queue.currentTime).toFormattedTime();
 
-    await functions.editPlayer(player,
-      `I am currently playing\n` +
+    this.editPlayer(`I am currently playing\n` +
       `[${name}](${url}) \`${player.queue.formattedCurrentTime}\` / \`${remainingTime}\`\n` +
       `Requested by: ${user}`,
       { asEmbed: true }
