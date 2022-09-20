@@ -10,7 +10,7 @@ module.exports = async function errorHandler(err, interaction) {
     this.error(errorColor, ' [Error Handling] :: Uncaught Error');
     return this.error(err.stack);
   }
-
+console.log(interaction)
   const
     octokit = new Octokit({ auth: process.env.githubKey }),
     embed = new EmbedBuilder({
