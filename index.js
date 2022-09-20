@@ -47,6 +47,6 @@ client.login(process.env.token)
   .then(_ => client.log(`Logged in`));
 
 process
-  .on('unhandledRejection', require('./Functions/private/error_handler.js').bind(client))
-  .on('uncaughtExceptionMonitor', require('./Functions/private/error_handler.js').bind(client))
-  .on('uncaughtException', require('./Functions/private/error_handler.js').bind(client))
+  .on('unhandledRejection', err => require('./Functions/private/error_handler.js').call(client, err))
+  .on('uncaughtExceptionMonitor', err => require('./Functions/private/error_handler.js').call(client, err))
+  .on('uncaughtException', err => require('./Functions/private/error_handler.js').call(client, err))
