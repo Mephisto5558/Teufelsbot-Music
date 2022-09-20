@@ -35,7 +35,7 @@ module.exports = async function (interaction) {
 
     for (const entry of interaction.options._hoistedOptions) if (entry.type == ApplicationCommandOptionType.String) entry.value = entry.value.replace(/<@!/g, '<@');
 
-    try { await command.run(player, interaction, this) }
+    try { await command.run.call(player, interaction, this) }
     catch (err) { return require('../Functions/private/error_handler.js').call(this, err, interaction) }
 
     if (command.category.toLowerCase() == 'music' && player.id != interaction.id && !interaction.deferred) {

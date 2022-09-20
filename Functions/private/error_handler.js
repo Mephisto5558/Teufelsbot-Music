@@ -8,7 +8,7 @@ module.exports = async function errorHandler(err, interaction) {
   if (!this.error) this.error = console.error;
   if (!interaction) {
     this.error(errorColor, ' [Error Handling] :: Uncaught Error');
-    return this.error(err);
+    return this.error(err.stack);
   }
 
   const
@@ -42,7 +42,7 @@ module.exports = async function errorHandler(err, interaction) {
   }
 
   this.error(errorColor, ' [Error Handling] :: Uncaught Error');
-  this.error(err);
+  this.error(err.stack);
 
   const msg = await interaction.followUp({ embeds: [embed], components: [comp] });
 
@@ -74,7 +74,7 @@ module.exports = async function errorHandler(err, interaction) {
     }
     catch (err) {
       interaction.followUp(`An error occurred while trying to send your error report.\n${err?.response.statusText || ''}\nPlease message the dev directly.`);
-      this.error(err);
+      this.error(err.stack);
     }
   });
 
