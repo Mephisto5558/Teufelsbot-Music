@@ -4,7 +4,7 @@ console.info('Starting...');
 const
   { Client, Collection, GatewayIntentBits, AllowedMentionsTypes, CommandInteraction } = require('discord.js'),
   { readdirSync } = require('fs'),
-  editPlayer = require('./functions/private/editPlayer.js');
+  editPlayer = require('./Functions/private/editPlayer.js');
 
 global.getDirectoriesSync = path => readdirSync(path, { withFileTypes: true }).filter(e => e.isDirectory()).map(directory => directory.name);
 global.errorColor = '\x1b[1;31m%s\x1b[0m';
