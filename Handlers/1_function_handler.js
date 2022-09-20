@@ -5,10 +5,10 @@ module.exports = function functionHandler() {
   for (const file of readdirSync('./Functions/global').filter(e => e.endsWith('.js'))) {
     const functionName = file.split('.')[0];
 
-    functions[functionName] = require(`../Functions/global/${file}`);
-    log(`Loaded Global Function ${functionName}`);
+    this.functions[functionName] = require(`../Functions/global/${file}`);
+    this.log(`Loaded Global Function ${functionName}`);
     functionCount++
   }
 
-  log(`Loaded ${functionCount} Global Functions\n`)
+  this.log(`Loaded ${functionCount} Global Functions\n`)
 }
