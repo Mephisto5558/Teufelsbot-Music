@@ -5,7 +5,6 @@
 
 [![CodeQL](https://github.com/Mephisto5558/Teufelsbot-Music/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/Mephisto5558/Teufelsbot-Music/actions/workflows/codeql-analysis.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_Teufelsbot-Music&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_Teufelsbot-Music)
-[![CodeFactor](https://www.codefactor.io/repository/github/mephisto5558/teufelsbot-music/badge)](https://www.codefactor.io/repository/github/mephisto5558/teufelsbot-music)
 
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_Teufelsbot-Music&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_Teufelsbot-Music)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_Teufelsbot-Music&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_Teufelsbot-Music)
