@@ -23,7 +23,7 @@
     "lyrics-finder": "^21.7.0",
     "node": "^18.9.1",
     "songlyrics": "^2.4.4",
-    "superagent": "^8.0.0",
+    "superagent": "^8.0.1",
     "yt-search": "^2.10.3"
   },
   "repository": {
