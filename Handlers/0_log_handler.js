@@ -2,7 +2,7 @@ const
   fs = require('fs'),
   date = new Date().toLocaleDateString('en').replace(/\//g, '-'),
   startCount = parseInt(fs.readFileSync('./Logs/startCount.log') || 0) + 1,
-  getTime = _ => new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false }),
+  getTime = () => new Date().toLocaleTimeString('en', { timeStyle: 'medium', hour12: false }),
   writeLogFile = (type, data) => fs.appendFileSync(`./Logs/${date}_${type}.log`, `[${getTime()}] ${data}\n`);
 
 fs.writeFileSync('./Logs/startCount.log', startCount.toString());

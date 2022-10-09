@@ -1,7 +1,7 @@
 const
   app = require('express')(),
   exec = require('util').promisify(require('child_process').exec),
-  pull = async _ => {
+  pull = async () => {
     let data;
 
     try { data = await exec('git pull', { maxBuffer: 1024 * 600 }) }

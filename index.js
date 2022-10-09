@@ -44,7 +44,7 @@ client.guildData = new Collection();
 for (const handler of readdirSync('./Handlers')) require(`./Handlers/${handler}`).call(client);
 
 client.login(process.env.token)
-  .then(_ => client.log(`Logged in`));
+  .then(() => client.log(`Logged in`));
 
 process
   .on('unhandledRejection', err => require('./Functions/private/error_handler.js').call(client, err))
