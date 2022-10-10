@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
-    "@discordjs/voice": "^0.11.0",
+    "@discordjs/voice": "^0.13.0",
     "@distube/soundcloud": "^1.2.2",
     "@distube/spotify": "^1.4.2",
     "@distube/yt-dlp": "^1.1.3",
