@@ -1,14 +1,25 @@
 module.exports = {
+  name: '',
+  aliases: { prefix: [], slash: [] },
+  permissions: { client: [], user: [] },
+  cooldowns: { guild: 0, user: 0 },
+  dmPermission: false,
+  disabled: false,
+  hideInHelp: false,
+  noDefer: false,
+  ephemeralDefer: false,
+  requireVC: false,
+  requireQueue: false,
+  options: [{
     name: '',
-    aliases: [],
-    description: '',
-    permissions: { client: [], user: [] },
-    cooldowns: { client: 0, user: 0 },
-    category : '',
-    ephemeralDefer: false,
-    needsQueue: false,
+    type: '',
+    autocomplete: false,
+    autocompleteOptions: [],
+    required: false,
+    choices: [{ value: '' }],
+  }],
 
-    run: async function (player, client) {
+  run: function (lang) {
 
-    }
-}
+  }
+};

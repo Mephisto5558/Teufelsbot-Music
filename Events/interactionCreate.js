@@ -1,47 +1,78 @@
-const { EmbedBuilder, Colors, InteractionType, ApplicationCommandOptionType } = require('discord.js');
+const
+  { EmbedBuilder, Colors, InteractionType, ApplicationCommandOptionType, ComponentType, PermissionFlagsBits } = require('discord.js'),
+  ownerOnlyFolders = require('../config.json')?.ownerOnlyFolders?.map(e => e?.toLowerCase()) || ['owner-only'],
+  { I18nProvider, cooldowns, permissionTranslator, errorHandler, buttonPressHandler } = require('../Utils');
 
-module.exports = async function (interaction) {
-  const command = this.commands.get(interaction.commandName);
-  if (!command || !interaction.isRepliable()) return;
+async function componentHandler(lang) {
+  switch (this.componentType) {
+    // case ComponentType.Button: return buttonPressHandler.call(this, lang);
+  }
+}
 
-  const cooldown = await require('../Functions/private/cooldowns.js').call(this, interaction, command);
-  if (cooldown) return interaction.reply(`This command is on cooldown! Try again in \`${cooldown}\`s.`);
+module.exports = async function interactionCreate() {
+  if (this.client.settings.blacklist?.includes(this.user.id)) return;
+  if (this.type == InteractionType.MessageComponent) return componentHandler.call(this, I18nProvider.__.bBind(I18nProvider, { locale: this.guild.localeCode }));
 
-  if (command.category.toLowerCase() == 'owner-only' && interaction.user.id != this.application.owner.id) return;
-  //DO NOT REMOVE THIS LINE!
-  let player = this.musicPlayer?.interaction?.get(interaction.guild.id);
-  if (!player || player.channel.id != interaction.channel.id) player = interaction;
+  const command = this.client.slashCommands.get(this.commandName);
 
-  player.queue = this.musicPlayer.getQueue(player.guild.id);
+  //DO NOT REMOVE THIS STATEMENT!
+  if (!command || (ownerOnlyFolders.includes(command.category.toLowerCase()) && this.user.id != this.client.application.owner.id)) return;
 
-  if (command.needsVC && !interaction.member.voice.channel) return interaction.editReply('You need to join a voice channel first!');
-  if (command.needsQueue && !player.queue) return interaction.editReply('You need to play music first!');
+  const lang = I18nProvider.__.bBind(I18nProvider, { locale: this.guild.localeCode, backupPath: `commands.${command.category.toLowerCase()}.${command.name}` });
+  const disabledList = this.guild.db.commandSettings?.[command.aliasOf || command.name]?.disabled || {};
 
-  if (interaction.type === InteractionType.ApplicationCommand) {
-    const userPermsMissing = interaction.member.permissionsIn(interaction.channel).missing(command.permissions.user);
-    const botPermsMissing = interaction.guild.members.me.permissionsIn(interaction.channel).missing(command.permissions.client);
+  if (disabledList.members && disabledList.members.includes(this.user.id)) return this.reply({ content: lang('events.notAllowed.member'), ephemeral: true });
+  if (disabledList.channels && disabledList.channels.includes(this.channel.id)) return this.reply({ content: lang('events.notAllowed.channel'), ephemeral: true });
+  if (disabledList.roles && this.member.roles.cache.some(e => disabledList.roles.includes(e.id))) return this.reply({ content: lang('events.notAllowed.role'), ephemeral: true });
+
+  if (this.type == InteractionType.ApplicationCommandAutocomplete) {
+    const
+      lang = I18nProvider.__.bBind(I18nProvider, { locale: this.guild.localeCode, backupPath: `commands.${command.category.toLowerCase()}.${command.name}`, undefinedNotFound: true }),
+      response = v => ({ name: lang(`options.${this.options._group ? this.options._group + '.' : ''}${this.options._subcommand ? this.options._subcommand + '.' : ''}${this.focused.name}.choices.${v}`) ?? v, value: v });
+
+    let { options } = command.fMerge();
+    if (this.options._group) options = options.find(e => e.name == this.options._group);
+    if (this.options._subcommand) options = options.find(e => e.name == this.options._subcommand).options;
+    options = options.find(e => e.name == this.focused.name).autocompleteOptions;
+    if (typeof options == 'function') options = await options.call(this);
+
+    return this.respond(
+      typeof options == 'string' ? [response(options)] : options
+        .filter(e => e.toLowerCase().includes(this.focused.value.toLowerCase()))
+        .slice(0, 25)
+        .map(response)
+    );
+  }
+
+  const cooldown = await cooldowns.call(this, command);
+  if (cooldown) return this.reply({ content: lang('events.cooldown', cooldown), ephemeral: true });
+
+  if (command.requireVC && !this.member.voice.channel) return this.reply({ content: lang('notInVoiceChannel'), ephemeral: true });
+  if (command.requireQueue && !this.musicPlayer?.songs.length) return this.reply({ content: lang('playMusicFirst'), ephemeral: true });
+
+  if (this.type == InteractionType.ApplicationCommand) {
+    const userPermsMissing = this.member.permissionsIn(this.channel).missing(command.permissions?.user);
+    const botPermsMissing = this.guild.members.me.permissionsIn(this.channel).missing([...(command.permissions?.client || []), PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks]);
 
     if (botPermsMissing.length || userPermsMissing.length) {
       const embed = new EmbedBuilder({
-        title: 'Insufficient Permissions',
+        title: lang('events.permissionDenied.embedTitle'),
         color: Colors.Red,
-        description: `${userPermsMissing.length ? 'You' : 'I'} need the following permissions in this channel to run this command:\n\`` + (botPermsMissing.length ? botPermsMissing : userPermsMissing).join('`, `') + '`'
+        description: lang(`events.permissionDenied.embedDescription${userPermsMissing.length ? 'User' : 'Bot'}`, { permissions: permissionTranslator(botPermsMissing.length ? botPermsMissing : userPermsMissing).join('`, `') })
       });
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return this.reply({ embeds: [embed], ephemeral: true });
     }
 
-    if (!command.noDefer && !interaction.replied) await interaction.deferReply({ ephemeral: command.ephemeralDefer || false });
+    if (!command.noDefer && !this.replied) await this.deferReply({ ephemeral: command.ephemeralDefer ?? false });
 
-    for (const entry of interaction.options._hoistedOptions) if (entry.type == ApplicationCommandOptionType.String) entry.value = entry.value.replace(/<@!/g, '<@');
+    for (const entry of this.options._hoistedOptions)
+      if (entry.type == ApplicationCommandOptionType.String) entry.value = entry.value.replaceAll('<@!', '<@');
 
-    try { await command.run.call(player, interaction, this) }
-    catch (err) { return require('../Functions/private/error_handler.js').call(this, err, interaction) }
 
-    if (command.category.toLowerCase() == 'music' && player.id != interaction.id && !interaction.deferred) {
-      await interaction.editReply(`Successfully executed command. Deleting message in 10s.`);
-      await this.functions.sleep(10000);
-      interaction.deleteReply();
-    }
+    try {
+      command.run.call(this, lang)?.catch(err => errorHandler.call(this.client, err, this, lang));
+      if (this.client.botType != 'dev') this.client.db.update('botSettings', `stats.${command.name}`, this.client.settings.stats[command.name] + 1 || 1);
+    } catch (err) { errorHandler.call(this.client, err, this, lang); }
   }
-}
+};

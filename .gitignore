@@ -2,6 +2,7 @@ replit.nix
 node_modules
 .github
 config.json
+env.json
 
 # Logs
 logs

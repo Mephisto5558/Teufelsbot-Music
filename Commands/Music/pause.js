@@ -2,14 +2,11 @@ module.exports = {
   name: 'pause',
   aliases: ['resume'],
   description: 'pauses/resumes the player',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { client: 0, user: 2000 },
-  category: 'Music',
-  needsQueue: true,
+  cooldowns: { user: 2000 },
+  requireQueue: true,
 
-  run: async function (player) {
-    player.queue.paused ? await player.queue.resume() : await player.queue.pause();
-
-    this.editPlayer(`Player ${player.queue.paused ? 'paused' : 'resumed'}`, { asEmbed: true });
+  run: async function () {
+    await (this.musicPlayer.paused ? this.musicPlayer.resume() : this.musicPlayer.pause());
+    this.sendEmbed(`Player ${this.musicPlayer.paused ? 'paused' : 'resumed'}`, { asEmbed: true });
   }
-}
+};

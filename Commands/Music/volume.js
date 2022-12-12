@@ -1,24 +1,22 @@
 module.exports = {
   name: 'volume',
-  aliases: [],
   description: 'Set the player volume',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { client: 0, user: 500 },
-  category: 'Music',
-  needsQueue: true,
+  cooldowns: { user: 500 },
+  requireVC: true,
+  requireQueue: true,
   options: [{
-    name: 'vol',
-    description: 'The new percentage volume',
-    required: true,
+    name: 'volume',
+    description: 'The new volume percentage',
     type: 'Number',
-    maxValue: 200
+    required: true,
+    minValue: 0,
+    maxValue: 500
   }],
 
   run: async function (player) {
-    let volume = this.options.getNumber('vol');
-    if (volume > 200) volume = 200;
+    const volume = this.options.getNumber('volume');
 
     await player.queue.setVolume(volume);
-    this.editPlayer(`The volume has been set to ${volume}%`, { asEmbed: true });
+    this.sendEmbed(`The volume has been set to ${volume}%`, { asEmbed: true });
   }
 }

@@ -1,18 +1,13 @@
 module.exports = {
   name: 'join',
-  aliases: [],
   description: 'Joins the voice channel you are in',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { client: 0, user: 3000 },
-  category: 'Music',
-  needsVC: true,
-  ephemeralDefer: true,
+  cooldowns: { user: 3000 },
+  requireVC: true,
 
-  run: async function (_, { musicPlayer }) {
-    if (member.voice.channelId == this.guild.members.me.voice.channelId) return this.editReply("I'm already in your voice channel!");
+  run: async function () {
+    if (this.member.voice.channelId == this.guild.members.me.voice.channelId) return this.editReply("I'm already in your voice channel!");
 
-    await musicPlayer.voices.join(this.member.voice.channel);
-
-    this.editPlayer('I joined your voice channel.', { asEmbed: true });
+    await this.client.distube.voices.join(this.member.voice.channel);
+    this.sendEmbed('I joined your voice channel.', { asEmbed: true });
   }
 }

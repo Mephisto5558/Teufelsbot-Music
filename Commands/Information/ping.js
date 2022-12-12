@@ -2,66 +2,48 @@ const { EmbedBuilder, Colors } = require('discord.js');
 
 module.exports = {
   name: 'ping',
-  aliases: [],
-  description: `Get the bot's ping`,
-  usage: '',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { guild: 0, user: 1000 },
-  category: 'Information',
-  options: [{
-    name: 'average',
-    description: 'Gets the ping average',
-    type: 'Boolean',
-    required: false
-  }],
+  cooldowns: { user: 1000 },
+  dmPermission: true,
+  options: [{ name: 'average', type: 'Boolean' }],
 
-  run: async function (_, { ws, functions }) {
-    if (this?.options?.getBoolean('average')) {
-      const embed = new EmbedBuilder({
-        title: 'Ping',
-        description: `Pinging... (this takes about one minute)`,
-        color: Colors.Blurple
-      });
+  run: async function (lang) {
+    const
+      average = this.options.getBoolean('average'),
+      embed = new EmbedBuilder({
+        title: lang('embedTitle'),
+        description: lang(average ? 'average.loading' : 'global.loading'),
+        color: Colors.Green
+      }),
+      startMessagePing = Date.now(),
+      msg = await this.editReply({ embeds: [embed] }),
+      endMessagePing = Date.now() - startMessagePing;
 
-      this.editReply({ embeds: [embed] });
+    if (average) {
+      const pings = [], numPings = 60;
 
-      let pings = [], i;
-
-      for (i = 0; i <= 59; i++) {
-        pings.push(ws.ping);
-        await functions.sleep(1000);
+      for (let i = 0; i < numPings; i++) {
+        pings.push(this.client.ws.ping);
+        await sleep(1000);
       }
 
       pings.sort((a, b) => a - b);
 
-      const averagePing = Math.round((pings.reduce((a, b) => a + b) / i) * 100) / 100;
+      const averagePing = Math.round(pings.reduce((a, b) => a + b) / numPings * 100) / 100;
 
-      embed.data.description =
-        `Pings: \`${pings.length}\`\n` +
-        `Lowest Ping: \`${pings[0]}ms\`\n` +
-        `Highest Ping: \`${pings[pings.length - 1]}ms\`\n` +
-        `Average Ping: \`${averagePing}ms\``;
-
-      return this.editReply({ embeds: [embed] })
+      embed.data.description = lang('average.embedDescription', {
+        pings: pings.length, average: averagePing,
+        lowest: pings[0], heightest: pings[pings.length - 1]
+      });
+    }
+    else {
+      embed.data.fields = [
+        { name: 'API', value: `\`${Math.round(this.client.ws.ping)}\`ms`, inline: true },
+        { name: 'Bot', value: `\`${Math.abs(Date.now() - this.createdTimestamp)}\`ms`, inline: true },
+        { name: lang('messageSend'), value: `\`${endMessagePing}\`ms`, inline: true }
+      ];
+      embed.data.description = ' ';
     }
 
-    const embed = new EmbedBuilder({
-      title: 'Ping',
-      description: 'Loading...',
-      color: Colors.Green
-    });
-
-    const messagePing = Date.now();
-    await this.editReply({ embeds: [embed] });
-    const endMessagePing = Date.now() - messagePing;
-
-    embed.data.fields = [
-      { name: 'API', value: `\`${Math.round(ws.ping)}\`ms`, inline: true },
-      { name: 'Bot', value: `\`${Math.abs(Date.now() - this.createdTimestamp)}\`ms`, inline: true },
-      { name: 'Message Send', value: `\`${endMessagePing}\`ms`, inline: true }
-    ];
-    embed.data.description = ' ';
-
-    this.editReply({ embeds: [embed] });
+    msg.edit({ embeds: [embed] });
   }
-}
+};

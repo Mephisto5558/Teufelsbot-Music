@@ -5,11 +5,8 @@ const
 
 module.exports = {
   name: 'lyrics',
-  aliases: [],
   description: 'search for song lyrics',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { global: 0, user: 5000 },
-  category: 'Useful',
+  cooldowns: { user: 5000 },
   options: [
     {
       name: 'song',
@@ -32,17 +29,16 @@ module.exports = {
         title: song,
         footer: {
           text: this.user.tag,
-          iconURL: this.user.displayAvatarURL({ dynamic: true })
+          iconURL: this.user.displayAvatarURL()
         }
       }).setColor('Random');
 
-    let { lyrics, title, source } = await getLyrics(`${song} ${this.options.getString('artist')}`) || { lyrics: null, title: null, source: null }
+    let { lyrics, title, source } = await getLyrics(`${song} ${this.options.getString('artist')}`) || {};
 
-    if (!lyrics || !song.split(' ').filter(a => a.length > 3 && title.includes(a)).length) {
+    if (!lyrics) {
       embed.data.description =
         `No Lyrics found for \`${song}\` with matching title.\n` +
-        'Maybe try another title or the `author` option, if not used.\n' +
-        'If you know any lyric api, please message the dev.';
+        'Maybe try another title or the `author` option, if not used.'
 
       return this.editReply({ embeds: [embed] });
     }
@@ -50,7 +46,6 @@ module.exports = {
     if (lyrics.length > 4092) lyrics = lyrics.substring(0, lyrics.substring(0, 4081).lastIndexOf('/n')) + '...';
 
     embed.data.description = lyrics;
-    embed.data.footer = { text: this.user.tag, iconURL: this.user.displayAvatarURL({ dynamic: true }) };
     embed.addFields([{ name: 'Source', value: `[${source.url}](${source.link})`, inline: true }]);
 
     const video = (await search(title)).videos
@@ -63,6 +58,6 @@ module.exports = {
       embed.setThumbnail(video.image);
     }
 
-    this.editReply({ embeds: [embed] })
+    this.editReply({ embeds: [embed] });
   }
-}
+};

@@ -18,7 +18,7 @@
 [![Discord Server](https://discordapp.com/api/guilds/725378451988676609/widget.png?style=shield)](https://discord.gg/u6xjqzz)
 
 
-A discord bot with to listen to music, in active developement.
+A discord bot to listen to music, in active development. Supports YouTube.
 
 Hosted on [replit.com](https://replit.com)
 

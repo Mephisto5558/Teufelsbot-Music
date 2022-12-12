@@ -1,68 +1,73 @@
-const { EmbedBuilder, Colors } = require('discord.js');
+const
+  { EmbedBuilder, Colors } = require('discord.js'),
+  { I18nProvider, permissionTranslator } = require('../../Utils'),
+  ownerOnlyFolders = require('../../config.json')?.ownerOnlyFolders?.map(e => e?.toLowerCase()) || ['owner-only'];
 
 function listCommands(list, output, count, category) {
-  for (const command of list.values()) {
-    if (command.category.toLowerCase() != category?.toLowerCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
+  for (const [, command] of list) {
+    if (command.category?.toLowerCase() != category?.toLowerCase() || command.hideInHelp || command.disabled || output.includes(`\`${command.name}\``)) continue;
 
-    if (count % 5 == 0) output += `\`${command.name}\`\n> `
-    else output += `\`${command.name}\`, `
-    count++
+    if (!(count % 5)) output += `\`${command.name ?? command}\`\n> `;
+    else output += `\`${command.name ?? command}\`, `;
+    count++;
   }
   return [output, count];
 }
 
 module.exports = {
   name: 'help',
-  aliases: [],
-  description: 'Shows all bot commands',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { guild: 0, user: 50 },
-  category: 'Information',
+  cooldowns: { user: 50 },
+  dmPermission: true,
   ephemeralDefer: true,
   options: [{
     name: 'command',
-    description: 'Type a command here to get more information about it',
     type: 'String',
-    required: false
-  }],
+    autocomplete: true,
+    autocompleteOptions: function () { return [...new Set(this.client.slashCommands.keys())]; }
+  }], beta: true,
 
-  run: (_, client) => {
-    const query = this.options?.getString('command')?.toLowerCase();
-    const embed = new EmbedBuilder({ color: Colors.Blurple });
+  run: function (lang) {
+    const
+      embed = new EmbedBuilder({ color: Colors.Blurple }),
+      query = this.options.getString('command')?.toLowerCase()
 
     if (query) {
-      const cmd = client.commands.get(query);
+      const cmd = this.client.prefixCommands.get(query) || this.client.slashCommands.get(query);
 
-      if (!cmd?.name || cmd.hideInHelp || cmd.disabled || cmd.category.toLowerCase() == 'owner-only') {
-        embed.data.description = `No Information found for command \`${query}\``;
+      if (!cmd?.name || cmd.hideInHelp || cmd.disabled || (ownerOnlyFolders.includes(cmd.category.toLowerCase()) && this.user.id != this.client.application.owner.id)) {
+        embed.data.description = lang('one.notFound', query);
         embed.data.color = Colors.Red;
       }
       else {
-        embed.data.title = `Detailed Information about: \`${cmd.name}\``;
-        embed.data.description = cmd.description ?? 'No description found';
+        const helpLang = I18nProvider.__.bind(I18nProvider, { undefinedNotFound: true, locale: this.guild.localeCode, backupPath: `commands.${cmd.category.toLowerCase()}.${cmd.name}` });
+
+        embed.data.title = lang('one.embedTitle', cmd.name);
+        embed.data.description = helpLang('description') ?? lang('one.noDescription');
+        if (helpLang('usage')) embed.data.footer = { text: lang('one.embedFooterText') };
         embed.data.fields = [
-          cmd.aliases?.length && { name: 'Command Aliases', value: `\`${listCommands(cmd.aliases, '', 1)[0].replace(/> /g, '')}\``, inline: true },
-          cmd.permissions?.client?.length && { name: 'Required Bot Permissions', value: `\`${cmd.permissions.client.join('`, `')}\``, inline: false },
-          cmd.permissions?.user?.length && { name: 'Required User Permissions', value: `\`${cmd.permissions.user.join('`, `')}\``, inline: true },
-          cmd.cooldowns?.guild || (cmd.cooldowns?.user && {
-            name: 'Command Cooldowns', inline: false, value:
-              (cmd.cooldowns.guild ? `Guild: \`${parseFloat((cmd.cooldowns.guild / 1000).toFixed(2))}\`s${cmd.cooldowns.user ? ', ' : ''}` : '') +
-              (cmd.cooldowns.user ? `User: \`${parseFloat((cmd.cooldowns.user / 1000).toFixed(2))}\`s` : '')
-          }),
-          cmd.usage && { name: 'Usage', value: `${cmd.slashCommand ? 'Look at the option descriptions.\n' : ''} ${cmd.usage || ''}`, inline: false }
+          cmd.aliases?.prefix?.length && { name: lang('one.prefixAlias'), value: `\`${listCommands(cmd.aliases.prefix, '', 1)[0].replaceAll('> ', '')}\``, inline: true },
+          cmd.aliases?.slash?.length && { name: lang('one.slashAlias'), value: `\`${listCommands(cmd.aliases.slash, '', 1)[0].replaceAll('> ', '')}\``, inline: true },
+          cmd.permissions?.client?.length && { name: lang('one.botPerms'), value: `\`${permissionTranslator(cmd.permissions.client).join('`, `')}\``, inline: false },
+          cmd.permissions?.user?.length && { name: lang('one.userPerms'), value: `\`${permissionTranslator(cmd.permissions.user).join('`, `')}\``, inline: true },
+          (cmd.cooldowns?.user || cmd.cooldowns?.guild) && {
+            name: lang('one.cooldowns'), inline: false,
+            value: Object.entries(cmd.cooldowns).filter(([, e]) => e).map(([k, v]) => `${lang('global.' + k)}: \`${parseFloat((v / 1000).toFixed(2))}\`s`, '').join(', ')
+          },
+          helpLang('usage') && { name: lang('one.usage'), value: `${cmd.slashCommand ? lang('one.lookAtDesc') : ''} ${helpLang('usage') || ''}`, inline: false }
         ].filter(Boolean);
       }
 
-      return this.editReply({ embeds: [embed] })
+      return this.editReply({ embeds: [embed] });
     }
 
-    embed.data.title = `🔰All my commands`;
-    embed.setThumbnail(client.user.displayAvatarURL());
+    embed.data.title = lang('all.embedTitle');
+    embed.setThumbnail(this.guild.members.me.displayAvatarURL());
 
     for (const category of getDirectoriesSync('./Commands').map(e => e.toUpperCase())) {
-      if (category == 'OWNER-ONLY') continue;
+      if (ownerOnlyFolders.includes(category.toLowerCase()) && this.user.id != this.client.application.owner.id) continue;
 
-      const data = listCommands(client.commands, '', 1, category);
+      let data = listCommands(this.client.prefixCommands, '', 1, category);
+      data = listCommands(this.client.slashCommands, data[0], data[1], category);
 
       if (data[1] == 1) continue;
 
@@ -75,9 +80,9 @@ module.exports = {
       if (cmdList) embed.addFields([{ name: `**${category} [${data[1] - 1}]**`, value: `> ${cmdList}\n`, inline: true }]);
     }
 
-    if (!embed.data.fields) embed.data.description = 'No commands found...';
-    else embed.data.footer = { text: `Use the 'command' option to get more information about a specific command.` };
+    if (!embed.data.fields) embed.data.description = lang('all.notFound');
+    else embed.data.footer = { text: lang('all.embedFooterText') };
 
     this.editReply({ embeds: [embed] });
   }
-}
+};

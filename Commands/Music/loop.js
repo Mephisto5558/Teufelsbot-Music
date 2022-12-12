@@ -2,11 +2,9 @@ module.exports = {
   name: 'loop',
   aliases: ['repeat'],
   description: 'Loop a song or the whole queue',
-  permissions: { client: ['EmbedLinks'], user: [] },
-  cooldowns: { global: 0, user: 2000 },
-  category: 'Music',
-  needsVC: true,
-  needsQueue: true,
+  cooldowns: { user: 2000 },
+  requireVC: true,
+  requireQueue: true,
   options: [
     {
       name: 'song',
@@ -20,11 +18,11 @@ module.exports = {
     }
   ],
 
-  run: async function (player) {
+  run: async function () {
     const cmd = this.options.getSubcommand();
     const repeatMode = cmd == 'song' ? [1, 'Enabled song'] : [2, 'Enabled queue'];
 
-    await player.queue.setRepeatMode(player.queue.repeatMode > 0 ? 0 : repeatMode[0]);
-    this.editPlayer(`${player.queue.repeatMode == 0 ? 'Disabled' : repeatMode[1]} loop.`, { asEmbed: true });
+    await this.musicPlayer.setRepeatMode(this.musicPlayer.repeatMode > 0 ? 0 : repeatMode[0]);
+    this.sendEmbed(`${player.queue.repeatMode == 0 ? 'Disabled' : repeatMode[1]} loop.`, { asEmbed: true });
   }
 }
