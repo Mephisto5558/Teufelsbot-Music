@@ -20,7 +20,7 @@ module.exports = {
         `${lang('commands')}: \`${new Set(this.client.slashCommands.filter(e => !e.aliasOf)).size}\`\n` +
         `${lang('starts')}: \`${startCount}\`\n` +
         `${lang('lastStart')}: <t:${startTime}> (<t:${startTime}:R>)\n` +
-        lang('translation', { de: '[.̔̏𝗠𝗲𝗽𝗵𝗶𝘀𝘁𝗼#5558](https://discord.com/users/691550551825055775)', en: '[.̔̏𝗠𝗲𝗽𝗵𝗶𝘀𝘁𝗼#5558](https://discord.com/users/691550551825055775)' }) +
+        lang('translation', { de: '[.̔̏𝗠𝗲𝗽𝗵𝗶𝘀𝘁𝗼#5558](https://discord.com/users/691550551825055775) & [Leoooooooo#9125](https://discord.com/users/740930989798195253)', en: '[.̔̏𝗠𝗲𝗽𝗵𝗶𝘀𝘁𝗼#5558](https://discord.com/users/691550551825055775)' }) +
         lang('links', { Invite, Dashboard, PrivacyPolicy }),
 
       embed = new EmbedBuilder({
