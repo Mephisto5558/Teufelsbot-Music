@@ -1,0 +1,105 @@
+{
+  "join": {
+    "description": "Tritt deinem Sprachkanal bei.",
+    "alreadyIn": "Ich bin schon in deinem Sprachkanal!",
+    "success": "Ich bin deinem Sprachkanal beigetreten."
+  },
+  "leave": {
+    "description": "Entferne mich aus dem Sprachkanal.",
+    "notConnected": "Ich bin mit keinem Sprachkanal verbunden!",
+    "success": "Sprachkanal wurde verlassen."
+  },
+  "loop": {
+    "description": "Schalte um ob das aktuelle Lied oder die Wiedergabeliste wiederholt werden soll.",
+    "options": {
+      "song": {
+        "description": "Schalte um ob das aktuelle Lied wiederholt werden soll."
+      },
+      "queue": {
+        "description": "Schalte um ob die Wiedergabeliste wiederholt werden soll."
+      }
+    },
+    "song": {
+      "disabled": "Lied-Wiederholung wurde deaktiviert.",
+      "enabled": "Lied-Wiederholung wurde aktiviert."
+    },
+    "queue": {
+      "disabled": "Wiedergabelisten-Wiederholung wurde deaktiviert.",
+      "enabled": "Wiedergabelisten-Wiederholung wurde aktiviert."
+    }
+  },
+  "nowplaying": {
+    "description": "Zeigt den aktuellen gespielten Song an.",
+    "response": "Aktuell spielt:\n{data}\nvon: {user}"
+  },
+  "pause": {
+    "description": "Wiedergabe wird pausiert bzw. fortgesetzt",
+    "paused": "Wiedergabe pausiert.",
+    "resumed": "Wiedergabe fortgesetzt."
+  },
+  "play": {
+    "description": "Spiele ein Lied von YouTube.",
+    "options": {
+      "query": {
+        "description": "Suche nach einem Video-Namen oder gib einen Link an."
+      },
+      "type": {
+        "description": "Die Art der gewünschten Suchergebnissen.",
+        "choices": {
+          "video": "Videos",
+          "playlist": "Wiedergabelisten"
+        }
+      },
+      "safe_search": {
+        "description": "Ob Sichere Suche aktiviert werden soll (Zeigt nur jugendfreien Inhalte an)."
+      },
+      "skip": {
+        "description": "Überspringe das aktuelle Lied um deines zu spielen."
+      },
+      "shuffle": {
+        "description": "Wiedergabeliste wird nach hinzufügen von einem/mehreren Liedern gemischt."
+      }
+    },
+    "uploaderInfo": "Von {name}",
+    "searchEmbedTitle": "Bitte wähle ein Lied aus.",
+    "canceled": "Command abgebrochen.",
+    "loading": "Lädt {result}..."
+  },
+  "queue": {
+    "description": "Zeigt die aktuelle Wiedergabeliste.",
+    "embedTitle": "Wiedergabeliste",
+    "currentSong": "Laufendes Lied",
+    "queueLength": "Wiedergabelisten-Länge",
+    "uploaderInfo": "Von {name}",
+    "songs": "`{amount}` Lieder"
+  },
+  "shuffle": {
+    "description": "Wiedergabeliste wird gemischt.",
+    "success": "Wiedergabeliste wurde gemischt."
+  },
+  "skip": {
+    "description": "Überspringt das nächste Lied.",
+    "options": {
+      "amount": {
+        "description": "Wieviele Lieder möchtest du überspringen? Nutze eine negative Zahl um in der Queue zurückzugehen."
+      }
+    },
+    "skippedToNext": "Zum nächsten Lied gesprungen.",
+    "skippedToFirst": "Zum ersten Lied gesprungen.",
+    "skippedToAmount": "`{amount}` Lieder übersprungen.",
+    "skippedToLast": "Zum letzten Lied gesprungen."
+  },
+  "stop": {
+    "description": "Stoppt die Musik und leert die Wiedergabeliste.",
+    "success": "Ich habe die Musik gestoppt und die Wiedergabeliste geleert."
+  },
+  "volume": {
+    "description": "Stelle die Lautstärke des Bots ein.",
+    "options": {
+      "volume": {
+        "description": "Die neue Lautstärke in Prozent."
+      }
+    },
+    "success": "Die Lautstärke wurde zu {volume}% gesetzt."
+  }
+}

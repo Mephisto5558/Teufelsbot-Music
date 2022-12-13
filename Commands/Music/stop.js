@@ -1,11 +1,11 @@
 module.exports = {
   name: 'stop',
-  description: 'Stop the player',
+  aliases: ['clearqueue'],
   cooldowns: { guild: 2000 },
   requireQueue: true,
 
-  run: async function () {
+  run: async function (lang) {
     await this.musicPlayer.stop();
-    this.sendEmbed('Player stopped & Queue cleared', { asEmbed: true });
+    this.sendEmbed(lang('success'), { asEmbed: true });
   }
-}
+};

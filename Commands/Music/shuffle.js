@@ -1,10 +1,9 @@
 module.exports = {
   name: 'shuffle',
-  description: 'Shuffles the queue',
   requireQueue: true,
 
-  run: async function () {
+  run: async function (lang) {
     await this.musicPlayer.shuffle();
-    this.sendEmbed('Shuffled the queue!', { asEmbed: true });
+    this.sendEmbed(lang('success'), { asEmbed: true });
   }
-}
+};

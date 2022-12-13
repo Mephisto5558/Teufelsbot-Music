@@ -24,7 +24,7 @@ module.exports = {
     name: 'command',
     type: 'String',
     autocomplete: true,
-    autocompleteOptions: function () { return [...new Set(this.client.slashCommands.keys())]; },
+    autocompleteOptions: function () { return [...new Set(this.client.slashCommands.keys()), '*']; },
     required: true
   }],
 

@@ -2,40 +2,25 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors, Comp
 
 module.exports = {
   name: 'play',
-  description: 'plays a song',
   cooldowns: { user: 1000 },
   requireVC: true,
   options: [
     {
       name: 'query',
-      description: 'Type the video name or provide a link',
       type: 'String',
       required: true,
     },
     {
       name: 'type',
-      description: 'The type of search results you want',
       type: 'String',
       choices: ['video', 'playlist']
     },
-    {
-      name: 'safe_search',
-      description: 'Whether or not use safe search (YouTube restricted mode)',
-      type: 'Boolean'
-    },
-    {
-      name: 'skip',
-      description: "Skip the current song to play your's instant",
-      type: 'Boolean',
-    },
-    {
-      name: 'shuffle',
-      description: 'shuffle the queue after adding the song(s)',
-      type: 'Boolean',
-    }
+    { name: 'safe_search', type: 'Boolean' },
+    { name: 'skip', type: 'Boolean' },
+    { name: 'shuffle', type: 'Boolean' }
   ],
 
-  run: async function () {
+  run: async function (lang) {
     const
       query = this.options.getString('query'),
       rows = [];
@@ -43,7 +28,7 @@ module.exports = {
     let row = new ActionRowBuilder();
 
     if (/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)/i.test(query)) {
-      const msg = await this.sendEmbed('Loading...', { asEmbed: true });
+      const msg = await this.sendEmbed(lang('global.loading'), { asEmbed: true });
 
       await this.client.distube.play(this.member.voice.channel, query, {
         member: this.member,
@@ -59,15 +44,15 @@ module.exports = {
     const
       search = await this.client.distube.search(query, {
         type: this.options.getString('type') ?? 'video',
-        safeSearch: this.options.getBoolean('safe_search') || false,
+        safeSearch: this.options.getBoolean('safe_search') ?? false,
         limit: 5
       }),
       results = search.reduce((acc, e, i) => {
-        if (acc.join('\n').length < 4097) acc.push([`${i + 1}. [${e.name.length < 151 ? e.name : e.name.substring(0, 147) + '...'}](${e.url}) ${e.uploader.name ? 'by ' + e.uploader.name : ''}`, e.url]);
+        if (acc.join('\n').length < 4097) acc.push([`${i + 1}. [${e.name.length < 151 ? e.name : e.name.substring(0, 147) + '...'}](${e.url}) ${e.uploader.name ? lang('uploaderInfo', e.uploader.name) : ''}`, e.url]);
         return acc;
       }, []),
       embed = new EmbedBuilder({
-        title: 'Please select a song.',
+        title: lang('searchEmbedTitle'),
         description: results.map(e => e[0]).join('\n'),
         color: Colors.Blurple
       });
@@ -88,7 +73,7 @@ module.exports = {
     rows.push(row, new ActionRowBuilder({
       components: [new ButtonBuilder({
         customId: 'cancel',
-        label: 'Cancel',
+        label: lang('global.cancel'),
         style: ButtonStyle.Danger
       })]
     }));
@@ -99,10 +84,10 @@ module.exports = {
       .on('collect', async button => {
         await button.deferUpdate();
 
-        embed.data.title = 'Music Player';
-        embed.data.description = button.customId == 'cancel' ? 'Command canceled.' : `Loading ${results[button.customId - 1][0].replace(/^[^.]*\. /, '')}...`;
+        embed.data.title = lang('others.editEmbed.title');
+        embed.data.description = button.customId == 'cancel' ? lang('canceled') : lang('loading', results[button.customId - 1][0].replace(/^[^.]*\. /, ''));
 
-        await msg.edit({ embeds: [embed], components: [] });
+        msg.edit({ embeds: [embed], components: [] });
 
         await this.client.distube.play(this.member.voice.channel, results[button.customId - 1][1], {
           member: this.member,
@@ -111,7 +96,7 @@ module.exports = {
           metadata: { msg }
         });
 
-        if (this.options.getBoolean('shuffle')) await this.musicPlayer.shuffle();
+        if (this.options.getBoolean('shuffle')) this.musicPlayer.shuffle();
       })
       .on('end', async collected => {
         if (collected.size) msg.edit({ components: [] });

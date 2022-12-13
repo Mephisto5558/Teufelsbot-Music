@@ -1,0 +1,13 @@
+{
+  "reload": {
+    "description": "Läd einen Command oder eine Kategorie neu",
+    "options": {
+      "command": {
+        "description": "Den neu zu ladenden Command. Nutze \"*\", um alle Commands neu zu laden."
+      }
+    },
+    "invalidCommand": "Dies ist kein gültiger Command.",
+    "noneReloaded": "Keine Commands wurden neu geladen.",
+    "reloaded": "Die folgenden `{count}` Commands wurden neu geladen:\n`{commands}`"
+  }
+}

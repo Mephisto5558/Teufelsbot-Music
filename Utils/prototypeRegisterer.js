@@ -17,7 +17,12 @@ Number.prototype.limit = function limit({ min = -Infinity, max = Infinity } = {}
 Number.prototype.toFormattedTime = function () {
   if (!Number.isInteger(parseInt(this))) throw new TypeError(`${this} is not a valid number!`);
   if (this >= 86400) throw new RangeError(`Number cannot be bigger then 86400, got ${this}!`);
-  return new Date(this * 1000).toTimeString().substring(0, 8);
+  return new Date(0, 0, 0, 0, 0, this).toTimeString().substring(0, 8);
+};
+Number.prototype.toFormattedTime = function () {
+  const date = new Date(0, 0, 0, 0, 0, this);
+  const [h, m, s] = [date.getHours(), date.getMinutes(), date.getSeconds()];
+  return h == 0 ? `${m}:${s}` : `${h}:${m}:${s}`;
 };
 Object.prototype.fMerge = function fMerge(obj, mode, { ...output } = { ...this }) {
   if (`${{}}` != this || `${{}}` != obj) return output;

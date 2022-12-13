@@ -45,8 +45,7 @@ module.exports = {
         embed.data.description = helpLang('description') ?? lang('one.noDescription');
         if (helpLang('usage')) embed.data.footer = { text: lang('one.embedFooterText') };
         embed.data.fields = [
-          cmd.aliases?.prefix?.length && { name: lang('one.prefixAlias'), value: `\`${listCommands(cmd.aliases.prefix, '', 1)[0].replaceAll('> ', '')}\``, inline: true },
-          cmd.aliases?.slash?.length && { name: lang('one.slashAlias'), value: `\`${listCommands(cmd.aliases.slash, '', 1)[0].replaceAll('> ', '')}\``, inline: true },
+          cmd.aliases?.length && { name: lang('one.alias'), value: `\`${listCommands(cmd.aliases.slash, '', 1)[0].replaceAll('> ', '')}\``, inline: true },
           cmd.permissions?.client?.length && { name: lang('one.botPerms'), value: `\`${permissionTranslator(cmd.permissions.client).join('`, `')}\``, inline: false },
           cmd.permissions?.user?.length && { name: lang('one.userPerms'), value: `\`${permissionTranslator(cmd.permissions.user).join('`, `')}\``, inline: true },
           (cmd.cooldowns?.user || cmd.cooldowns?.guild) && {
