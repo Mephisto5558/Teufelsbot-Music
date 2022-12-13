@@ -60,7 +60,7 @@
         "description": "Wiedergabeliste wird nach hinzufügen von einem/mehreren Liedern gemischt."
       }
     },
-    "uploaderInfo": "Von {name}",
+    "uploaderInfo": "von {name}",
     "searchEmbedTitle": "Bitte wähle ein Lied aus.",
     "canceled": "Command abgebrochen.",
     "loading": "Lädt {result}..."
@@ -70,7 +70,7 @@
     "embedTitle": "Wiedergabeliste",
     "currentSong": "Laufendes Lied",
     "queueLength": "Wiedergabelisten-Länge",
-    "uploaderInfo": "Von {name}",
+    "uploaderInfo": "von {name}",
     "songs": "`{amount}` Lieder"
   },
   "shuffle": {
