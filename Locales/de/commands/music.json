@@ -86,7 +86,7 @@
     },
     "skippedToNext": "Zum nächsten Lied gesprungen.",
     "skippedToFirst": "Zum ersten Lied gesprungen.",
-    "skippedToAmount": "`{amount}` Lieder übersprungen.",
+    "skippedAmount": "`{amount}` Lieder übersprungen.",
     "skippedToLast": "Zum letzten Lied gesprungen."
   },
   "stop": {

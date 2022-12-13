@@ -86,7 +86,7 @@
     },
     "skippedToNext": "Skipped to the next song.",
     "skippedToFirst": "Skipped to the first song.",
-    "skippedToAmount": "Skipped `{amount}` songs.",
+    "skippedAmount": "Skipped `{amount}` songs.",
     "skippedToLast": "Skipped to the last song."
   },
   "stop": {
