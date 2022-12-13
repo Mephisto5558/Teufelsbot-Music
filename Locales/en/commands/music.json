@@ -1,0 +1,105 @@
+{
+  "join": {
+    "description": "Joins the voice channel you are in.",
+    "alreadyIn": "I'm already in your voice channel!",
+    "success": "I joined your voice channel."
+  },
+  "leave": {
+    "description": "Make me leave the voice channel I'm in.",
+    "notConnected": "I'm not connected to a voice channel!",
+    "success": "I left the voice channel."
+  },
+  "loop": {
+    "description": "Toggle looping the current song or the whole queue",
+    "options": {
+      "song": {
+        "description": "Toggle looping the current song."
+      },
+      "queue": {
+        "description": "Toggle looping the current queue."
+      }
+    },
+    "song": {
+      "disabled": "I disabled the song loop.",
+      "enabled": "I enabled the song loop."
+    },
+    "queue": {
+      "disabled": "I disabled the queue loop.",
+      "enabled": "I enabled the queue loop."
+    }
+  },
+  "nowplaying": {
+    "description": "Shows the currently playing song",
+    "response": "I am currently playing:\n{data}\nRequested by: {user}"
+  },
+  "pause": {
+    "description": "pauses or resumes the player.",
+    "paused": "Player paused.",
+    "resumed": "Player resumed."
+  },
+  "play": {
+    "description": "Play a song from YouTube.",
+    "options": {
+      "query": {
+        "description": "Search for a video name or provide a link."
+      },
+      "type": {
+        "description": "The type of search results you want.",
+        "choices": {
+          "video": "Videos",
+          "playlist": "Playlists"
+        }
+      },
+      "safe_search": {
+        "description": "Whether or not use safe search (YouTube restricted mode)."
+      },
+      "skip": {
+        "description": "Skip the current song to play your's directly."
+      },
+      "shuffle": {
+        "description": "Shuffles the queue after adding the song(s)"
+      }
+    },
+    "uploaderInfo": "by {name}",
+    "searchEmbedTitle": "Please select a song.",
+    "canceled": "Command canceled.",
+    "loading": "Loading {result}..."
+  },
+  "queue": {
+    "description": "Shows the current queue.",
+    "embedTitle": "Queue",
+    "currentSong": "Current Song",
+    "queueLength": "Queue Length",
+    "uploaderInfo": "by {name}",
+    "songs": "`{amount}` songs"
+  },
+  "shuffle": {
+    "description": "shuffles the queue.",
+    "success": "I shuffled the queue."
+  },
+  "skip": {
+    "description": "Skips the current song.",
+    "options": {
+      "amount": {
+        "description": "how much songs do you want to skip? You can use negative numbers to go to a previous song."
+      }
+    },
+    "skippedToNext": "Skipped to the next song.",
+    "skippedToFirst": "Skipped to the first song.",
+    "skippedToAmount": "Skipped `{amount}` songs.",
+    "skippedToLast": "Skipped to the last song."
+  },
+  "stop": {
+    "description": "Stop the player and clear the queue.",
+    "success": "I stopped the player and cleared the queue."
+  },
+  "volume": {
+    "description": "Set the player's volume.",
+    "options": {
+      "volume": {
+        "description": "The new volume percentage."
+      }
+    },
+    "success": "The volume has been set to {volume}%."
+  }
+}

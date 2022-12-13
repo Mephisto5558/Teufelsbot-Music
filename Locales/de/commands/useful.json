@@ -1,0 +1,16 @@
+{
+  "lyrics": {
+    "description": "Suche nach Song-Lyrics im Internet.",
+    "options": {
+      "title": {
+        "description": "Der Titel des Songs"
+      },
+      "artist": {
+        "description": "Der Author des Songs"
+      }
+    },
+    "notFound": "Es wurden keine Lyrics für `${song}` gefunden.",
+    "embedFieldName": "Quelle",
+    "embedTitle": "{title} von {author}"
+  }
+}

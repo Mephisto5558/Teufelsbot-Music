@@ -1,0 +1,82 @@
+{
+  "cmdstats": {
+    "description": "Zeigt an, wie oft ein spezifischer Command oder die Top 10 genutzt wurden.",
+    "options": {
+      "command": {
+        "description": "Für welchen Command möchtest du Stats erhalten?"
+      }
+    },
+    "embedTitle": "Command Stats",
+    "embedDescriptionOne": "Der {command}-Command wurde **{count}** male ausgeführt.",
+    "embedDescriptionMany": "Dies sind die 10 am häufigsten genutzten Commands:\n"
+  },
+  "dashboard": {
+    "description": "Erhalte den Link zum Dashboard",
+    "embedTitle": "Dashboard",
+    "embedDescription": "Clicke [hier]({url}) um das Dashboard zu öffnen."
+  },
+  "help": {
+    "description": "Zeige alle meine Commands oder erhalte Informationen über einen spezifischen.",
+    "options": {
+      "command": {
+        "description": "Über welchen Command möchtest du mehr erfahren?"
+      }
+    },
+    "one": {
+      "notFound": "Keine Informationen über diesen Command gefunden: `{command}`.",
+      "embedTitle": "Detallierte Informationen über: `{command}`",
+      "noDescription": "Keine Beschreibung gefunden",
+      "embedFooterText": "Syntax: <> = erfordert, [] = optional",
+      "lookAtDesc": "SLASH Command: Lies die Beschreibungen der Command Optionen.\n",
+      "alias": "Aliasse",
+      "botPerms": "Erforderliche Bot Berechtigungen",
+      "userPerms": "Erforderliche User Berechtigungen",
+      "cooldowns": "Command Cooldowns",
+      "usage": "Nutzung"
+    },
+    "all": {
+      "embedTitle": "🔰Alle meine Commands",
+      "notFound": "keine Commands gefunden...",
+      "embedFooterText": "Nutze die 'command' Option um mehr Informationen über einen spezifischen Comamnd zu erhalten."
+    }
+  },
+  "info": {
+    "description": "Zeigt Stats und Informationen über den Bot",
+    "dev": "Developer",
+    "shard": "Shard",
+    "commands": "Commands",
+    "starts": "Starts",
+    "lastStart": "Letzter Start",
+    "translation": "Übersetzungen:\n> Englisch: {en}\n> Deutsch: {de}\n",
+    "links": "**[Invite]({Invite})** | **[Dashboard]({Dashboard})** | **[Datenschutzrichtlinie]({PrivacyPolicy})**",
+    "embedTitle": "Infos",
+    "embedFooterText": "Mehr Infos kommen bald!"
+  },
+  "invite": {
+    "description": "Sendet einen Link um den Bot auf deinen Server zu adden",
+    "embedTitle": "Einladen",
+    "embedDescription": "Vielen Dank für dein Interesse! Clicke [hier]({url}) um mich auf deinen Server hinzuzufügen."
+  },
+  "ping": {
+    "description": "Erhalte den Ping des Bots",
+    "options": {
+      "average": {
+        "description": "Erhalte den Durchschnittsping aus 60 pings über eine Minute."
+      }
+    },
+    "average": {
+      "loading": "Pingen... (dies dauert etwa eine Minute)",
+      "embedDescription": "Pings: `{pings}`\nNiedrigster Ping: `{lowest}ms`\nHöchster Ping: `{heightest}ms`\nDurchschnittlicher Ping: `{average}ms`"
+    },
+    "embedTitle": "Ping",
+    "messageSend": "Nachricht senden"
+  },
+  "uptime": {
+    "description": "Erhalte die Uptime des Bots",
+    "embedDescription": "Der Bot ist [online]({Domain}/uptime) seit {time}.",
+    "dhms": "{d} Tagen, {h} Stunden, {m} Minuten und {s} Sekunden",
+    "hms": "{h} Stunden, {m} Minuten und {s} Sekunden",
+    "ms": "{m} Minuten und {s} Sekunden",
+    "s": "{s} Sekunden"
+  }
+}

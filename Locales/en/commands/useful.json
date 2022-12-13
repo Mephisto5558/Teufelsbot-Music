@@ -1,0 +1,16 @@
+{
+  "lyrics": {
+    "description": "Search for song lyrics on the internet",
+    "options": {
+      "title": {
+        "description": "The song's title"
+      },
+      "artist": {
+        "description": "The song's artist."
+      }
+    },
+    "notFound": "No Lyrics found for `${song}`.",
+    "embedFieldName": "Source",
+    "embedTitle": "{title} by {author}"
+  }
+}

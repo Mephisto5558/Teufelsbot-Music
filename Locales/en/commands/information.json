@@ -1,0 +1,82 @@
+{
+  "cmdstats": {
+    "description": "See how often a specific command has been run or get the top 10.",
+    "options": {
+      "command": {
+        "description": "The command you want to get stats for."
+      }
+    },
+    "embedTitle": "Command Stats",
+    "embedDescriptionOne": "The {command} command has been run **{count}** times.",
+    "embedDescriptionMany": "These are 10 most used commands:\n"
+  },
+  "dashboard": {
+    "description": "get the link to the bots's dashboard",
+    "embedTitle": "Dashboard",
+    "embedDescription": "Click [here]({url}) to open the dashboard."
+  },
+  "help": {
+    "description": "Show all my commands or search for a specific one",
+    "options": {
+      "command": {
+        "description": "Wich command do you want to get stats about?"
+      }
+    },
+    "one": {
+      "notFound": "No information found for command `{command}`.",
+      "embedTitle": "Detailed Information about: `{command}`",
+      "noDescription": "No description found",
+      "embedFooterText": "Syntax: <> = required, [] = optional",
+      "lookAtDesc": "SLASH Command: look at the option descriptions.\n",
+      "alias": "Aliases",
+      "botPerms": "Required Bot Permissions",
+      "userPerms": "Required User Permissions",
+      "cooldowns": "Command Cooldowns",
+      "usage": "Usage"
+    },
+    "all": {
+      "embedTitle": "🔰All my commands",
+      "notFound": "No commands found...",
+      "embedFooterText": "Use the 'command' option to get more information about a specific command."
+    }
+  },
+  "info": {
+    "description": "shows some stats and infos about the bot.",
+    "dev": "Developer",
+    "shard": "Shard",
+    "commands": "Commands",
+    "starts": "Starts",
+    "lastStart": "Last start",
+    "translation": "Translations:\n> English: {en}\n> German: {de}\n",
+    "links": "**[Invite]({Invite})** | **[Dashboard]({Dashboard})** | **[Privacy Policy]({PrivacyPolicy})**",
+    "embedTitle": "Stats",
+    "embedFooterText": "More stats are coming soon!"
+  },
+  "invite": {
+    "description": "Sends a link to add the bot to your guild.",
+    "embedTitle": "Invite",
+    "embedDescription": "Thank you for your interest! Click [here]({url}) to add me to your guild. ^^"
+  },
+  "ping": {
+    "description": "Get the bot's ping",
+    "options": {
+      "average": {
+        "description": "Get the average ping out of 60 pings."
+      }
+    },
+    "average": {
+      "loading": "Pinging... (this takes about one minute)",
+      "embedDescription": "Pings: `{pings}`\nLowest Ping: `{lowest}ms`\nHeightest Ping: `{heightest}ms`\nAverage Ping: `{average}ms`"
+    },
+    "embedTitle": "Ping",
+    "messageSend": "Message Send"
+  },
+  "uptime": {
+    "description": "Get the bot's uptime",
+    "embedDescription": "The bot has been [online]({Domain}/uptime) for exactly {time}.",
+    "dhms": "{d} days, {h} hours, {m} minutes and {s} seconds",
+    "hms": "{h} hours, {m} minutes and {s} seconds",
+    "ms": "{m} minutes and {s} seconds",
+    "s": "{s} seconds"
+  }
+}
