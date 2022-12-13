@@ -6,7 +6,7 @@ module.exports = {
   requireQueue: true,
   options: [{ name: 'amount', type: 'Number' }],
 
-  run: async function () {
+  run: async function (lang) {
     const amount = this.options.getNumber('amount') || 0;
 
     if (!amount || amount == 1) {
