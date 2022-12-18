@@ -14,7 +14,7 @@ module.exports = {
     const embed = new EmbedBuilder({
       title: lang('embedTitle'),
       description: description.length < 4097 ? description : description.substring(0, description.substring(0, 4096).lastIndexOf('\n**')) + '\n**...**',
-      colors: Colors.Blurple,
+      color: Colors.Blurple,
       fields: [
         { name: lang('currentSong'), value: `[${song.name.length < 76 ? song.name : song.name.substring(0, 75) + '...'}](${song.url}) ${lang('uploaderInfo', song.uploader.name)} \`${this.musicPlayer.formattedCurrentTime}\` / \`${remainingSongTime}\``, inline: false },
         { name: lang('queueLength'), value: `${lang('songs', this.musicPlayer.songs.length)}, \`${this.musicPlayer.formattedDuration}\``, inline: true }
