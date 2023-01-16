@@ -22,7 +22,7 @@
     "mongoose": "^6.8.0",
     "node": "^19.2.0",
     "songlyrics": "^2.4.4",
-    "yt-search": "^2.10.3"
+    "yt-search": "^2.10.4"
   },
   "repository": {
     "type": "git",
