@@ -3,6 +3,7 @@ node_modules
 .github
 config.json
 env.json
+package-lock.json
 
 # Logs
 logs
