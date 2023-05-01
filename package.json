@@ -20,7 +20,7 @@
     "libsodium-wrappers": "^0.7.11",
     "lyrics-finder": "^21.7.0",
     "mongoose": "^7.0.5",
-    "node": "^19.8.1",
+    "node": "^20.0.0",
     "songlyrics": "^2.4.5",
     "yt-search": "^2.10.4"
   },
